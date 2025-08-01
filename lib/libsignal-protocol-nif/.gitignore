@@ -1,0 +1,50 @@
+_build/
+build/
+deps/
+.DS_Store
+*.beam
+*.o
+*.so
+*.dylib
+*.a
+*.log
+.vscode/
+priv/
+erl_crash.dump
+rebar3.crashdump
+tmp/
+
+# CMake build artifacts
+c_src/CMakeCache.txt
+c_src/CMakeFiles/
+c_src/cmake_install.cmake
+c_src/Makefile
+
+# Debug and temporary files
+/tmp/signal_test_debug.log
+*.tmp
+*.temp
+*~
+.#*
+\#*#
+
+# Configuration files (local overrides)
+config/local.config
+.env
+.env.local
+
+# Test artifacts
+test_*.erl
+simple_test.erl
+coverage_test_SUITE.erl
+
+# IDE and editor files
+.idea/
+*.swp
+*.swo
+.emacs.d/
+.elixir_ls/
+
+# OS files
+Thumbs.db
+Desktop.ini

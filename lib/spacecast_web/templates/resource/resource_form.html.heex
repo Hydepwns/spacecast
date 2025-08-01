@@ -1,0 +1,32 @@
+<.simple_form :let={f} for={@changeset} as={:resource} action={@action}>
+  <.error :if={@changeset.action}>
+    Oops, something went wrong! Please check the errors below.
+  </.error>
+  <:inner_block_simple_form :let={f}>
+    <.input field={f[:name]} type="text" label="Name" required data-test-id="name-input" />
+    <.input field={f[:type]} type="select" label="Type" options={@resource_types} required data-test-id="type-select" />
+    <.input field={f[:status]} type="select" label="Status" options={[{"Active", "active"}, {"Inactive", "inactive"}, {"Draft", "draft"}]} required data-test-id="status-select" />
+    <.input field={f[:description]} type="textarea" label="Description" data-test-id="description-input" />
+
+    <div class="space-y-4 mt-6">
+      <h3 class="text-lg font-medium">Content</h3>
+      <.input field={f[:content]} type="textarea" label="Content" value={@changeset.data.content || ""} data-test-id="content-input" />
+    </div>
+
+    <div class="space-y-4 mt-6">
+      <h3 class="text-lg font-medium">Relationships</h3>
+      <.input field={f[:parent_id]} type="select" label="Parent Resource" options={@parent_resources} value={@changeset.data.parent_id} data-test-id="parent-select" />
+      <.input field={f[:child_ids]} type="select" label="Child Resources" options={@child_resources} value={@changeset.data.child_ids} multiple data-test-id="children-select" />
+    </div>
+
+    <div class="space-y-4 mt-6">
+      <h3 class="text-lg font-medium">Metadata</h3>
+      <.input field={f[:metadata][:tags]} type="text" label="Tags" value={get_in(@changeset.data.metadata || %{}, [:tags])} data-test-id="tags-input" />
+      <.input field={f[:metadata][:category]} type="text" label="Category" value={get_in(@changeset.data.metadata || %{}, [:category])} data-test-id="category-input" />
+    </div>
+  </:inner_block_simple_form>
+  <:actions>
+    <.button type="submit" data-test-id="save-resource">Save Resource</.button>
+    <.link navigate={~p"/resources"} class="button" data-test-id="cancel-resource-button">Cancel</.link>
+  </:actions>
+</.simple_form>

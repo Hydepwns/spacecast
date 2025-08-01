@@ -1,0 +1,79 @@
+<div class="container">
+  <.live_component module={SpacecastWeb.NotificationComponent} id="resource-notifications" notifications={@notifications} />
+
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold">Resources</h1>
+    <div class="flex space-x-4">
+      <.link navigate={~p"/events"} class="text-blue-600 hover:text-blue-800" data-test-id="events-link">
+        Events
+      </.link>
+      <.link navigate={~p"/events"} class="text-blue-600 hover:text-blue-800" data-test-id="view-events-link">
+        View Events
+      </.link>
+      <.link navigate={~p"/account"} class="text-blue-600 hover:text-blue-800" data-test-id="account-link">
+        Account
+      </.link>
+    </div>
+  </div>
+
+  <.flash_group flash={@flash} />
+
+  <div class="mb-8">
+    <div class="flex justify-between items-center mb-4">
+      <.link data-test-id="create-resource-link" navigate={~p"/resources/new"} class="btn btn-primary">
+        Create Resource
+      </.link>
+      <button type="button" class="btn btn-primary" data-test-id="create-resource-button" phx-click="navigate_to_new">
+        Create Resource
+      </button>
+
+      <div class="flex items-center space-x-4">
+        <label for="type-filter" class="text-sm font-medium text-gray-700">Filter by Type:</label>
+        <select id="type-filter" name="type" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" phx-change="filter">
+          <option value="">All Types</option>
+          <option value="document">Document</option>
+          <option value="task">Task</option>
+          <option value="note">Note</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+
+  <%= if Enum.empty?(@resources) do %>
+    <div class="text-gray-500 text-center py-8">
+      No resources found. Create your first resource to get started.
+    </div>
+  <% else %>
+    <div class="space-y-4">
+      <%= for resource <- @resources do %>
+        <div class="resource-row bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <.link navigate={~p"/resources/#{resource.id}"} class="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors" data-test-id={"resource-link-#{resource.id}"}>
+                {resource.name}
+              </.link>
+              <p class="text-gray-600 mt-1">{resource.description}</p>
+              <div class="flex items-center gap-2 mt-2">
+                <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                  {resource.type}
+                </span>
+                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                  {resource.status}
+                </span>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <.link navigate={~p"/resources/#{resource.id}/edit"} class="text-blue-600 hover:text-blue-800 text-sm" data-test-id={"edit-resource-#{resource.id}"}>
+                Edit
+              </.link>
+              <button phx-click="delete" phx-value-id={resource.id} data-confirm="Are you sure you want to delete this resource?" class="text-red-600 hover:text-red-800 text-sm" data-test-id={"delete-resource-#{resource.id}"}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

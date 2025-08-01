@@ -1,0 +1,134 @@
+<div class="container" data-debug="ResourceNewLive-template-rendered">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold">New Resource</h1>
+    <div class="flex space-x-4">
+      <.link navigate={~p"/resources"} class="text-blue-600 hover:text-blue-800" data-test-id="cancel-resource-link">
+        Back to Resources
+      </.link>
+    </div>
+  </div>
+
+  <.flash_group flash={@flash} />
+
+  <form id="resource-form" phx-change="validate" phx-submit="save">
+    <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+    <div class="space-y-6">
+      <div>
+        <label for="resource-name" class="block text-sm font-semibold leading-6 text-zinc-800">
+          Name
+        </label>
+        <input type="text" id="resource-name" name="resource[name]" value={@resource.name} class="mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 border-zinc-300 focus:border-zinc-400" />
+        <%= if @changeset.errors[:name] do %>
+          <div class="mt-1 text-sm text-red-600" data-test-id="name-error">
+            <%= for {field, {message, _opts}} <- @changeset.errors do %>
+              <%= if field == :name do %>
+                <%= message %>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div data-test-id="resource-form_description-container">
+        <label for="resource-description" class="block text-sm font-semibold leading-6 text-zinc-800">
+          Description
+        </label>
+        <textarea id="resource-description" name="resource[description]" data-test-id="resource-form_description" class="mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem] border-zinc-300 focus:border-zinc-400">{@resource.description}</textarea>
+        <%= if @changeset.errors[:description] do %>
+          <div class="mt-1 text-sm text-red-600" data-test-id="description-error">
+            <%= for {field, {message, _opts}} <- @changeset.errors do %>
+              <%= if field == :description do %>
+                <%= message %>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div data-test-id="resource-form_content-container">
+        <label for="resource-content" class="block text-sm font-semibold leading-6 text-zinc-800">
+          Content
+        </label>
+        <textarea id="resource-content" name="resource[content]" data-test-id="resource-form_content" class="mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem] border-zinc-300 focus:border-zinc-400">{if is_map(@resource.content), do: Map.get(@resource.content, :text, ""), else: @resource.content}</textarea>
+        <%= if @changeset.errors[:content] do %>
+          <div class="mt-1 text-sm text-red-600" data-test-id="content-error">
+            <%= for {field, {message, _opts}} <- @changeset.errors do %>
+              <%= if field == :content do %>
+                <%= message %>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div data-test-id="resource-form_type-container">
+        <label for="resource-type" class="block text-sm font-semibold leading-6 text-zinc-800">
+          Type
+        </label>
+        <select id="resource-type" name="resource[type]" class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm" data-test-id="resource-form_type">
+          <option value="document" selected={@resource.type == "document"}>Document</option>
+          <option value="folder" selected={@resource.type == "folder"}>Folder</option>
+          <option value="task" selected={@resource.type == "task"}>Task</option>
+          <option value="note" selected={@resource.type == "note"}>Note</option>
+        </select>
+        <%= if @changeset.errors[:type] do %>
+          <div class="mt-1 text-sm text-red-600" data-test-id="type-error">
+            <%= for {field, {message, _opts}} <- @changeset.errors do %>
+              <%= if field == :type do %>
+                <%= message %>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div data-test-id="resource-form_status-container">
+        <label for="resource-status" class="block text-sm font-semibold leading-6 text-zinc-800">
+          Status
+        </label>
+        <select id="resource-status" name="resource[status]" class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm" data-test-id="resource-form_status">
+          <option value="draft" selected={@resource.status == "draft"}>Draft</option>
+          <option value="published" selected={@resource.status == "published"}>Published</option>
+          <option value="active" selected={@resource.status == "active"}>Active</option>
+          <option value="archived" selected={@resource.status == "archived"}>Archived</option>
+        </select>
+        <%= if @changeset.errors[:status] do %>
+          <div class="mt-1 text-sm text-red-600" data-test-id="status-error">
+            <%= for {field, {message, _opts}} <- @changeset.errors do %>
+              <%= if field == :status do %>
+                <%= message %>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div data-test-id="resource-form_parent_id-container">
+        <label for="resource-parent_id" class="block text-sm font-semibold leading-6 text-zinc-800">
+          Parent
+        </label>
+        <select id="resource-parent_id" name="resource[parent_id]" class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm" data-test-id="resource-form_parent_id">
+          <option value="">None</option>
+          <%= for resource <- @resources do %>
+            <option value={resource.id} selected={@resource.parent_id == resource.id}>{resource.name}</option>
+          <% end %>
+        </select>
+        <%= if @changeset.errors[:parent_id] do %>
+          <div class="mt-1 text-sm text-red-600" data-test-id="parent-id-error">
+            <%= for {field, {message, _opts}} <- @changeset.errors do %>
+              <%= if field == :parent_id do %>
+                <%= message %>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="flex justify-end space-x-4">
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          Create Resource
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

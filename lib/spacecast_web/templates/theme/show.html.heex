@@ -1,0 +1,33 @@
+<.header>
+  Theme {@theme.id || "new"}
+  <:subtitle>This is a theme record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/themes/#{@theme}/edit"}>
+      <.button>Edit theme</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name">{@theme.name}</:item>
+  <:item title="Mode">{@theme.mode}</:item>
+  <:item title="Colors">
+    <div class="space-y-2">
+      <div><strong>Primary:</strong> <span style={"color: #{@theme.primary_color}"}>{@theme.primary_color}</span></div>
+      <div><strong>Secondary:</strong> <span style={"color: #{@theme.secondary_color}"}>{@theme.secondary_color}</span></div>
+      <div><strong>Background:</strong> <span style={"color: #{@theme.background_color}"}>{@theme.background_color}</span></div>
+      <div><strong>Text:</strong> <span style={"color: #{@theme.text_color}"}>{@theme.text_color}</span></div>
+    </div>
+  </:item>
+  <:item title="Settings">
+    <div class="space-y-2">
+      <div><strong>Font Size:</strong> {@theme.settings["font_size"]}</div>
+      <div><strong>Line Height:</strong> {@theme.settings["line_height"]}</div>
+      <div><strong>Contrast:</strong> {@theme.settings["contrast"]}</div>
+      <div><strong>Animations:</strong> {@theme.settings["animations"]}</div>
+    </div>
+  </:item>
+  <:item title="Default Theme">{@theme.is_default}</:item>
+</.list>
+
+<.back navigate={~p"/themes"}>Back to themes</.back>

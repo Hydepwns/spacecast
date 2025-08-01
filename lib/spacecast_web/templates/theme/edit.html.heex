@@ -1,0 +1,8 @@
+<.header>
+  Edit Theme {@theme.id}
+  <:subtitle>Use this form to manage theme records in your database.</:subtitle>
+</.header>
+
+{render("theme_form.html", changeset: @changeset, action: ~p"/themes/#{@theme}")}
+
+<.back navigate={~p"/themes"}>Back to themes</.back>

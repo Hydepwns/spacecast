@@ -1,0 +1,550 @@
+===> Analyzing applications...
+===> Compiling libsignal_protocol_nif
+Copying NIF files from /home/droo/Hydepwns/lib/libsignal-protocol-nif/priv/ to build directories...
+cp: '/home/droo/Hydepwns/lib/libsignal-protocol-nif/priv/libsignal_protocol_nif_v2.so' and '/home/droo/Hydepwns/lib/libsignal-protocol-nif/_build/default/lib/nif/priv/libsignal_protocol_nif_v2.so' are the same file
+cp: '/home/droo/Hydepwns/lib/libsignal-protocol-nif/priv/libsignal_protocol_nif.so' and '/home/droo/Hydepwns/lib/libsignal-protocol-nif/_build/default/lib/nif/priv/libsignal_protocol_nif.so' are the same file
+cp: '/home/droo/Hydepwns/lib/libsignal-protocol-nif/priv/signal_nif.so' and '/home/droo/Hydepwns/lib/libsignal-protocol-nif/_build/default/lib/nif/priv/signal_nif.so' are the same file
+Copied .so files to _build/default/lib/nif/priv
+Copied .so files to _build/test/lib/nif/priv
+Copied .so files to _build/unit+test/lib/nif/priv
+Copied .so files to _build/integration+test/lib/nif/priv
+Copied .so files to _build/smoke+test/lib/nif/priv
+Copied .so files to _build/unit+test/extras/test/priv
+Copied .so files to _build/integration+test/extras/test/priv
+Copied .so files to _build/smoke+test/extras/test/priv
+NIF files copied successfully to all target directories.
+     warning: the following clause will never match:
+
+         {:error, message, _}
+
+     because it attempts to match on the result of:
+
+         HydepwnsLiveview.Utils.SocketValidator.type_validation(socket, key, type_spec)
+
+     which has type:
+
+         dynamic({:error, binary()} or {:error or :ok, term()})
+
+     typing violation found at:
+     │
+ 194 │         {:error, message, _} -> {key, :error, message}
+     │         ~
+     │
+     └─ lib/hydepwns_liveview/utils/socket_validation_debug_grid.ex:194:9: HydepwnsLiveview.Utils.SocketValidationDebugGrid.validate_type_specs/2
+
+     warning: the following clause will never match:
+
+         {:error, resource, context}
+
+     because it attempts to match on the result of:
+
+         result
+
+     which has type:
+
+         dynamic({:error, binary()} or {:error, binary(), term(), term()} or {:ok, term(), term()})
+
+     typing violation found at:
+     │
+ 142 │       {:error, resource, context} ->
+     │       ~
+     │
+     └─ lib/hydepwns_liveview_web/live/examples/transformation_example_live.ex:142:7: HydepwnsLiveviewWeb.Examples.TransformationExampleLive.handle_event/3
+
+     warning: variable "resource_type" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 121 │     resource_type = resource_module.resource_type()
+     │     ~~~~~~~~~~~~~
+     │
+     └─ lib/hydepwns_liveview/resources/utils/test_event_generator.ex:121:5: HydepwnsLiveview.Resources.TestEventGenerator.generate_random_events/4
+
+    warning: expected a map with key :active in map update syntax:
+
+        %{state | active: false}
+
+    but got type:
+
+        dynamic(%HydepwnsLiveview.Resources.TeamResource{__resource_module__: term()})
+
+    where "state" was given the type:
+
+        # type: dynamic(%HydepwnsLiveview.Resources.TeamResource{})
+        # from: lib/hydepwns_liveview/resources/models/team_resource.ex:88:40
+        %HydepwnsLiveview.Resources.TeamResource{} = state
+
+    typing violation found at:
+    │
+ 97 │         %{state | active: false}
+    │         ~
+    │
+    └─ lib/hydepwns_liveview/resources/models/team_resource.ex:97:9: HydepwnsLiveview.Resources.TeamResource.apply_event/2
+
+     warning: the following clause will never match:
+
+         {:error, reason}
+
+     because it attempts to match on the result of:
+
+         validate_command(command, state)
+
+     which has type:
+
+         dynamic(:ok)
+
+     typing violation found at:
+     │
+ 385 │           {:error, reason} -> {:error, reason}
+     │           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     │
+     └─ lib/hydepwns_liveview/events/resource_integration/event_sourced_resource.ex:385: HydepwnsLiveview.Events.ResourceIntegration.EventSourcedResource.execute_command/3
+
+     warning: variable "opts" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 282 │   def export_visualization(visualization, format, opts \\ []) do
+     │                                                   ~~~~
+     │
+     └─ lib/hydepwns_liveview/resources/utils/event_visualizer.ex:282:51: HydepwnsLiveview.Resources.EventVisualizer.export_visualization/3
+
+     warning: the following clause will never match:
+
+         {:error, reason}
+
+     because it attempts to match on the result of:
+
+         HydepwnsLiveview.Resources.ResourceHelpers.update_resource(socket, :settings, %{
+           notifications:
+             case current_setting do
+               x when x === false or x === nil -> true
+               _ -> false
+             end
+         })
+
+     which has type:
+
+         dynamic({:ok, term()})
+
+     typing violation found at:
+     │
+ 185 │       {:error, reason} ->
+     │       ~~~~~~~~~~~~~~~~~~~
+     │
+     └─ lib/hydepwns_liveview_web/live/examples/user_resource_example_live.ex:185: HydepwnsLiveviewWeb.Examples.UserResourceExampleLive.handle_event/3
+
+     warning: variable "new_sandbox_id" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 210 │       {:ok, new_sandbox_id} = create_sandbox([], sandbox.options)
+     │             ~
+     │
+     └─ lib/hydepwns_liveview/resources/utils/resource_sandbox.ex:210:13: HydepwnsLiveview.Resources.ResourceSandbox.reset_sandbox/1
+
+     warning: comparison between distinct types found:
+
+         DateTime.compare(event.timestamp, timestamp) == :lte
+
+     given types:
+
+         dynamic(:eq or :gt or :lt) == :lte
+
+     where "event" was given the type:
+
+         # type: dynamic()
+         # from: test/support/mock_event_store.ex:297:36
+         event
+
+     where "timestamp" was given the type:
+
+         # type: dynamic()
+         # from: test/support/mock_event_store.ex:292:9
+         {:get_events_for_resource_at, resource_type, resource_id, timestamp}
+
+     While Elixir can compare across all types, you are comparing across types which are always disjoint, and the result is either always true or always false
+
+     typing violation found at:
+     │
+ 324 │           DateTime.compare(event.timestamp, timestamp) == :lte
+     │                                                        ~
+     │
+     └─ test/support/mock_event_store.ex:324:56: HydepwnsLiveview.TestSupport.MockEventStore.handle_call/3
+
+    warning: variable "idx" is unused (if the variable is not meant to be used, prefix it with an underscore)
+    │
+ 78 │                 <%= for {usage, idx} <- Enum.with_index(@cpu_history) do %>
+    │                                 ~
+    │
+    └─ lib/hydepwns_liveview_web/live/examples/system_monitor_live.ex:78:33: HydepwnsLiveviewWeb.Examples.SystemMonitorLive.render/1
+
+     warning: function get_resource_module/1 is unused
+     │
+ 176 │   defp get_resource_module(resource) when is_map(resource) do
+     │        ~
+     │
+     └─ lib/hydepwns_liveview/events/resource_event_generator.ex:176:8: HydepwnsLiveview.Events.ResourceEventGenerator (module)
+
+    warning: the following clause will never match:
+
+        {:error, errors}
+
+    because it attempts to match on the result of:
+
+        run_custom_validations(
+          resource_module,
+          final_resource,
+          schema.validations,
+          context
+        )
+
+    which has type:
+
+        dynamic({:ok, term()})
+
+    typing violation found at:
+    │
+ 69 │               {:error, errors} -> {:error, errors}
+    │               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ lib/hydepwns_liveview/utils/validation_engine.ex:69: HydepwnsLiveview.Utils.ValidationEngine.validate/3
+
+    warning: the following clause will never match:
+
+        {:error, errors}
+
+    because it attempts to match on the result of:
+
+        validate_relationships(resource_module, resource, schema.relationships, context)
+
+    which has type:
+
+        dynamic({:ok, term()})
+
+    typing violation found at:
+    │
+ 72 │           {:error, errors} ->
+    │           ~~~~~~~~~~~~~~~~~~~
+    │
+    └─ lib/hydepwns_liveview/utils/validation_engine.ex:72: HydepwnsLiveview.Utils.ValidationEngine.validate/3
+
+     warning: comparison between distinct types found:
+
+         Atom.to_string(transformation) == nil
+
+     given types:
+
+         binary() == nil
+
+     where "transformation" was given the type:
+
+         # type: dynamic()
+         # from: lib/hydepwns_liveview/utils/transformation_pipeline.ex:154:21
+         transformation
+
+     While Elixir can compare across all types, you are comparing across types which are always disjoint, and the result is either always true or always false
+
+     typing violation found at:
+     │
+ 161 │         is_atom(transformation) and not is_nil(Atom.to_string(transformation)) and
+     │         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     │
+     └─ lib/hydepwns_liveview/utils/transformation_pipeline.ex:161: HydepwnsLiveview.Utils.TransformationPipeline.add/3
+
+    warning: comparison between distinct types found:
+
+        relationship == nil
+
+    given types:
+
+        dynamic({:error, binary()} or {:ok, term()}) == nil
+
+    where "relationship" was given the type:
+
+        # type: dynamic({:error, binary()} or {:ok, term()})
+        # from: lib/hydepwns_liveview/utils/relationship_validator.ex:91:20
+        relationship =
+          HydepwnsLiveview.Utils.RelationshipResolver.get_relationship_definition(
+            resource_module,
+            relationship_name
+          )
+
+    While Elixir can compare across all types, you are comparing across types which are always disjoint, and the result is either always true or always false
+
+    typing violation found at:
+    │
+ 94 │       if is_nil(relationship) do
+    │       ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ lib/hydepwns_liveview/utils/relationship_validator.ex:94: HydepwnsLiveview.Utils.RelationshipValidator.validate_relationship/4
+
+     warning: default values for the optional arguments in cache_resources/3 are never used
+     │
+ 150 │   defp cache_resources(resource_type, resources, opts \\ []) do
+     │        ~
+     │
+     └─ lib/hydepwns_liveview/resources/utils/resource_cache.ex:150:8: HydepwnsLiveview.Resources.ResourceCache (module)
+
+     warning: variable "name" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 157 │                       <%= for {name, data} <- @datasets do %>
+     │                                ~
+     │
+     └─ lib/hydepwns_liveview_web/live/examples/data_visualizer_live.ex:157:32: HydepwnsLiveviewWeb.Examples.DataVisualizerLive.render/1
+
+     warning: variable "name" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 218 │                       <%= for {name, data} <- @datasets do %>
+     │                                ~
+     │
+     └─ lib/hydepwns_liveview_web/live/examples/data_visualizer_live.ex:218:32: HydepwnsLiveviewWeb.Examples.DataVisualizerLive.render/1
+
+     warning: variable "name" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 246 │                       <%= for {name, data} <- @datasets do %>
+     │                                ~
+     │
+     └─ lib/hydepwns_liveview_web/live/examples/data_visualizer_live.ex:246:32: HydepwnsLiveviewWeb.Examples.DataVisualizerLive.render/1
+
+     warning: def start_replay_for_debugging/4 has multiple clauses and also declares default values. In such cases, the default values should be defined in a header. Instead of:
+
+         def foo(:first_clause, b \\ :default) do ... end
+         def foo(:second_clause, b) do ... end
+
+     one should write:
+
+         def foo(a, b \\ :default)
+         def foo(:first_clause, b) do ... end
+         def foo(:second_clause, b) do ... end
+
+     │
+ 170 │   def start_replay_for_debugging(_name, _resource_type, _resource_id, _opts) do
+     │       ~
+     │
+     └─ lib/hydepwns_liveview/events/core/event_inspector.ex:170:7
+
+    warning: variable "cutoff" is unused (if the variable is not meant to be used, prefix it with an underscore)
+    │
+ 90 │       cutoff = DateTime.add(DateTime.utc_now(), -time_window, :second)
+    │       ~
+    │
+    └─ lib/hydepwns_liveview/resources/utils/performance_analyzer.ex:90:7: HydepwnsLiveview.Resources.PerformanceAnalyzer.gather_event_metrics/2
+
+    warning: expected a map with key :active in map update syntax:
+
+        %{state | active: false}
+
+    but got type:
+
+        dynamic(%HydepwnsLiveview.Resources.UserResource{__resource_module__: term()})
+
+    where "state" was given the type:
+
+        # type: dynamic(%HydepwnsLiveview.Resources.UserResource{})
+        # from: lib/hydepwns_liveview/resources/models/user_resource.ex:78:40
+        %HydepwnsLiveview.Resources.UserResource{} = state
+
+    typing violation found at:
+    │
+ 87 │         %{state | active: false}
+    │         ~
+    │
+    └─ lib/hydepwns_liveview/resources/models/user_resource.ex:87:9: HydepwnsLiveview.Resources.UserResource.apply_event/2
+
+     warning: the following clause will never match:
+
+         {:error, message}
+
+     because it attempts to match on the result of:
+
+         validate_single_field_update(socket, field, value)
+
+     which has type:
+
+         dynamic(
+           {:error, term(),
+            %Phoenix.LiveView.Socket{
+              assigns: term(),
+              endpoint: term(),
+              fingerprints: term(),
+              host_uri: term(),
+              id: term(),
+              parent_pid: term(),
+              private: term(),
+              redirected: term(),
+              root_pid: term(),
+              router: term(),
+              sticky?: term(),
+              transport_pid: term(),
+              view: term()
+            }} or {:ok, term()}
+         )
+
+     typing violation found at:
+     │
+ 129 │         {:error, message} ->
+     │         ~~~~~~~~~~~~~~~~~~~~
+     │
+     └─ lib/hydepwns_liveview/utils/live_view_api.ex:129: HydepwnsLiveview.Utils.LiveViewAPI.update_field/4
+
+     warning: the following clause will never match:
+
+         {:error, message}
+
+     because it attempts to match on the result of:
+
+         validate_assigns_update(socket, values)
+
+     which has type:
+
+         dynamic({:ok, term()})
+
+     typing violation found at:
+     │
+ 204 │         {:error, message} ->
+     │         ~~~~~~~~~~~~~~~~~~~~
+     │
+     └─ lib/hydepwns_liveview/utils/live_view_api.ex:204: HydepwnsLiveview.Utils.LiveViewAPI.update/3
+
+     warning: the following clause will never match:
+
+         {:error, message}
+
+     because it attempts to match on the result of:
+
+         validate_resource_create(socket, resource, values)
+
+     which has type:
+
+         dynamic({:ok, term()})
+
+     typing violation found at:
+     │
+ 318 │           {:error, message} ->
+     │           ~~~~~~~~~~~~~~~~~~~~
+     │
+     └─ lib/hydepwns_liveview/utils/live_view_api.ex:318: HydepwnsLiveview.Utils.LiveViewAPI.create/4
+
+    warning: module attribute @signal_available was set but never used
+    │
+ 13 │   @signal_available Code.ensure_loaded(SignalProtocol) == {:module, SignalProtocol}
+    │   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ lib/hydepwns_liveview/events/crypto_service.ex:13: HydepwnsLiveview.Events.CryptoService (module)
+
+    warning: the following clause will never match:
+
+        :ok
+
+    because it attempts to match on the result of:
+
+        HydepwnsLiveview.Resources.UserResource.validate_deep(user)
+
+    which has type:
+
+        dynamic({:error, list({:email or :name, binary()})} or {:ok, term()})
+
+    typing violation found at:
+    │
+ 31 │       :ok ->
+    │       ~~~~~~
+    │
+    └─ lib/hydepwns_liveview_web/live/examples/nested_validation_example_live.ex:31: HydepwnsLiveviewWeb.Examples.NestedValidationExampleLive.handle_event/3
+
+    warning: the following clause will never match:
+
+        :ok
+
+    because it attempts to match on the result of:
+
+        HydepwnsLiveview.Resources.UserResource.validate_deep(user)
+
+    which has type:
+
+        dynamic({:error, list({:email or :name, binary()})} or {:ok, term()})
+
+    typing violation found at:
+    │
+ 43 │       :ok ->
+    │       ~~~~~~
+    │
+    └─ lib/hydepwns_liveview_web/live/examples/nested_validation_example_live.ex:43: HydepwnsLiveviewWeb.Examples.NestedValidationExampleLive.handle_event/3
+
+    warning: the following clause will never match:
+
+        {:checkpoint, checkpoint}
+
+    because it attempts to match on the result of:
+
+        HydepwnsLiveview.Resources.UserResource.execute_validation_plan(validation_plan, user)
+
+    which has type:
+
+        dynamic({:error, list({:email or :name, binary()})} or {:ok, term()})
+
+    typing violation found at:
+    │
+ 75 │           {:checkpoint, checkpoint} ->
+    │           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ lib/hydepwns_liveview_web/live/examples/nested_validation_example_live.ex:75: HydepwnsLiveviewWeb.Examples.NestedValidationExampleLive.handle_event/3
+
+    warning: the following clause will never match:
+
+        {:error, reason}
+
+    because it attempts to match on the result of:
+
+        HydepwnsLiveview.Resources.UserResource.resolve_validation_dependencies()
+
+    which has type:
+
+        dynamic({:ok, non_empty_list({:email_must_be_valid or :name_must_not_be_empty, fun()})})
+
+    typing violation found at:
+    │
+ 84 │       {:error, reason} ->
+    │       ~~~~~~~~~~~~~~~~~~~
+    │
+    └─ lib/hydepwns_liveview_web/live/examples/nested_validation_example_live.ex:84: HydepwnsLiveviewWeb.Examples.NestedValidationExampleLive.handle_event/3
+
+22:34:12.016 [info] PromEx is starting a standalone metrics server on port 9568 over http
+22:34:12.067 [warning] PromEx.DashboardUploader failed to upload /home/droo/Hydepwns/_build/test/lib/prom_ex/priv/application.json.eex to Grafana: "connection refused"
+22:34:12.079 [warning] PromEx.DashboardUploader failed to upload /home/droo/Hydepwns/_build/test/lib/prom_ex/priv/beam.json.eex to Grafana: "connection refused"
+22:34:12.092 [warning] PromEx.DashboardUploader failed to upload /home/droo/Hydepwns/_build/test/lib/prom_ex/priv/phoenix.json.eex to Grafana: "connection refused"
+22:34:12.097 [info] Running HydepwnsLiveviewWeb.Endpoint with Bandit 1.7.0 at 127.0.0.1:4002 (http)
+22:34:12.097 [warning] PromEx.DashboardUploader failed to upload /home/droo/Hydepwns/_build/test/lib/prom_ex/priv/ecto.json.eex to Grafana: "connection refused"
+22:34:12.097 [info] Access HydepwnsLiveviewWeb.Endpoint at http://localhost:4002
+22:34:12.102 [warning] PromEx.DashboardUploader failed to upload /home/droo/Hydepwns/_build/test/lib/prom_ex/priv/phoenix_live_view.json.eex to Grafana: "connection refused"
+22:34:12.104 [info] The dashboard definition for nil is invalid due to the following error: {:file_read_error, :file_not_found}
+    warning: redefining module SignalNifStub (current version loaded from _build/test/lib/hydepwns_liveview/ebin/Elixir.SignalNifStub.beam)
+    │
+  1 │ defmodule SignalNifStub do
+    │ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    │
+    └─ test/support/signal_nif_stub.ex:1: SignalNifStub (module)
+
+⚠️  Chromedriver not found - skipping Wallaby startup
+   Browser tests will be skipped. Run 'nix-shell' and './scripts/test_browser.sh' for browser tests.
+22:34:12.127 [info] The function passed as a handler with ID "hydepwns-liveview-events-monitor" is a local function.
+This means that it is either an anonymous function or a capture of a function without a module specified. That may cause a performance penalty when calling that handler. For more details see the note in `telemetry:attach/4` documentation.
+
+https://hexdocs.pm/telemetry/telemetry.html#attach/4
+22:34:12.129 [info] EventMonitor: Telemetry handlers registered successfully
+Running ExUnit with seed: 141446, max_cases: 48
+
+    error: undefined function setup/2 (there is no such import)
+    │
+  2 │   use HydepwnsLiveviewWeb.WallabyCase, async: false
+    │   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    │
+    └─ test/hydepwns_liveview_web/features/resource_relationship_workflow_test.exs:2: HydepwnsLiveviewWeb.Features.ResourceRelationshipWorkflowTest (module)
+
+
+== Compilation error in file test/hydepwns_liveview_web/features/resource_relationship_workflow_test.exs ==
+** (CompileError) test/hydepwns_liveview_web/features/resource_relationship_workflow_test.exs: cannot compile module HydepwnsLiveviewWeb.Features.ResourceRelationshipWorkflowTest (errors have been logged)
+    (wallaby 0.30.10) expanding macro: Wallaby.Feature.__using__/1
+    test/hydepwns_liveview_web/features/resource_relationship_workflow_test.exs:2: HydepwnsLiveviewWeb.Features.ResourceRelationshipWorkflowTest (module)
+    (elixir 1.18.4) expanding macro: Kernel.use/1
+    test/hydepwns_liveview_web/features/resource_relationship_workflow_test.exs:2: HydepwnsLiveviewWeb.Features.ResourceRelationshipWorkflowTest (module)
+    (elixir 1.18.4) expanding macro: Kernel.if/2
+    test/hydepwns_liveview_web/features/resource_relationship_workflow_test.exs:2: HydepwnsLiveviewWeb.Features.ResourceRelationshipWorkflowTest (module)
+    (hydepwns_liveview 0.1.0) expanding macro: HydepwnsLiveviewWeb.WallabyCase.__using__/1
+    test/hydepwns_liveview_web/features/resource_relationship_workflow_test.exs:2: HydepwnsLiveviewWeb.Features.ResourceRelationshipWorkflowTest (module)
+    (elixir 1.18.4) expanding macro: Kernel.use/2
+    test/hydepwns_liveview_web/features/resource_relationship_workflow_test.exs:2: HydepwnsLiveviewWeb.Features.ResourceRelationshipWorkflowTest (module)

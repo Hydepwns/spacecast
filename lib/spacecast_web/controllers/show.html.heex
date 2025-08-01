@@ -1,0 +1,44 @@
+<.header>
+  Theme {@theme.id}
+  <:subtitle>Details for theme: {@theme.name}</:subtitle>
+</.header>
+
+<div class="container">
+  <dl class="divide-y divide-gray-200">
+    <div class="py-4 flex justify-between">
+      <dt class="font-medium text-gray-700">Name</dt>
+      <dd class="text-gray-900">{@theme.name}</dd>
+    </div>
+    <div class="py-4 flex justify-between">
+      <dt class="font-medium text-gray-700">Mode</dt>
+      <dd class="text-gray-900">{@theme.mode}</dd>
+    </div>
+    <div class="py-4 flex justify-between">
+      <dt class="font-medium text-gray-700">Is Default</dt>
+      <dd class="text-gray-900">{if @theme.is_default, do: "Yes", else: "No"}</dd>
+    </div>
+    <div class="py-4">
+      <dt class="font-medium text-gray-700">Colors</dt>
+      <dd>
+        <ul class="ml-4">
+          <%= for {key, value} <- @theme.colors || %{} do %>
+            <li><span class="font-semibold">{key}:</span> <span style={"color: #{value}"}>{value}</span></li>
+          <% end %>
+        </ul>
+      </dd>
+    </div>
+    <div class="py-4">
+      <dt class="font-medium text-gray-700">Settings</dt>
+      <dd>
+        <ul class="ml-4">
+          <%= for {key, value} <- @theme.settings || %{} do %>
+            <li><span class="font-semibold">{key}:</span> {inspect(value)}</li>
+          <% end %>
+        </ul>
+      </dd>
+    </div>
+  </dl>
+  <div class="mt-6">
+    <.back navigate={~p"/themes"}>Back to themes</.back>
+  </div>
+</div>

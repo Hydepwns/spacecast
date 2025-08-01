@@ -1,0 +1,29 @@
+<.simple_form for={@changeset} as={:theme} action={@action} phx-submit="save">
+  <.error :if={@changeset.action}>
+    Oops, something went wrong! Please check the errors below.
+  </.error>
+  <:inner_block_simple_form>
+    <.input field={@changeset[:name]} type="text" label="Name" required data-test-id="theme-name-input" />
+    <.input field={@changeset[:mode]} type="select" label="Mode" options={[{"Light", "light"}, {"Dark", "dark"}]} required data-test-id="theme-mode-select" />
+
+    <div class="space-y-4">
+      <h3 class="text-lg font-medium">Colors</h3>
+      <.input field={@changeset[:primary_color]} type="text" label="Primary Color" value={get_in(@changeset.data, [:primary_color]) || "#3B82F6"} required data-test-id="theme-primary-color" />
+      <.input field={@changeset[:secondary_color]} type="text" label="Secondary Color" value={get_in(@changeset.data, [:secondary_color]) || "#10B981"} required data-test-id="theme-secondary-color" />
+      <.input field={@changeset[:background_color]} type="text" label="Background Color" value={get_in(@changeset.data, [:background_color]) || "#1F2937"} required data-test-id="theme-background-color" />
+      <.input field={@changeset[:text_color]} type="text" label="Text Color" value={get_in(@changeset.data, [:text_color]) || "#F9FAFB"} required data-test-id="theme-text-color" />
+    </div>
+
+    <div class="space-y-4">
+      <h3 class="text-lg font-medium">Settings</h3>
+      <.input field={@changeset[:settings][:font_size]} type="select" label="Font Size" options={[{"Small", "small"}, {"Medium", "medium"}, {"Large", "large"}]} value={get_in(@changeset.data, [:settings, :font_size]) || "medium"} data-test-id="theme-font-size" />
+      <.input field={@changeset[:settings][:line_height]} type="select" label="Line Height" options={[{"Narrow", "narrow"}, {"Normal", "normal"}, {"Wide", "wide"}]} value={get_in(@changeset.data, [:settings, :line_height]) || "normal"} data-test-id="theme-line-height" />
+      <.input field={@changeset[:settings][:contrast]} type="select" label="Contrast" options={[{"Low", "low"}, {"Normal", "normal"}, {"High", "high"}]} value={get_in(@changeset.data, [:settings, :contrast]) || "normal"} data-test-id="theme-contrast" />
+      <.input field={@changeset[:settings][:animations]} type="checkbox" label="Enable Animations" value={get_in(@changeset.data, [:settings, :animations]) || true} data-test-id="theme-animations" />
+    </div>
+
+    <:actions>
+      <.button type="submit" data-test-id="save-theme">Save Theme</.button>
+    </:actions>
+  </:inner_block_simple_form>
+</.simple_form>

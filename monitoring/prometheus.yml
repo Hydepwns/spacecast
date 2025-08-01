@@ -1,0 +1,43 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'spacecast'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+      - targets: ['localhost:9568']
+        labels:
+          instance: 'spacecast'
+          environment: 'development'
+
+  # Example: Add more targets if you have multiple instances
+  # - job_name: 'spacecast_production'
+  #   static_configs:
+  #     - targets: ['prod-server-1:9568', 'prod-server-2:9568']
+  #       labels:
+  #         instance: 'production'
+  #         environment: 'production'
+
+  # Example: Add other services you might want to monitor
+  # - job_name: 'postgres'
+  #   static_configs:
+  #     - targets: ['localhost:9187']
+  #       labels:
+  #         instance: 'postgres'
+  #         environment: 'development'
+
+  # Example: Add Redis if you're using it
+  # - job_name: 'redis'
+  #   static_configs:
+  #     - targets: ['localhost:9121']
+  #       labels:
+  #         instance: 'redis'
+  #         environment: 'development' 

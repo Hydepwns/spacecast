@@ -1,0 +1,40 @@
+<% themes = @themes || [] %>
+
+<.header>
+  Listing Themes
+  <:actions>
+    <.link href={~p"/themes/new"}>
+      <.button>New Theme</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="themes" rows={themes} row_click={&JS.navigate(~p"/themes/#{&1}")}>
+  <:col :let={theme} label="Name">{theme.name}</:col>
+  <:col :let={theme} label="Mode">{theme.mode}</:col>
+  <:col :let={theme} label="Default">{theme.is_default}</:col>
+  <:col :let={theme} label="Colors">
+    <div class="flex space-x-2">
+      <div class="w-4 h-4 rounded-full" style={"background-color: #{theme.colors["primary"]}"}></div>
+      <div class="w-4 h-4 rounded-full" style={"background-color: #{theme.colors["secondary"]}"}></div>
+      <div class="w-4 h-4 rounded-full" style={"background-color: #{theme.colors["accent"]}"}></div>
+    </div>
+  </:col>
+  <:col :let={theme} label="Settings">
+    <div class="text-sm">
+      <div>Font: {theme.settings["font_size"]}</div>
+      <div>Contrast: {theme.settings["contrast"]}</div>
+    </div>
+  </:col>
+  <:action :let={theme}>
+    <div class="sr-only">
+      <.link navigate={~p"/themes/#{theme}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/themes/#{theme}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={theme}>
+    <.link href={~p"/themes/#{theme}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

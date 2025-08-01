@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" data-theme={assigns[:theme_class] || "light-theme"} data-mode={assigns[:theme_mode] || "light"} class="fonts-loading [&_*]:!transition-none">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title suffix=" · Hydepwns">
+      {assigns[:page_title] || "Home"}
+    </.live_title>
+    <link rel="icon" type="image/x-icon" href={~p"/favicon.ico"} />
+    <link rel="apple-touch-icon" sizes="180x180" href={~p"/images/apple-touch-icon.png"} />
+    <link rel="icon" type="image/png" sizes="32x32" href={~p"/images/favicon-32x32.png"} />
+    <link rel="icon" type="image/png" sizes="16x16" href={~p"/images/favicon-16x16.png"} />
+    <!-- Font optimization tags -->
+    <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin />
+    <link rel="preload" href="/assets/fonts/MonaspaceArgon-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/MonaspaceArgon-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Critical CSS inlined for performance -->
+    <style>
+      /* Critical font styles to avoid FOUT */
+      @font-face {
+        font-family: 'Monaspace Argon Fallback';
+        src: local('JetBrains Mono'), local('Courier New'), local('monospace');
+        size-adjust: 100%;
+        ascent-override: 90%;
+        descent-override: 23%;
+        line-gap-override: 0%;
+      }
+
+      html.fonts-loading {
+        font-family: 'Monaspace Argon Fallback', monospace;
+      }
+
+      html.fonts-loaded,
+      html.fonts-cached {
+        font-family: 'Monaspace Argon', 'JetBrains Mono', monospace;
+      }
+    </style>
+
+    <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
+    </script>
+    <script>
+      // Set theme based on user preference or system theme
+      const setThemeClass = () => {
+        const storedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Remove all theme classes from document element and body
+        const themeClasses = ['light-theme', 'dark-theme', 'dim-theme', 'high-contrast-theme'];
+        themeClasses.forEach(cls => {
+          document.documentElement.classList.remove(cls);
+          if (document.body) document.body.classList.remove(cls);
+        });
+        
+        // Apply the appropriate theme
+        let themeToApply;
+        
+        if (storedTheme) {
+          themeToApply = storedTheme;
+        } else if (systemPrefersDark) {
+          themeToApply = 'dark-theme';
+        } else {
+          themeToApply = 'light-theme';
+        }
+        
+        // Apply theme to both documentElement and body
+        document.documentElement.setAttribute('data-theme', themeToApply);
+        document.documentElement.classList.add(themeToApply);
+        if (document.body) document.body.classList.add(themeToApply);
+        
+        // Store theme in localStorage for persistence
+        localStorage.setItem('theme', themeToApply);
+      };
+
+      // Set theme immediately
+      setThemeClass();
+
+      // Set theme again when DOM is loaded
+      document.addEventListener('DOMContentLoaded', setThemeClass);
+
+      // Listen for theme changes
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'theme') setThemeClass();
+      });
+
+      // Listen for custom theme change events
+      window.addEventListener('theme-changed', (e) => {
+        setThemeClass();
+      });
+
+      // Check for cached fonts
+      (function() {
+        const FONTS_LOADED_KEY = 'hydepwns_fonts_loaded';
+        if (sessionStorage.getItem(FONTS_LOADED_KEY) === 'true') {
+          document.documentElement.classList.remove('fonts-loading');
+          document.documentElement.classList.add('fonts-cached');
+        }
+      })();
+    </script>
+  </head>
+  <body class={assigns[:theme_class] || "light-theme"}>
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
+    <.theme_toggle id="theme-toggle-root" />
+    <.debug_grid id="debug-grid-toggle-root" /> {@inner_content}
+  </body>
+</html>

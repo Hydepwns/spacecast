@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResourceCard Component Examples - Hydepwns</title>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="../assets/css/app.css">
+  <link rel="stylesheet" href="../assets/css/components/resource_card.css">
+  
+  <style>
+    :root {
+      /* Light theme variables */
+      --font-mono: 'Courier New', monospace;
+      --color-border: #e0e0e0;
+      --color-border-light: #f0f0f0;
+      --color-bg-card: #ffffff;
+      --color-bg-header: #f9f9f9;
+      --color-bg-footer: #f5f5f5;
+      --color-bg-hover: #f0f0f0;
+      --color-bg-tag: #f0f0f0;
+      --color-text-primary: #333333;
+      --color-text-secondary: #666666;
+      --color-text-tag: #555555;
+      --color-focus-ring: rgba(0, 120, 212, 0.4);
+      
+      --color-success-bg: #e6f7e6;
+      --color-success-bg-light: #f0faf0;
+      --color-success-text: #2e7d32;
+      --color-success-border: #a5d6a7;
+      
+      --color-warning-bg: #fff8e1;
+      --color-warning-bg-light: #fffcf0;
+      --color-warning-text: #f57c00;
+      --color-warning-border: #ffe082;
+      
+      --color-error-bg: #fdecea;
+      --color-error-bg-light: #fef6f5;
+      --color-error-text: #d32f2f;
+      --color-error-border: #f5c6c5;
+      
+      --color-info-bg: #e3f2fd;
+      --color-info-bg-light: #f0f8ff;
+      --color-info-text: #0277bd;
+      --color-info-border: #bbdefb;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* Dark theme variables */
+        --color-border: #444444;
+        --color-border-light: #333333;
+        --color-bg-card: #2a2a2a;
+        --color-bg-header: #333333;
+        --color-bg-footer: #333333;
+        --color-bg-hover: #3a3a3a;
+        --color-bg-tag: #444444;
+        --color-text-primary: #e0e0e0;
+        --color-text-secondary: #aaaaaa;
+        --color-text-tag: #cccccc;
+        --color-focus-ring: rgba(30, 150, 255, 0.4);
+        
+        --color-success-bg: #1b3a1b;
+        --color-success-bg-light: #1e421e;
+        --color-success-text: #81c784;
+        --color-success-border: #2e7d32;
+        
+        --color-warning-bg: #3e2e00;
+        --color-warning-bg-light: #4a3800;
+        --color-warning-text: #ffb74d;
+        --color-warning-border: #f57c00;
+        
+        --color-error-bg: #3e1a1a;
+        --color-error-bg-light: #4a2020;
+        --color-error-text: #ef9a9a;
+        --color-error-border: #d32f2f;
+        
+        --color-info-bg: #0a2a42;
+        --color-info-bg-light: #0c324e;
+        --color-info-text: #90caf9;
+        --color-info-border: #0277bd;
+      }
+      
+      body {
+        background-color: #222222;
+        color: #e0e0e0;
+      }
+    }
+    
+    body {
+      font-family: var(--font-mono);
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1, h2, h3 {
+      font-family: var(--font-mono);
+    }
+    
+    .example-section {
+      margin-bottom: 40px;
+      padding: 20px;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+    }
+    
+    .example-section h2 {
+      margin-top: 0;
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 10px;
+    }
+    
+    .example-description {
+      margin-bottom: 20px;
+      color: var(--color-text-secondary);
+    }
+    
+    .example-container {
+      margin-top: 20px;
+    }
+    
+    .code-block {
+      background-color: var(--color-bg-header);
+      padding: 15px;
+      border-radius: 4px;
+      overflow: auto;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+    
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 8px 16px;
+      background-color: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>ResourceCard Component Examples</h1>
+    <p>This page demonstrates the ResourceCard component with different configurations.</p>
+    
+    <button class="theme-toggle" id="theme-toggle">Toggle Theme</button>
+    
+    <div class="example-section">
+      <h2>Basic Usage</h2>
+      <div class="example-description">
+        A simple resource card with default options, displaying a user resource.
+      </div>
+      <div class="example-container" id="basic-example"></div>
+      <pre class="code-block"><code>
+const resource = {
+  id: '123',
+  name: 'User Account',
+  email: 'user@example.com',
+  role: 'admin',
+  status: 'active',
+  created_at: '2023-01-01T00:00:00Z',
+  last_login: '2023-03-15T14:30:00Z'
+};
+
+new ResourceCardComponent({
+  container: document.getElementById('basic-example'),
+  resource,
+  resourceType: 'User'
+}).mount();
+      </code></pre>
+    </div>
+    
+    <div class="example-section">
+      <h2>Custom Actions</h2>
+      <div class="example-description">
+        A resource card with custom actions and event handlers.
+      </div>
+      <div class="example-container" id="custom-actions-example"></div>
+      <pre class="code-block"><code>
+new ResourceCardComponent({
+  container: document.getElementById('custom-actions-example'),
+  resource: article,
+  resourceType: 'Article',
+  actions: ['view', 'edit'], // Only show view and edit actions
+  customActions: [
+    {
+      label: 'Publish',
+      className: 'resource-card__action-btn--success',
+      handler: (resource) => {
+        console.log(`Publishing article: ${resource.title}`);
+        alert(`Article "${resource.title}" published!`);
+      }
+    },
+    {
+      label: 'Archive',
+      className: 'resource-card__action-btn--warning',
+      handler: (resource) => {
+        console.log(`Archiving article: ${resource.title}`);
+        alert(`Article "${resource.title}" archived!`);
+      }
+    }
+  ],
+  onView: (resource) => {
+    console.log(`Viewing article: ${resource.title}`);
+    alert(`Viewing article: ${resource.title}`);
+  },
+  onEdit: (resource) => {
+    console.log(`Editing article: ${resource.title}`);
+    alert(`Editing article: ${resource.title}`);
+  }
+}).mount();
+      </code></pre>
+    </div>
+    
+    <div class="example-section">
+      <h2>Relationship Display</h2>
+      <div class="example-description">
+        A resource card that shows relationships between resources.
+      </div>
+      <div class="example-container" id="relationships-example"></div>
+      <pre class="code-block"><code>
+const resource = {
+  id: '789',
+  name: 'Project Alpha',
+  description: 'A strategic initiative for Q2',
+  status: 'in_progress',
+  priority: 'high',
+  due_date: '2023-06-30',
+  owner_id: '123',
+  team_id: '456',
+  tasks: [
+    { id: '1', title: 'Research' },
+    { id: '2', title: 'Planning' },
+    { id: '3', title: 'Implementation' },
+    { id: '4', title: 'Testing' },
+    { id: '5', title: 'Deployment' }
+  ],
+  comments: [
+    { id: '101', text: 'Looking good!' },
+    { id: '102', text: 'On track for delivery' }
+  ]
+};
+
+new ResourceCardComponent({
+  container: document.getElementById('relationships-example'),
+  resource,
+  resourceType: 'Project',
+  showRelationships: true
+}).mount();
+      </code></pre>
+    </div>
+    
+    <div class="example-section">
+      <h2>Minimal Display</h2>
+      <div class="example-description">
+        A minimal resource card without actions or relationships.
+      </div>
+      <div class="example-container" id="minimal-example"></div>
+      <pre class="code-block"><code>
+const resource = {
+  id: '321',
+  name: 'Server Status',
+  status: 'error',
+  uptime: '99.2%',
+  last_checked: '2023-03-20T18:45:00Z',
+  error_message: 'Disk space critically low'
+};
+
+new ResourceCardComponent({
+  container: document.getElementById('minimal-example'),
+  resource,
+  resourceType: 'Status',
+  showActions: false,
+  showRelationships: false
+}).mount();
+      </code></pre>
+    </div>
+    
+    <div class="example-section">
+      <h2>Complex Data</h2>
+      <div class="example-description">
+        A resource card with complex nested data structures.
+      </div>
+      <div class="example-container" id="complex-data-example"></div>
+      <pre class="code-block"><code>
+const resource = {
+  id: '555',
+  name: 'Analytics Dashboard',
+  type: 'visualization',
+  status: 'active',
+  created_by_id: '123',
+  metrics: {
+    views: 3245,
+    unique_users: 1502,
+    average_session: '3m 24s',
+    bounce_rate: '23.5%'
+  },
+  data_sources: [
+    { id: '1', name: 'User Database', type: 'postgres' },
+    { id: '2', name: 'Event Stream', type: 'kafka' },
+    { id: '3', name: 'Log Analytics', type: 'elasticsearch' }
+  ],
+  permissions: {
+    view: ['admin', 'analyst', 'manager'],
+    edit: ['admin', 'analyst'],
+    delete: ['admin']
+  }
+};
+
+new ResourceCardComponent({
+  container: document.getElementById('complex-data-example'),
+  resource,
+  resourceType: 'Dashboard',
+  truncateProperties: true,
+  maxPropertyLength: 50
+}).mount();
+      </code></pre>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script type="module">
+    import { 
+      basicExample, 
+      customActionsExample, 
+      relationshipsExample, 
+      minimalExample, 
+      complexDataExample 
+    } from './components/resource_card_example.js';
+    
+    // Initialize examples
+    document.addEventListener('DOMContentLoaded', () => {
+      basicExample();
+      customActionsExample();
+      relationshipsExample();
+      minimalExample();
+      complexDataExample();
+      
+      // Theme toggle functionality
+      const themeToggle = document.getElementById('theme-toggle');
+      themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+      });
+    });
+  </script>
+</body>
+</html> 
