@@ -199,11 +199,76 @@ check-all:
     just analyze
     just test
 
-# Development workflow (setup + dev)
+# Lint code (format + credo)
+lint:
+    @echo "🔍 Running linters..."
+    mix format --check-formatted
+    mix credo --strict
+
+# Security audit
+audit:
+    @echo "🔒 Running security audit..."
+    mix hex.audit
+    cd assets && npm audit
+
+# Pre-commit checks
+pre-commit: format lint test
+    @echo "✅ All pre-commit checks passed!"
+
+# Repository hygiene check
+hygiene:
+    @echo "🧹 Checking repository hygiene..."
+    @echo "Checking for build artifacts..."
+    @if [ -d "_build" ]; then echo "⚠️  _build directory exists (should be ignored)"; else echo "✅ _build directory properly ignored"; fi
+    @if [ -d "assets/node_modules" ]; then echo "⚠️  node_modules exists (should be ignored)"; else echo "✅ node_modules properly ignored"; fi
+    @if [ -d "deps" ]; then echo "⚠️  deps directory exists (should be ignored)"; else echo "✅ deps directory properly ignored"; fi
+    @echo "Checking .gitignore..."
+    @if grep -q "_build/" .gitignore; then echo "✅ _build/ in .gitignore"; else echo "❌ _build/ missing from .gitignore"; fi
+    @if grep -q "node_modules/" .gitignore; then echo "✅ node_modules/ in .gitignore"; else echo "❌ node_modules/ missing from .gitignore"; fi
+
+# Submodule management
+submodule-init:
+    @echo "📦 Initializing submodules..."
+    git submodule init
+    git submodule update
+
+submodule-update:
+    @echo "📦 Updating submodules..."
+    git submodule update --remote
+
+submodule-status:
+    @echo "📦 Submodule status:"
+    git submodule status
+
+# Clean everything (nuclear option)
+clean-all:
+    @echo "🧹 Nuclear clean - removing all build artifacts and dependencies..."
+    mix deps.clean --all
+    mix clean
+    rm -rf _build
+    rm -rf deps
+    rm -rf assets/node_modules
+    rm -rf cover
+    rm -rf tmp
+    @echo "✅ Clean complete. Run 'just setup' to reinstall everything."
+
+# Check for common issues
+health-check:
+    @echo "🏥 Running repository health check..."
+    just hygiene
+    just check
+    just submodule-status
+    @echo "✅ Health check complete!"
+
+# Development workflow
 workflow:
-    @echo "🚀 Starting development workflow..."
-    just setup
-    just dev
+    @echo "🚀 Development workflow:"
+    @echo "1. just setup          - Initial setup"
+    @echo "2. just dev            - Start development server"
+    @echo "3. just test           - Run tests"
+    @echo "4. just lint           - Check code quality"
+    @echo "5. just pre-commit     - Run all checks before commit"
+    @echo "6. just health-check   - Full repository health check"
 
 # Production build
 prod-build:
