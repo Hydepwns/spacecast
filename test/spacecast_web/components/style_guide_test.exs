@@ -7,7 +7,7 @@ defmodule SpacecastWeb.Components.Documentation.StyleGuideTest do
       {:ok, _view, html} = live(conn, "/style-guide")
 
       # Test that all main sections are present
-      assert html =~ "Hydepwns Monospace Style Guide"
+      assert html =~ "Spacecast Monospace Style Guide"
       assert html =~ "Typography"
       assert html =~ "Color Palette"
       assert html =~ "Grid System"
