@@ -281,7 +281,7 @@ defmodule SpacecastWeb.Live.Playground.GridPlaygroundLive do
   defp page_layout do
     """
     ┌─────────────────────────────────────────────┐
-    │ HYDEPWNS                            ☰ MENU│
+    │ SPACECAST                            ☰ MENU│
     ├─────────────────────────────────────────────┤
     │                                            │
     │  ┌─────────────────────┐ ┌───────────────┐  │

@@ -3,6 +3,6 @@ defmodule SpacecastWeb.MinimalWallabyTest do
 
   feature "home page loads", %{session: session} do
     session = visit(session, "/")
-    assert has_text?(session, "Hydepwns")
+    assert has_text?(session, "Spacecast")
   end
 end

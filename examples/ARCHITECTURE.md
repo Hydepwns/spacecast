@@ -1,10 +1,10 @@
 # Architecture
 
-This document provides a high-level overview of the Hydepwns project architecture.
+This document provides a high-level overview of the Spacecast project architecture.
 
 ## Core Concepts
 
-Hydepwns is built with the [Phoenix Framework](https://www.phoenixframework.org/) and leverages [Phoenix LiveView](https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html) to create a rich, real-time user experience with server-rendered HTML.
+Spacecast is built with the [Phoenix Framework](https://www.phoenixframework.org/) and leverages [Phoenix LiveView](https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html) to create a rich, real-time user experience with server-rendered HTML.
 
 The architecture is designed to be modular, with a clear separation of concerns between the core business logic and the web presentation layer.
 

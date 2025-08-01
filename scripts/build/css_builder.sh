@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# CSS build script for Hydepwns project
+# CSS build script for Spacecast project
 #
 # Purpose:
 #   Concatenates all CSS files into a single file for the browser

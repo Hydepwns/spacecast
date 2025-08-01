@@ -87,7 +87,7 @@ defmodule Spacecast.Notifications.Twilio do
     # In production, this would use a proper templating system
     case template_name do
       "welcome" ->
-        {:ok, "Welcome to Hydepwns! Your account has been created successfully."}
+        {:ok, "Welcome to Spacecast! Your account has been created successfully."}
 
       "verification" ->
         code = Map.get(template_data, "code", "123456")

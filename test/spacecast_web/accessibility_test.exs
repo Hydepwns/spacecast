@@ -16,7 +16,7 @@ defmodule SpacecastWeb.AccessibilityTest do
       {:ok, view, _html} = live(conn, "/style-guide")
 
       # Check that there is an h1
-      assert has_element?(view, "h1", "Hydepwns Monospace Style Guide")
+      assert has_element?(view, "h1", "Spacecast Monospace Style Guide")
 
       # Check that h2 headings are present for main sections
       assert has_element?(view, "h2", "Typography")

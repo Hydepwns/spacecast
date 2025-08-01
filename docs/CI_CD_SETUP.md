@@ -1,6 +1,6 @@
 # CI/CD Pipeline Setup
 
-This document describes the comprehensive CI/CD pipeline setup for the Hydepwns LiveView application.
+This document describes the comprehensive CI/CD pipeline setup for the Spacecast LiveView application.
 
 ## Overview
 
@@ -69,14 +69,14 @@ SLACK_WEBHOOK_URL=your_slack_webhook
 
 #### Staging Environment
 
-- URL: `https://staging.hydepwns.com`
-- Database: `hydepwns_staging`
+- URL: `https://staging.spacecast.com`
+- Database: `spacecast_staging`
 - Auto-deploys on `main` branch
 
 #### Production Environment
 
-- URL: `https://hydepwns.com`
-- Database: `hydepwns_production`
+- URL: `https://spacecast.com`
+- Database: `spacecast_production`
 - Manual deployment only
 
 ### 3. Local Development
@@ -198,7 +198,7 @@ mix ecto.migrations
 
 ```bash
 # Check application logs
-tail -f /var/log/hydepwns/application.log
+tail -f /var/log/spacecast/application.log
 
 # Verify environment variables
 echo $DATABASE_URL

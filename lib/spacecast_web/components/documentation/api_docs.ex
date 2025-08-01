@@ -3,7 +3,7 @@ defmodule SpacecastWeb.Components.Documentation.ApiDocs do
   Component for rendering API documentation in a consistent format.
 
   This module provides components for creating standardized API documentation
-  for the Hydepwns component library. It ensures that all components are
+  for the Spacecast component library. It ensures that all components are
   documented with the same level of detail and in a consistent format.
   """
   use Phoenix.Component

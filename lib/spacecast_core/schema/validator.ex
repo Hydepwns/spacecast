@@ -1,4 +1,4 @@
-defmodule Hydepwns.Schema.Validator do
+defmodule Spacecast.Schema.Validator do
   @moduledoc """
   Provides validation functions for schema types.
   """

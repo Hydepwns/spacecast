@@ -1,6 +1,6 @@
 defmodule SpacecastWeb.AccessibilityHelper do
   @moduledoc """
-  Helper functions for accessibility testing in the Hydepwns application.
+  Helper functions for accessibility testing in the Spacecast application.
 
   This module provides utilities for testing web accessibility compliance,
   including helpers for checking ARIA attributes, keyboard navigation,

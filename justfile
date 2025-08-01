@@ -1,4 +1,4 @@
-# Hydepwns Development Tasks
+# Spacecast Development Tasks
 # Usage: just <task-name>
 
 # Default task - show available tasks
@@ -161,11 +161,11 @@ docs-open:
 # Docker commands
 docker-build:
     @echo "🐳 Building Docker image..."
-    docker build -t hydepwns .
+    docker build -t spacecast .
 
 docker-run:
     @echo "🐳 Running Docker container..."
-    docker run -p 4000:4000 hydepwns
+    docker run -p 4000:4000 spacecast
 
 # Database backup
 backup:
@@ -288,7 +288,7 @@ status:
 
 # Help
 help:
-    @echo "Hydepwns Development Commands:"
+    @echo "Spacecast Development Commands:"
     @echo ""
     @echo "Setup:"
     @echo "  setup          - Complete development environment setup"

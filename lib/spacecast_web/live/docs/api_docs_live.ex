@@ -41,7 +41,7 @@ defmodule SpacecastWeb.ApiDocsLive do
       <div id="intro" class="docs-section">
         <h3>Introduction</h3>
         <p>
-          This page provides comprehensive API documentation for all components in the Hydepwns component library.
+          This page provides comprehensive API documentation for all components in the Spacecast component library.
           Each component's documentation includes usage examples, available attributes, slots, and additional notes.
         </p>
         <p>

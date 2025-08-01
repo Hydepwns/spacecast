@@ -1,6 +1,6 @@
 defmodule Spacecast.Integration.IntegrationBridge do
   @moduledoc """
-  Bridge to integrate external systems with Hydepwns resources.
+  Bridge to integrate external systems with Spacecast resources.
 
   This module provides a standardized interface for connecting resources to various
   external services, APIs, and data sources. It handles conversion between the

@@ -30,7 +30,7 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
     }
 
     case :telemetry.attach_many(
-      "hydepwns-liveview-events-monitor",
+      "spacecast-liveview-events-monitor",
       [
         [:spacecast, :events, :process],
         [:spacecast, :events, :queue_size],

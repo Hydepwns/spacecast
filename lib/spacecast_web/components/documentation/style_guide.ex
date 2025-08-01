@@ -6,11 +6,11 @@ defmodule SpacecastWeb.Components.Documentation.StyleGuide do
   def render(assigns) do
     ~H"""
     <div class="style-guide" id={@id}>
-      <h1 class="style-guide-title">Hydepwns Monospace Style Guide</h1>
+      <h1 class="style-guide-title">Spacecast Monospace Style Guide</h1>
 
       <p class="style-guide-intro">
         This style guide documents the components, typography, and design patterns used
-        throughout the Hydepwns monospace web application.
+        throughout the Spacecast monospace web application.
       </p>
 
       <div class="style-guide-toc">

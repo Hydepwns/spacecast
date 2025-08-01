@@ -247,7 +247,7 @@ defmodule SpacecastWeb.HomeLive do
           <main class="content" id="main-content">
             <!-- ASCII Banner Section -->
             <section id="ascii-banner" class={["ascii-banner", @animation_speed_class]}>
-              <pre id="hydepwns-banner" class="ascii-header" aria-label="Hydepwns ASCII art logo banner">
+              <pre id="spacecast-banner" class="ascii-header" aria-label="Spacecast ASCII art logo banner">
     <span class="ascii-logo">
     ██╗  ██╗██╗   ██╗██████╗ ███████╗██████╗ ██╗    ██╗███╗   ██╗███████╗
     ██║  ██║╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗██║    ██║████╗  ██║██╔════╝
@@ -262,7 +262,7 @@ defmodule SpacecastWeb.HomeLive do
             <!-- Introduction Section -->
             <section id="introduction">
               <h2>Introduction</h2>
-              <p>Welcome to the Hydepwns monospace interface demonstration.</p>
+              <p>Welcome to the Spacecast monospace interface demonstration.</p>
 
               <h3 id="background">Background</h3>
               <p>The design is inspired by terminal UIs and uses monospace fonts technical aesthetic. This approach allows for precise control over ASCII art integration.</p>
@@ -359,7 +359,7 @@ defmodule SpacecastWeb.HomeLive do
             <footer class="copyright-footer">
               <pre class="ascii-box footer-box">
               ╔══════════════════════════════════╗
-              ║  © 2025 Hydepwns Monospace Web   ║
+              ║  © 2025 Spacecast Monospace Web   ║
               ╚══════════════════════════════════╝
               </pre>
             </footer>
@@ -374,7 +374,7 @@ defmodule SpacecastWeb.HomeLive do
             </button>
 
             <section id="ascii-banner" class={["ascii-banner", @animation_speed_class]}>
-              <pre id="hydepwns-banner-mini" class="ascii-header-mini" aria-label="Hydepwns ASCII art logo banner">
+              <pre id="spacecast-banner-mini" class="ascii-header-mini" aria-label="Spacecast ASCII art logo banner">
     ██╗  ██╗██╗   ██╗██████╗ ███████╗██████╗ ██╗    ██╗███╗   ██╗███████╗
     ██║  ██║╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗██║    ██║████╗  ██║██╔════╝
     ███████║ ╚████╔╝ ██║  ██║█████╗  ██████╔╝██║ █╗ ██║██╔██╗ ██║███████╗

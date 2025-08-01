@@ -53,21 +53,21 @@ defmodule Spacecast.Telemetry do
   """
   def emit_validation_error(type, data) do
     execute(
-      [:hydepwns, :socket, :validation, :error],
+      [:spacecast, :socket, :validation, :error],
       %{count: 1},
       Map.put(data, :error_type, type)
     )
   end
 
   def emit_validation_success(key, view_module) do
-    execute([:hydepwns, :socket, :validation, :success], %{count: 1}, %{
+    execute([:spacecast, :socket, :validation, :success], %{count: 1}, %{
       key: key,
       view_module: view_module
     })
   end
 
   def emit_validation_metrics(metrics) do
-    execute([:hydepwns, :socket, :validation, :metrics], metrics)
+    execute([:spacecast, :socket, :validation, :metrics], metrics)
   end
 
   @doc """
@@ -114,33 +114,33 @@ defmodule Spacecast.Telemetry do
       summary("vm.total_run_queue_lengths.io"),
 
       # Socket Validation Metrics
-      counter("hydepwns.socket_validator.validation.type_error.count",
+      counter("spacecast.socket_validator.validation.type_error.count",
         description: "Total number of type validation errors",
         tags: [:view_module, :key],
         tag_values: &extract_validation_tags/1
       ),
-      counter("hydepwns.socket_validator.validation.missing_key.count",
+      counter("spacecast.socket_validator.validation.missing_key.count",
         description: "Total number of missing key errors",
         tags: [:view_module, :key],
         tag_values: &extract_validation_tags/1
       ),
-      counter("hydepwns.socket_validator.validation.missing_assigns.count",
+      counter("spacecast.socket_validator.validation.missing_assigns.count",
         description: "Total number of missing required assigns errors",
         tags: [:view_module],
         tag_values: &extract_validation_tags/1
       ),
 
       # Enhanced validation metrics
-      distribution("hydepwns.socket.validation.error.duration",
+      distribution("spacecast.socket.validation.error.duration",
         description: "Distribution of time between validation errors",
         unit: {:native, :millisecond},
         tags: [:error_type, :view_module],
         reporter_options: [buckets: [10, 100, 500, 1000, 5000]]
       ),
-      last_value("hydepwns.socket.validation.metrics.error_rate",
+      last_value("spacecast.socket.validation.metrics.error_rate",
         description: "Current rate of validation errors per minute"
       ),
-      last_value("hydepwns.socket.validation.metrics.success_rate",
+      last_value("spacecast.socket.validation.metrics.success_rate",
         description: "Current rate of successful validations per minute"
       ),
 
@@ -214,7 +214,7 @@ defmodule Spacecast.Telemetry do
 
     # Record metrics
     execute(
-      [:hydepwns, :socket, :validation, :metrics],
+      [:spacecast, :socket, :validation, :metrics],
       %{
         error_rate: error_rate,
         success_rate: success_rate,
@@ -335,14 +335,14 @@ defmodule Spacecast.Telemetry do
     # Set up handler for validation events
     :telemetry.attach(
       "socket-validation-handler",
-      [:hydepwns, :socket, :validation, :error],
+      [:spacecast, :socket, :validation, :error],
       &__MODULE__.handle_validation_error/4,
       nil
     )
 
     :telemetry.attach(
       "socket-validation-success-handler",
-      [:hydepwns, :socket, :validation, :success],
+      [:spacecast, :socket, :validation, :success],
       &__MODULE__.handle_validation_success/4,
       nil
     )

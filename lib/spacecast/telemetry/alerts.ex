@@ -207,7 +207,7 @@ defmodule Spacecast.Telemetry.Alerts do
       %AlertRule{
         id: "validation_error_rate_high",
         name: "High Validation Error Rate",
-        metric_name: "hydepwns.socket.validation.error.count",
+        metric_name: "spacecast.socket.validation.metrics.error_rate",
         condition: :gt,
         # 10%
         threshold: 0.1,
@@ -316,7 +316,7 @@ defmodule Spacecast.Telemetry.Alerts do
       "vm.total_run_queue_lengths.total" ->
         {:ok, :erlang.statistics(:run_queue)}
 
-      "hydepwns.socket.validation.error.count" ->
+      "spacecast.socket.validation.error.count" ->
         try do
           error_count = Spacecast.Telemetry.get_error_count()
           total_count = error_count + Spacecast.Telemetry.get_success_count()

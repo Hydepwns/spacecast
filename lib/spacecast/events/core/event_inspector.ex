@@ -373,7 +373,7 @@ defmodule Spacecast.Events.Core.EventInspector do
   defp record_replay_start(session, events) do
     # Create telemetry event for replay start
     :telemetry.execute(
-      [:hydepwns, :events, :replay, :start],
+      [:spacecast, :events, :replay, :start],
       %{count: length(events)},
       %{
         session_id: session.id,
@@ -419,7 +419,7 @@ defmodule Spacecast.Events.Core.EventInspector do
 
           # Create error telemetry event
           :telemetry.execute(
-            [:hydepwns, :events, :replay, :error],
+            [:spacecast, :events, :replay, :error],
             %{count: 1, processing_time: event_time},
             %{session_id: session_id, event_id: event.id}
           )
@@ -429,7 +429,7 @@ defmodule Spacecast.Events.Core.EventInspector do
         else
           # Create success telemetry event
           :telemetry.execute(
-            [:hydepwns, :events, :replay, :success],
+            [:spacecast, :events, :replay, :success],
             %{count: 1, processing_time: event_time},
             %{session_id: session_id, event_id: event.id}
           )
@@ -459,7 +459,7 @@ defmodule Spacecast.Events.Core.EventInspector do
 
     # Final telemetry event
     :telemetry.execute(
-      [:hydepwns, :events, :replay, :complete],
+      [:spacecast, :events, :replay, :complete],
       %{
         count: results.processed,
         errors: length(results.errors),

@@ -25,16 +25,16 @@ defmodule SpacecastWeb.AboutLive do
   def render(assigns) do
     ~H"""
     <section>
-      <h2>About Hydepwns</h2>
+      <h2>About Spacecast</h2>
       <p>
-        Hydepwns is a showcase of monospace-inspired web design and typography.
+        Spacecast is a showcase of monospace-inspired web design and typography.
         Built with Elixir and Phoenix LiveView, this site demonstrates how monospace
         fonts and grid-based layouts can create a clean, functional, and beautiful web experience.
       </p>
 
       <h3 id="philosophy">Philosophy</h3>
       <p>
-        The design philosophy of Hydepwns is centered around these principles:
+        The design philosophy of Spacecast is centered around these principles:
       </p>
 
       <ul>
@@ -90,7 +90,7 @@ defmodule SpacecastWeb.AboutLive do
 
       <h3 id="contribute">Contribute</h3>
       <p>
-        Interested in contributing to Hydepwns? We welcome contributions of all kinds:
+        Interested in contributing to Spacecast? We welcome contributions of all kinds:
       </p>
 
       <pre><code>{@code_example}</code></pre>

@@ -1,10 +1,10 @@
 #!/usr/bin/env elixir
 
-# Integration Test Runner for Hydepwns LiveView
-# 
+# Integration Test Runner for Spacecast LiveView
+#
 # This script provides comprehensive integration testing capabilities including:
 # - API integration tests
-# - Real-time integration tests  
+# - Real-time integration tests
 # - Event-driven architecture tests
 # - External service integration tests
 # - Performance and load tests
@@ -26,11 +26,11 @@
 
 defmodule IntegrationTestRunner do
   @moduledoc """
-  Comprehensive integration test runner for Hydepwns LiveView application.
+  Comprehensive integration test runner for Spacecast LiveView application.
   """
 
   def main(args \\ []) do
-    {opts, _} = OptionParser.parse!(args, 
+    {opts, _} = OptionParser.parse!(args,
       strict: [
         test_type: :string,
         pattern: :string,
@@ -82,9 +82,9 @@ defmodule IntegrationTestRunner do
   defp run_tests(opts) do
     IO.puts("\n🚀 Starting Integration Test Suite")
     IO.puts("=" <> String.duplicate("=", 50))
-    
+
     start_time = System.monotonic_time(:millisecond)
-    
+
     # Monitor memory if requested
     if opts[:memory] do
       start_memory_monitoring()
@@ -92,7 +92,7 @@ defmodule IntegrationTestRunner do
 
     # Determine test files to run
     test_files = get_test_files(opts[:test_type], opts[:pattern])
-    
+
     if Enum.empty?(test_files) do
       IO.puts("❌ No test files found matching criteria")
       System.halt(1)
@@ -130,7 +130,7 @@ defmodule IntegrationTestRunner do
 
   defp get_test_files(test_type, pattern) do
     base_path = "test/spacecast_web/integration"
-    
+
     case test_type do
       "api" -> find_test_files(base_path, "api_integration_test.exs", pattern)
       "realtime" -> find_test_files(base_path, "realtime_integration_test.exs", pattern)
@@ -139,7 +139,7 @@ defmodule IntegrationTestRunner do
       "performance" -> find_test_files(base_path, "performance_integration_test.exs", pattern)
       "security" -> find_test_files(base_path, "security_integration_test.exs", pattern)
       "all" -> find_all_test_files(base_path, pattern)
-      _ -> 
+      _ ->
         IO.puts("❌ Unknown test type: #{test_type}")
         []
     end
@@ -195,9 +195,9 @@ defmodule IntegrationTestRunner do
 
   defp run_single_test_file(file, opts) do
     IO.puts("🧪 Running #{Path.basename(file)}")
-    
+
     start_time = System.monotonic_time(:millisecond)
-    
+
     # Set test timeout
     if opts[:timeout] do
       Process.put(:test_timeout, opts[:timeout])
@@ -208,17 +208,17 @@ defmodule IntegrationTestRunner do
       {:ok, output} ->
         end_time = System.monotonic_time(:millisecond)
         duration = end_time - start_time
-        
+
         {file, %{
           status: :passed,
           duration: duration,
           output: output
         }}
-      
+
       {:error, reason} ->
         end_time = System.monotonic_time(:millisecond)
         duration = end_time - start_time
-        
+
         {file, %{
           status: :failed,
           duration: duration,
@@ -230,7 +230,7 @@ defmodule IntegrationTestRunner do
     case result do
       {_file, %{status: :passed, duration: duration}} ->
         IO.puts("✅ #{Path.basename(file)} passed in #{duration}ms")
-      
+
       {_file, %{status: :failed, duration: duration, error: error}} ->
         IO.puts("❌ #{Path.basename(file)} failed in #{duration}ms")
         if opts[:debug] do
@@ -244,14 +244,14 @@ defmodule IntegrationTestRunner do
   defp run_test_file(file, opts) do
     # Set up test environment
     setup_test_environment(opts)
-    
+
     # Run the test using Mix
     cmd = build_mix_test_command(file, opts)
-    
+
     case System.cmd("mix", cmd, stderr_to_stdout: true) do
       {output, 0} ->
         {:ok, output}
-      
+
       {output, exit_code} ->
         {:error, "Exit code #{exit_code}: #{output}"}
     end
@@ -259,30 +259,30 @@ defmodule IntegrationTestRunner do
 
   defp build_mix_test_command(file, opts) do
     cmd = ["test", file]
-    
+
     cmd = if opts[:debug] do
       cmd ++ ["--trace"]
     else
       cmd
     end
-    
+
     cmd = if opts[:coverage] do
       cmd ++ ["--cover"]
     else
       cmd
     end
-    
+
     cmd
   end
 
   defp setup_test_environment(opts) do
     # Set environment variables for testing
     System.put_env("MIX_ENV", "test")
-    
+
     if opts[:debug] do
       System.put_env("DEBUG", "true")
     end
-    
+
     # Reset test database
     reset_test_database()
   end
@@ -295,20 +295,20 @@ defmodule IntegrationTestRunner do
   defp generate_report(results, total_time, opts) do
     IO.puts("\n📊 Test Results Summary")
     IO.puts("=" <> String.duplicate("=", 50))
-    
+
     # Calculate statistics
     total_tests = length(results)
     passed_tests = Enum.count(results, fn {_file, result} -> result.status == :passed end)
     failed_tests = total_tests - passed_tests
     success_rate = if total_tests > 0, do: (passed_tests / total_tests) * 100, else: 0
-    
+
     # Print summary
     IO.puts("Total Tests: #{total_tests}")
     IO.puts("Passed: #{passed_tests}")
     IO.puts("Failed: #{failed_tests}")
     IO.puts("Success Rate: #{Float.round(success_rate, 2)}%")
     IO.puts("Total Time: #{total_time}ms")
-    
+
     # Print detailed results
     if opts[:debug] or failed_tests > 0 do
       IO.puts("\n📋 Detailed Results:")
@@ -316,7 +316,7 @@ defmodule IntegrationTestRunner do
         case result do
           %{status: :passed, duration: duration} ->
             IO.puts("✅ #{Path.basename(file)} (#{duration}ms)")
-          
+
           %{status: :failed, duration: duration, error: error} ->
             IO.puts("❌ #{Path.basename(file)} (#{duration}ms)")
             IO.puts("   Error: #{error}")
@@ -337,7 +337,7 @@ defmodule IntegrationTestRunner do
 
   defp generate_detailed_report(results, total_time) do
     report_file = "tmp/integration_test_report_#{DateTime.utc_now() |> DateTime.to_unix()}.json"
-    
+
     report_data = %{
       timestamp: DateTime.utc_now() |> DateTime.to_iso8601(),
       total_time: total_time,
@@ -355,10 +355,10 @@ defmodule IntegrationTestRunner do
         failed: Enum.count(results, fn {_file, result} -> result.status == :failed end)
       }
     }
-    
+
     # Ensure tmp directory exists
     File.mkdir_p!("tmp")
-    
+
     # Write report
     File.write!(report_file, Jason.encode!(report_data, pretty: true))
     IO.puts("📄 Detailed report saved to: #{report_file}")
@@ -367,23 +367,23 @@ defmodule IntegrationTestRunner do
   defp analyze_performance(results, total_time) do
     IO.puts("\n⚡ Performance Analysis")
     IO.puts("-" <> String.duplicate("-", 30))
-    
+
     # Calculate performance metrics
     durations = Enum.map(results, fn {_file, result} -> result.duration end)
     avg_duration = Enum.sum(durations) / length(durations)
     max_duration = Enum.max(durations)
     min_duration = Enum.min(durations)
-    
+
     IO.puts("Average Test Duration: #{Float.round(avg_duration, 2)}ms")
     IO.puts("Fastest Test: #{min_duration}ms")
     IO.puts("Slowest Test: #{max_duration}ms")
     IO.puts("Total Suite Time: #{total_time}ms")
-    
+
     # Performance recommendations
     if avg_duration > 5000 do
       IO.puts("⚠️  Warning: Average test duration is high. Consider optimization.")
     end
-    
+
     if max_duration > 30000 do
       IO.puts("⚠️  Warning: Some tests are taking too long. Review slow tests.")
     end
@@ -404,13 +404,13 @@ defmodule IntegrationTestRunner do
     # This is a simplified implementation
     initial_memory = :erlang.memory(:total)
     IO.puts("💾 Initial memory usage: #{initial_memory} bytes")
-    
+
     # Monitor for a reasonable time
     Process.sleep(1000)
-    
+
     final_memory = :erlang.memory(:total)
     memory_diff = final_memory - initial_memory
-    
+
     if memory_diff > 50 * 1024 * 1024 do  # 50MB
       IO.puts("⚠️  Warning: Memory usage increased by #{memory_diff} bytes")
     end
@@ -418,11 +418,11 @@ defmodule IntegrationTestRunner do
 
   defp show_help do
     IO.puts("""
-    Integration Test Runner for Hydepwns LiveView
-    
+    Integration Test Runner for Spacecast LiveView
+
     Usage:
       elixir scripts/run_integration_tests.exs [options]
-    
+
     Options:
       -t, --test-type TYPE     Run specific test type:
                                 - api: API integration tests
@@ -432,7 +432,7 @@ defmodule IntegrationTestRunner do
                                 - performance: Performance and load tests
                                 - security: Security integration tests
                                 - all: All integration tests (default)
-      
+
       -p, --pattern PATTERN    Run tests matching pattern
       -d, --debug              Enable debug mode with detailed output
       -P, --parallel           Run tests in parallel
@@ -441,20 +441,20 @@ defmodule IntegrationTestRunner do
       -m, --memory             Monitor memory usage
       -c, --coverage           Generate coverage report
       -h, --help               Show this help message
-    
+
     Examples:
       # Run all integration tests
       elixir scripts/run_integration_tests.exs
-      
+
       # Run only API integration tests
       elixir scripts/run_integration_tests.exs -t api
-      
+
       # Run security tests with debug output
       elixir scripts/run_integration_tests.exs -t security -d
-      
+
       # Run performance tests in parallel with coverage
       elixir scripts/run_integration_tests.exs -t performance -P -c
-      
+
       # Run tests matching pattern with detailed report
       elixir scripts/run_integration_tests.exs -p "api" -r -m
     """)
@@ -462,4 +462,4 @@ defmodule IntegrationTestRunner do
 end
 
 # Run the script
-IntegrationTestRunner.main(System.argv()) 
+IntegrationTestRunner.main(System.argv())

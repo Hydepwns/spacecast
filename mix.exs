@@ -19,7 +19,8 @@ defmodule Spacecast.MixProject do
           Spacecast.Utils.ChangeTracker,
           Spacecast.Utils.ContextValidation,
           Spacecast.TestSetup,
-          SpacecastWeb.WallabyCase
+          SpacecastWeb.WallabyCase,
+          Spacecast.Schema.Validator
         ],
         coverage_options: [
           minimum_coverage: 70,

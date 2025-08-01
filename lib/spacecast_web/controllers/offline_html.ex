@@ -9,7 +9,7 @@ defmodule SpacecastWeb.OfflineHTML do
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
-        <title>Hydepwns - Offline</title>
+        <title>Spacecast - Offline</title>
 
         <style>
           :root {
@@ -17,7 +17,7 @@ defmodule SpacecastWeb.OfflineHTML do
             --font-family: 'Monaspace Argon', 'JetBrains Mono', monospace;
             --line-height: 1.20rem;
             --border-thickness: 2px;
-            
+
             /* Colors - default light theme */
             --text-color: #000;
             --text-color-alt: #666;
@@ -163,11 +163,11 @@ defmodule SpacecastWeb.OfflineHTML do
           function updateNetworkStatus() {
             const statusIndicator = document.querySelector('.status-indicator');
             const statusText = document.querySelector('.offline-status span:last-child');
-            
+
             if (navigator.onLine) {
               statusIndicator.style.backgroundColor = '#0f0';
               statusText.textContent = 'Your internet connection is restored';
-              
+
               // Automatically reload after a brief delay
               setTimeout(() => {
                 window.location.reload();

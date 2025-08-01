@@ -548,7 +548,7 @@
   "refresh": "5s",
   "schemaVersion": 38,
   "style": "dark",
-  "tags": ["hydepwns", "events", "monitoring"],
+  "tags": ["spacecast", "events", "monitoring"],
   "templating": {
     "list": []
   },

@@ -1,4 +1,4 @@
-# Hydepwns LiveView
+# Spacecast LiveView
 
 A Phoenix LiveView application with a focus on real-time user interactions and event-driven architecture.
 

@@ -1,10 +1,10 @@
 # Integration Testing Guide
 
-This document provides comprehensive guidance for the Hydepwns LiveView integration testing suite, covering API integration, real-time features, event-driven architecture, external services, performance, and security testing.
+This document provides comprehensive guidance for the Spacecast LiveView integration testing suite, covering API integration, real-time features, event-driven architecture, external services, performance, and security testing.
 
 ## Overview
 
-The integration testing suite is designed to validate the complete functionality of the Hydepwns LiveView application, ensuring that all components work together correctly in a realistic environment. The suite includes:
+The integration testing suite is designed to validate the complete functionality of the Spacecast LiveView application, ensuring that all components work together correctly in a realistic environment. The suite includes:
 
 - **API Integration Tests** - Validates JSON endpoints, authentication, and data flow
 - **Real-time Integration Tests** - Tests WebSocket connections, PubSub events, and LiveView updates
@@ -485,6 +485,6 @@ To add new integration tests:
 
 ## Conclusion
 
-The integration testing suite provides comprehensive validation of the Hydepwns LiveView application, ensuring reliability, performance, and security across all components. Regular execution of these tests helps maintain application quality and catch issues early in the development cycle.
+The integration testing suite provides comprehensive validation of the Spacecast LiveView application, ensuring reliability, performance, and security across all components. Regular execution of these tests helps maintain application quality and catch issues early in the development cycle.
 
 For questions or issues with integration testing, refer to the test documentation or contact the development team. 
