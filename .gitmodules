@@ -1,0 +1,4 @@
+[submodule "lib/libsignal-protocol-nif"]
+	path = lib/libsignal-protocol-nif
+	url = https://github.com/Hydepwns/libsignal-protocol-nif.git
+	branch = main 
