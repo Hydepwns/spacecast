@@ -70,7 +70,7 @@ defmodule Spacecast.Events.Adapters.EmailAdapter do
     Sent at: #{DateTime.utc_now() |> DateTime.to_iso8601()}
 
     Best regards,
-    #{Map.get(config, :from_name, "Hydepwns Liveview")}
+    #{Map.get(config, :from_name, "Spacecast Liveview")}
     """
   end
 
@@ -101,7 +101,7 @@ defmodule Spacecast.Events.Adapters.EmailAdapter do
           <div class=\"footer\">
             <p>Reference: #{Map.get(reminder, :id, "N/A")}</p>
             <p>Sent at: #{DateTime.utc_now() |> DateTime.to_iso8601()}</p>
-            <p>Best regards,<br>#{Map.get(config, :from_name, "Hydepwns Liveview")}</p>
+            <p>Best regards,<br>#{Map.get(config, :from_name, "Spacecast Liveview")}</p>
           </div>
         </div>
       </body>
@@ -162,7 +162,7 @@ defmodule Spacecast.Events.Adapters.EmailAdapter do
     body =
       Jason.encode!(%{
         personalizations: [%{to: [%{email: to}]}],
-        from: %{email: "noreply@hydepwns.com"},
+        from: %{email: "noreply@spacecast.com"},
         subject: subject,
         content: [%{type: "text/plain", value: body}]
       })
@@ -196,8 +196,8 @@ defmodule Spacecast.Events.Adapters.EmailAdapter do
       message = %Swoosh.Email{
         to: email,
         from:
-          {Map.get(config, :from_name, "Hydepwns Liveview"),
-           Map.get(config, :from_email, "noreply@hydepwns.com")},
+          {Map.get(config, :from_name, "Spacecast Liveview"),
+           Map.get(config, :from_email, "noreply@spacecast.com")},
         subject: content.subject,
         text_body: content.text,
         html_body: content.html,

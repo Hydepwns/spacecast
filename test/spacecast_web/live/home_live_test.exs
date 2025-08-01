@@ -18,7 +18,7 @@ defmodule SpacecastWeb.HomeLiveTest do
   test "disconnected and connected render", %{conn: conn} do
     {:ok, _view, html} = live(conn, ~p"/")
 
-    assert html =~ "Hydepwns"
+    assert html =~ "Spacecast"
     assert html =~ "Style Guide"
   end
 

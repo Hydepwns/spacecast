@@ -42,7 +42,7 @@ defmodule Spacecast.Utils.SocketValidationHelper do
       PubSub.broadcast(Spacecast.PubSub, @pubsub_topic, {:validation_error, error_data})
 
       # Also emit telemetry event for validation error
-      Telemetry.execute([:hydepwns, :socket, :validation, :error], %{count: 1}, error_data)
+      Telemetry.execute([:spacecast, :socket, :validation, :error], %{count: 1}, error_data)
     end
   end
 

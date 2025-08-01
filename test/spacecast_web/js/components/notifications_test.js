@@ -57,7 +57,7 @@ describe('NotificationsComponent', () => {
   // Helper function to create a notification element
   const createNotification = (id, type = 'info', dismissable = true) => {
     const notification = document.createElement('div');
-    notification.id = `hydepwns-notification-${id}`;
+    notification.id = `spacecast-notification-${id}`;
     notification.className = 'notification-item';
     
     // Add type-specific class

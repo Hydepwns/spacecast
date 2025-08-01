@@ -19,7 +19,7 @@ defmodule SpacecastWeb.StyleGuideLiveTest do
       assert html =~ "Style Guide"
 
       # Test that the style guide component is rendered
-      assert html =~ "Hydepwns Monospace Style Guide"
+      assert html =~ "Spacecast Monospace Style Guide"
       assert html =~ "This style guide documents the components"
 
       # Test that the style guide sections are present

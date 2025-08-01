@@ -9,12 +9,15 @@ The mock event store pattern provides a consistent way to test event-sourced res
 ## Components
 
 ### 1. MockEventStore (`test/support/mock_event_store.ex`)
+
 An in-memory event store that simulates the behavior of the real EventStore during tests.
 
 ### 2. EventStoreTestHelper (`test/support/event_store_test_helper.ex`)
+
 A helper module that provides utilities for setting up and managing the mock event store in tests.
 
 ### 3. Test Template (`test/support/templates/event_sourced_resource_test_template.exs`)
+
 A template showing how to structure tests for event-sourced resources.
 
 ## How to Apply This Pattern to Your Resources
@@ -105,6 +108,7 @@ end
 Follow these patterns for your test cases:
 
 #### Resource Creation Tests
+
 ```elixir
 test "creates resource and generates created event" do
   resource_id = "test-resource-1"
@@ -120,6 +124,7 @@ end
 ```
 
 #### Command Handling Tests
+
 ```elixir
 test "handles update command and generates events" do
   resource_id = "test-resource-2"
@@ -139,6 +144,7 @@ end
 ```
 
 #### State Reconstruction Tests
+
 ```elixir
 test "rebuilds state from events correctly" do
   resource_id = "test-resource-3"
@@ -162,6 +168,7 @@ end
 ```
 
 #### Event Store Integration Tests
+
 ```elixir
 test "events are properly stored and isolated" do
   resource_id_1 = "test-resource-4"
@@ -350,4 +357,4 @@ If you have existing tests for event-sourced resources:
 4. **Update assertions** to use the helper functions
 5. **Run tests** to ensure everything works correctly
 
-This pattern ensures that all your event-sourced resources can be tested consistently and reliably. 
+This pattern ensures that all your event-sourced resources can be tested consistently and reliably.

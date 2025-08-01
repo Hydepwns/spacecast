@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" · Hydepwns">
+    <.live_title suffix=" · Spacecast">
       {assigns[:page_title] || "Home"}
     </.live_title>
     <link rel="icon" type="image/x-icon" href={~p"/favicon.ico"} />
@@ -46,17 +46,17 @@
       const setThemeClass = () => {
         const storedTheme = localStorage.getItem('theme');
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
+
         // Remove all theme classes from document element and body
         const themeClasses = ['light-theme', 'dark-theme', 'dim-theme', 'high-contrast-theme'];
         themeClasses.forEach(cls => {
           document.documentElement.classList.remove(cls);
           if (document.body) document.body.classList.remove(cls);
         });
-        
+
         // Apply the appropriate theme
         let themeToApply;
-        
+
         if (storedTheme) {
           themeToApply = storedTheme;
         } else if (systemPrefersDark) {
@@ -64,12 +64,12 @@
         } else {
           themeToApply = 'light-theme';
         }
-        
+
         // Apply theme to both documentElement and body
         document.documentElement.setAttribute('data-theme', themeToApply);
         document.documentElement.classList.add(themeToApply);
         if (document.body) document.body.classList.add(themeToApply);
-        
+
         // Store theme in localStorage for persistence
         localStorage.setItem('theme', themeToApply);
       };
@@ -92,7 +92,7 @@
 
       // Check for cached fonts
       (function() {
-        const FONTS_LOADED_KEY = 'hydepwns_fonts_loaded';
+        const FONTS_LOADED_KEY = 'spacecast_fonts_loaded';
         if (sessionStorage.getItem(FONTS_LOADED_KEY) === 'true') {
           document.documentElement.classList.remove('fonts-loading');
           document.documentElement.classList.add('fonts-cached');

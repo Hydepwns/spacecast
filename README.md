@@ -29,23 +29,27 @@ Spacecast is a modern web application that demonstrates monospace design princip
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/Hydepwns/spacecast.git
    cd spacecast
    ```
 
 2. Install dependencies:
+
    ```bash
    mix deps.get
    cd assets && npm install && cd ..
    ```
 
 3. Setup the database:
+
    ```bash
    mix ecto.setup
    ```
 
 4. Start the development server:
+
    ```bash
    mix phx.server
    ```
@@ -132,4 +136,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Built with [Phoenix](https://phoenixframework.org/)
 - Fonts by [Monaspace](https://github.com/githubnext/monaspace)
-- Inspired by monospace design principles 
+- Inspired by monospace design principles

@@ -223,7 +223,7 @@ defmodule Spacecast.Utils.TransformationMetrics do
   defp format_status(:error), do: "❌ Error"
 
   # Store metrics in ETS or another storage mechanism
-  # This is a simple implementation using process dictionary 
+  # This is a simple implementation using process dictionary
   # In a production environment, consider using ETS, persistent storage,
   # or telemetry for better performance and durability
   defp store_metrics(metrics, opts) do
@@ -238,7 +238,7 @@ defmodule Spacecast.Utils.TransformationMetrics do
     Process.put(metrics_key, updated_metrics)
 
     # You could add telemetry events here
-    # :telemetry.execute([:hydepwns, :transformation, :executed], %{
+    # :telemetry.execute([:spacecast, :transformation, :executed], %{
     #   execution_time: metrics.execution_time_ms
     # }, %{transformation: metrics.transformation_module})
 
