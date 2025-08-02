@@ -229,8 +229,7 @@ defmodule Spacecast.Utils.ValidationDependencyResolver do
       relationships = filter_relationships(relationships, exclude_relationships, include_only)
 
       # Process each relationship
-      Enum.reduce_while(relationships, {:ok, dependency_state}, fn relationship,
-                                                                   {:ok, current_state} ->
+      Enum.reduce_while(relationships, {:ok, dependency_state}, fn relationship, {:ok, current_state} ->
         # Get the related resource module
         related_module = relationship.resource
 
@@ -330,8 +329,7 @@ defmodule Spacecast.Utils.ValidationDependencyResolver do
       end
 
     # Add dependencies to the graph
-    Enum.reduce(relationship_dependencies, dependency_state, fn {source_rule, target_rules},
-                                                                state ->
+    Enum.reduce(relationship_dependencies, dependency_state, fn {source_rule, target_rules}, state ->
       # Create source validation ID
       source_id = {source_module, source_rule}
 
@@ -973,8 +971,7 @@ defmodule Spacecast.Utils.ValidationDependencyResolver do
     dependencies = validation_plan.dependencies
 
     {updated_dependencies, _} =
-      Enum.reduce_while(edges_to_remove, {dependencies, cycles}, fn {from, to},
-                                                                    {deps, _remaining_cycles} ->
+      Enum.reduce_while(edges_to_remove, {dependencies, cycles}, fn {from, to}, {deps, _remaining_cycles} ->
         # Remove edge
         from_deps = Map.get(deps, from, [])
         updated_from_deps = Enum.filter(from_deps, &(&1 != to))
@@ -989,9 +986,7 @@ defmodule Spacecast.Utils.ValidationDependencyResolver do
           {:halt, {updated_deps, []}}
         else
           # Continue removing edges
-          Logger.debug(
-            "Remaining cycles after removing edge #{from} -> #{to}: #{inspect(remaining)}"
-          )
+          Logger.debug("Remaining cycles after removing edge #{from} -> #{to}: #{inspect(remaining)}")
 
           {:cont, {updated_deps, remaining}}
         end

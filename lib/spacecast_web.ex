@@ -76,10 +76,6 @@ defmodule SpacecastWeb do
               |> push_event("update_theme", %{theme: theme, theme_class: theme_class})
 
             {:noreply, socket}
-
-          {:error, _} ->
-            # Fallback to just updating the LiveView state
-            {:noreply, Phoenix.Component.assign(socket, :theme_class, theme_class)}
         end
       end
 

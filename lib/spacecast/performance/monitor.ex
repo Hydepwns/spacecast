@@ -105,7 +105,7 @@ defmodule Spacecast.Performance.Monitor do
       "30d" ->
         {:ok,
          %{
-           total_requests: 30000,
+           total_requests: 30_000,
            avg_response_time: 200,
            error_rate: 0.02,
            throughput: 6.8

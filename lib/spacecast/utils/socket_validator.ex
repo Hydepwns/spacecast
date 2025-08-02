@@ -743,9 +743,7 @@ defmodule Spacecast.Utils.SocketValidator do
       {"expected one of", &(&1 != nil)} => &handle_one_of_error/1
     }
 
-    Enum.find_value(error_patterns, "Ensure the value matches the expected type.", fn {{pattern,
-                                                                                        validator},
-                                                                                       handler} ->
+    Enum.find_value(error_patterns, "Ensure the value matches the expected type.", fn {{pattern, validator}, handler} ->
       if error =~ pattern && validator.(field_value), do: handler.(field_value)
     end)
   end

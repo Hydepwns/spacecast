@@ -43,8 +43,7 @@ defmodule Spacecast.Application do
         end ++
         [
           Spacecast.Repo,
-          {DNSCluster,
-           query: Application.get_env(:spacecast, :dns_cluster_query) || :ignore},
+          {DNSCluster, query: Application.get_env(:spacecast, :dns_cluster_query) || :ignore},
           {Phoenix.PubSub, name: Spacecast.PubSub},
           {Finch, name: Spacecast.Finch},
           SpacecastWeb.Endpoint,
@@ -57,13 +56,13 @@ defmodule Spacecast.Application do
     opts = [strategy: :one_for_one, name: Spacecast.Supervisor]
     result = Supervisor.start_link(children, opts)
 
-      # After startup, register default transformations
-  register_default_transformations()
+    # After startup, register default transformations
+    register_default_transformations()
 
-  # After startup, register default event handlers
-  register_default_event_handlers()
+    # After startup, register default event handlers
+    register_default_event_handlers()
 
-  result
+    result
   end
 
   # Tell Phoenix to update the endpoint configuration

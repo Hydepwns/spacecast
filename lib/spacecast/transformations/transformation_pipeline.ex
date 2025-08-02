@@ -160,8 +160,7 @@ defmodule Spacecast.Transformations.TransformationPipeline do
   # Apply a list of transformations sequentially
   defp apply_transformation_list(resource, transformations, context, collect_metrics) do
     Enum.reduce_while(transformations, {:ok, resource, context}, fn transformation,
-                                                                    {:ok, current_resource,
-                                                                     current_context} ->
+                                                                    {:ok, current_resource, current_context} ->
       result =
         if collect_metrics do
           # Use the metrics module to measure transformation execution

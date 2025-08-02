@@ -11,7 +11,7 @@ defmodule Spacecast.Utils.AshAdapter do
   ```elixir
   defmodule MyApp.UserResource do
     use Spacecast.Utils.LiveViewResource
-    
+
     # Use the AshAdapter with the User resource
     adapter Spacecast.Utils.AshAdapter, schema: MyApp.UserResource
   end
@@ -19,8 +19,6 @@ defmodule Spacecast.Utils.AshAdapter do
   """
 
   @behaviour Spacecast.Utils.ResourceAdapter
-
-  alias Spacecast.Utils.ResourceAdapter
 
   @doc """
   Extracts attributes from an Ash resource.
@@ -42,7 +40,7 @@ defmodule Spacecast.Utils.AshAdapter do
   This function converts Ash attribute types to LiveViewResource
   type specifications that can be used for validation.
   """
-  @impl ResourceAdapter
+  @impl Spacecast.Utils.ResourceAdapter
   def generate_type_specs(resource) when is_atom(resource) do
     # In a real implementation, we would use Ash.Resource.Info to get attribute types
     # For now, we'll return an empty map
@@ -55,7 +53,7 @@ defmodule Spacecast.Utils.AshAdapter do
   This function uses Ash's validation functionality to validate
   a map of values against an Ash resource's constraints.
   """
-  @impl ResourceAdapter
+  @impl Spacecast.Utils.ResourceAdapter
   def validate(resource, values) when is_atom(resource) and is_map(values) do
     # In a real implementation, we would use Ash.Changeset.for_create to validate
     # For now, we'll return a success response
@@ -68,7 +66,7 @@ defmodule Spacecast.Utils.AshAdapter do
   This function uses Ash APIs to load data from
   the resource based on the primary key value.
   """
-  @impl ResourceAdapter
+  @impl Spacecast.Utils.ResourceAdapter
   def load(resource, _id) when is_atom(resource) do
     # In a real implementation, we would use Ash.get to load the data
     # For now, we'll return an error
@@ -81,7 +79,7 @@ defmodule Spacecast.Utils.AshAdapter do
   This function uses Ash APIs to save data to
   the resource.
   """
-  @impl ResourceAdapter
+  @impl Spacecast.Utils.ResourceAdapter
   def save(resource, values) when is_atom(resource) and is_map(values) do
     # In a real implementation, we would use Ash.create or Ash.update to save the data
     # For now, we'll return an error

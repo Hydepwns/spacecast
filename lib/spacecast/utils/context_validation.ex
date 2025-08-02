@@ -99,13 +99,13 @@ defmodule Spacecast.Utils.ContextValidation do
   {:ok, _} = ContextValidation.validate_with_rules(user, rules: [:team_member_role, :access_permissions])
 
   # Validate with context
-  {:ok, _} = ContextValidation.validate_with_rules(user, 
+  {:ok, _} = ContextValidation.validate_with_rules(user,
     rules: [:team_member_role],
     context: %{allowed_roles: ["admin", "editor"]}
   )
 
   # Validate with both rules and context
-  {:ok, _} = ContextValidation.validate_with_rules(user, 
+  {:ok, _} = ContextValidation.validate_with_rules(user,
     rules: [:team_member_role, :access_permissions],
     context: %{allowed_roles: ["admin", "editor"]}
   )
@@ -470,7 +470,7 @@ defmodule Spacecast.Utils.ContextValidation do
     end
   end
 
-  # Validate a resource 
+  # Validate a resource
   defp validate_resource(resource, rules, context) do
     # Get the resource module
     resource_module = Map.get(resource, :__resource_module__)

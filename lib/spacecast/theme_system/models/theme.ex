@@ -73,15 +73,9 @@ defmodule Spacecast.ThemeSystem.Models.Theme do
       :text_color
     ])
     |> validate_inclusion(:mode, ["light", "dark", "dim", "system", "synthwave"])
-    |> validate_format(:primary_color, ~r/^#[0-9A-Fa-f]{6}$/,
-      message: "must be a valid hex color"
-    )
-    |> validate_format(:secondary_color, ~r/^#[0-9A-Fa-f]{6}$/,
-      message: "must be a valid hex color"
-    )
-    |> validate_format(:background_color, ~r/^#[0-9A-Fa-f]{6}$/,
-      message: "must be a valid hex color"
-    )
+    |> validate_format(:primary_color, ~r/^#[0-9A-Fa-f]{6}$/, message: "must be a valid hex color")
+    |> validate_format(:secondary_color, ~r/^#[0-9A-Fa-f]{6}$/, message: "must be a valid hex color")
+    |> validate_format(:background_color, ~r/^#[0-9A-Fa-f]{6}$/, message: "must be a valid hex color")
     |> validate_format(:text_color, ~r/^#[0-9A-Fa-f]{6}$/, message: "must be a valid hex color")
     |> unique_constraint(:name)
     |> maybe_handle_default()
@@ -120,15 +114,9 @@ defmodule Spacecast.ThemeSystem.Models.Theme do
     |> validate_required([:name, :mode])
     |> validate_inclusion(:mode, ["light", "dark", "dim", "system", "synthwave"])
     |> validate_required([:primary_color, :secondary_color, :background_color, :text_color])
-    |> validate_format(:primary_color, ~r/^#[0-9a-fA-F]{6}$/,
-      message: "must be a valid hex color"
-    )
-    |> validate_format(:secondary_color, ~r/^#[0-9a-fA-F]{6}$/,
-      message: "must be a valid hex color"
-    )
-    |> validate_format(:background_color, ~r/^#[0-9a-fA-F]{6}$/,
-      message: "must be a valid hex color"
-    )
+    |> validate_format(:primary_color, ~r/^#[0-9a-fA-F]{6}$/, message: "must be a valid hex color")
+    |> validate_format(:secondary_color, ~r/^#[0-9a-fA-F]{6}$/, message: "must be a valid hex color")
+    |> validate_format(:background_color, ~r/^#[0-9a-fA-F]{6}$/, message: "must be a valid hex color")
     |> validate_format(:text_color, ~r/^#[0-9a-fA-F]{6}$/, message: "must be a valid hex color")
   end
 
@@ -158,10 +146,8 @@ defmodule Spacecast.ThemeSystem.Models.Theme do
 
       base_colors = %{
         primary: get_change(changeset, :primary_color) || get_field(changeset, :primary_color),
-        secondary:
-          get_change(changeset, :secondary_color) || get_field(changeset, :secondary_color),
-        background:
-          get_change(changeset, :background_color) || get_field(changeset, :background_color),
+        secondary: get_change(changeset, :secondary_color) || get_field(changeset, :secondary_color),
+        background: get_change(changeset, :background_color) || get_field(changeset, :background_color),
         text: get_change(changeset, :text_color) || get_field(changeset, :text_color)
       }
 

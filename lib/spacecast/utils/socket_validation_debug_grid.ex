@@ -97,14 +97,14 @@ defmodule Spacecast.Utils.SocketValidationDebugGrid do
       # In a handle_event callback:
       def handle_event("update", %{"count" => count}, socket) do
         socket = assign(socket, :count, String.to_integer(count))
-        
+
         # Update validation visualization in Debug Grid
         socket = SocketValidationDebugGrid.update_validation_data(
           socket,
           %{count: :integer, name: :string},
           [:count]
         )
-        
+
         {:noreply, socket}
       end
   """
@@ -134,7 +134,7 @@ defmodule Spacecast.Utils.SocketValidationDebugGrid do
 
       # Highlight all elements with validation errors
       SocketValidationDebugGrid.highlight_validation_errors(socket)
-      
+
       # Highlight a specific element
       SocketValidationDebugGrid.highlight_validation_errors(socket, "#count-input")
   """
@@ -191,7 +191,7 @@ defmodule Spacecast.Utils.SocketValidationDebugGrid do
     Enum.map(type_specs, fn {key, type_spec} ->
       case SocketValidator.type_validation(socket, key, type_spec) do
         {:ok, _} -> {key, :ok, nil}
-        {:error, message, _} -> {key, :error, message}
+        {:error, message} -> {key, :error, message}
       end
     end)
   end

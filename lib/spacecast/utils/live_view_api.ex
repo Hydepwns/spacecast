@@ -22,7 +22,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
     case LiveViewAPI.update(socket, :user, user_params) do
       {:ok, updated_socket} ->
         {:noreply, updated_socket}
-      
+
       {:error, message, socket} ->
         {:noreply, put_flash(socket, :error, message)}
     end
@@ -30,9 +30,9 @@ defmodule Spacecast.Utils.LiveViewAPI do
 
   def handle_event("get_user_role", _, socket) do
     role = LiveViewAPI.get(socket, :user, :role)
-    
+
     # Do something with the role...
-    
+
     {:noreply, socket}
   end
   """
@@ -112,7 +112,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
   case LiveViewAPI.update_field(socket, :theme, "dark") do
     {:ok, updated_socket} ->
       {:noreply, updated_socket}
-    
+
     {:error, message, socket} ->
       {:noreply, put_flash(socket, :error, message)}
   end
@@ -126,7 +126,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
         {:ok, validated_value} ->
           {:ok, Phoenix.Component.assign(socket, field, validated_value)}
 
-        {:error, message} ->
+        {:error, message, socket} ->
           {:error, message, socket}
       end
     else
@@ -187,7 +187,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
   case LiveViewAPI.update(socket, %{theme: "dark", sidebar_open: true}) do
     {:ok, updated_socket} ->
       {:noreply, updated_socket}
-    
+
     {:error, message, socket} ->
       {:noreply, put_flash(socket, :error, message)}
   end
@@ -197,13 +197,8 @@ defmodule Spacecast.Utils.LiveViewAPI do
     validate = Keyword.get(opts, :validate, true)
 
     if validate do
-      case validate_assigns_update(socket, values) do
-        {:ok, validated_values} ->
-          {:ok, Phoenix.Component.assign(socket, validated_values)}
-
-        {:error, message} ->
-          {:error, message, socket}
-      end
+      {:ok, validated_values} = validate_assigns_update(socket, values)
+      {:ok, Phoenix.Component.assign(socket, validated_values)}
     else
       {:ok, Phoenix.Component.assign(socket, values)}
     end
@@ -232,7 +227,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
   case LiveViewAPI.update_resource(socket, :user, %{role: "admin", active: true}) do
     {:ok, updated_socket} ->
       {:noreply, updated_socket}
-    
+
     {:error, message, socket} ->
       {:noreply, put_flash(socket, :error, message)}
   end
@@ -244,13 +239,8 @@ defmodule Spacecast.Utils.LiveViewAPI do
     atom_keyed_values = atomize_map_keys(values)
 
     if validate do
-      case validate_resource_update(socket, resource, atom_keyed_values) do
-        {:ok, validated_values} ->
-          {:ok, Phoenix.Component.assign(socket, resource, validated_values)}
-
-        {:error, message} ->
-          {:error, message, socket}
-      end
+      {:ok, validated_values} = validate_resource_update(socket, resource, atom_keyed_values)
+      {:ok, Phoenix.Component.assign(socket, resource, validated_values)}
     else
       {:ok, Phoenix.Component.assign(socket, resource, atom_keyed_values)}
     end
@@ -292,7 +282,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
   case LiveViewAPI.create(socket, :user, %{id: "123", name: "John", role: "admin"}) do
     {:ok, updated_socket} ->
       {:noreply, updated_socket}
-    
+
     {:error, message, socket} ->
       {:noreply, put_flash(socket, :error, message)}
   end
@@ -311,13 +301,8 @@ defmodule Spacecast.Utils.LiveViewAPI do
         {:error, "Resource #{resource} already exists", socket}
 
       validate ->
-        case validate_resource_create(socket, resource, values) do
-          {:ok, validated_values} ->
-            {:ok, Phoenix.Component.assign(socket, resource, validated_values)}
-
-          {:error, message} ->
-            {:error, message, socket}
-        end
+        {:ok, validated_values} = validate_resource_create(socket, resource, values)
+        {:ok, Phoenix.Component.assign(socket, resource, validated_values)}
 
       true ->
         {:ok, Phoenix.Component.assign(socket, resource, values)}
@@ -395,7 +380,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
   ```elixir
   defmodule MyApp.UserResource do
     use Spacecast.Utils.LiveViewResource
-    
+
     attributes do
       attribute :id, :string, required: true
       attribute :name, :string, required: true
@@ -406,7 +391,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
   case LiveViewAPI.create_from_resource(socket, :user, MyApp.UserResource, %{id: "123", name: "John"}) do
     {:ok, updated_socket} ->
       {:noreply, updated_socket}
-    
+
     {:error, message, socket} ->
       {:noreply, put_flash(socket, :error, message)}
   end
@@ -417,19 +402,14 @@ defmodule Spacecast.Utils.LiveViewAPI do
     validate = Keyword.get(opts, :validate, true)
 
     if validate do
-      case validate_resource_values(resource_module, values) do
-        {:ok, validated_values} ->
-          {:ok, Phoenix.Component.assign(socket, resource_key, validated_values)}
-
-        {:error, message} ->
-          {:error, message, socket}
-      end
+      {:ok, validated_values} = validate_resource_values(socket, resource_module, values)
+      {:ok, Phoenix.Component.assign(socket, resource_key, validated_values)}
     else
       {:ok, Phoenix.Component.assign(socket, resource_key, values)}
     end
   end
 
-  defp validate_resource_values(resource_module, values) do
+  defp validate_resource_values(socket, resource_module, values) do
     type_specs = LiveViewResource.generate_type_specs(resource_module)
     validation_results = validate_values_against_specs(values, type_specs)
 
@@ -438,7 +418,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
       defaults = get_default_values(schema)
       {:ok, Map.merge(defaults, values)}
     else
-      {:error, Enum.join(validation_results, "; ")}
+      {:error, Enum.join(validation_results, "; "), socket}
     end
   end
 
@@ -457,7 +437,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
       type_spec ->
         case SocketValidator.validate_type(value, type_spec) do
           :ok -> nil
-          {:error, message} -> message
+          {:error, message, _socket} -> message
         end
     end
   end
@@ -501,10 +481,10 @@ defmodule Spacecast.Utils.LiveViewAPI do
   }) do
     {:ok, updated_socket} ->
       {:noreply, updated_socket}
-    
+
     {:error, :stale_resource, socket} ->
       {:noreply, put_flash(socket, :error, "Resource was updated by someone else")}
-    
+
     {:error, message, socket} ->
       {:noreply, put_flash(socket, :error, message)}
   end
@@ -518,7 +498,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
       {:ok, Phoenix.Component.assign(socket, resource_key, updated_resource)}
     else
       {:error, :stale_resource} -> {:error, :stale_resource, socket}
-      {:error, message} -> {:error, message, socket}
+      {:error, message, _socket} -> {:error, message, socket}
     end
   end
 
@@ -564,7 +544,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
   case LiveViewAPI.get_history(socket, :user) do
     {:ok, changes} ->
       # Do something with the changes...
-    
+
     {:error, reason} ->
       # Handle error...
   end
@@ -602,7 +582,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
   case LiveViewAPI.get_version(socket, :user, 1) do
     {:ok, previous_version} ->
       # Do something with the previous version...
-    
+
     {:error, reason} ->
       # Handle error...
   end
@@ -642,7 +622,7 @@ defmodule Spacecast.Utils.LiveViewAPI do
   case LiveViewAPI.diff_versions(socket, :user, version1: 1, version2: 2) do
     {:ok, diff} ->
       # Do something with the diff...
-    
+
     {:error, reason} ->
       # Handle error...
   end
@@ -721,13 +701,13 @@ defmodule Spacecast.Utils.LiveViewAPI do
       :theme ->
         case SocketValidator.validate_type(value, :string) do
           :ok -> {:ok, value}
-          {:error, message} -> {:error, message, socket}
+          {:error, message, _socket} -> {:error, message, socket}
         end
 
       :sidebar_open ->
         case SocketValidator.validate_type(value, :boolean) do
           :ok -> {:ok, value}
-          {:error, message} -> {:error, message, socket}
+          {:error, message, _socket} -> {:error, message, socket}
         end
 
       _ ->

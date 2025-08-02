@@ -25,7 +25,7 @@ defmodule Spacecast.Utils.TransformationPipeline do
     def transform(resource, _context) do
       # Normalize email to lowercase
       email = String.downcase(resource.email)
-      
+
       # Return the transformed resource
       {:ok, %{resource | email: email}}
     end
@@ -46,7 +46,7 @@ defmodule Spacecast.Utils.TransformationPipeline do
   case TransformationPipeline.apply(pipeline, user) do
     {:ok, transformed_user} ->
       # Handle success
-      
+
     {:error, reason} ->
       # Handle error
   end
@@ -123,12 +123,12 @@ defmodule Spacecast.Utils.TransformationPipeline do
 
   ```elixir
   # Add a transformation module
-  pipeline = 
+  pipeline =
     pipeline
     |> TransformationPipeline.add(MyApp.Transformations.NormalizeEmail)
 
   # Add a transformation module with options
-  pipeline = 
+  pipeline =
     pipeline
     |> TransformationPipeline.add(
       MyApp.Transformations.NormalizeEmail,
@@ -137,7 +137,7 @@ defmodule Spacecast.Utils.TransformationPipeline do
     )
 
   # Add a transformation function
-  pipeline = 
+  pipeline =
     pipeline
     |> TransformationPipeline.add(
       :normalize_email,
@@ -158,23 +158,13 @@ defmodule Spacecast.Utils.TransformationPipeline do
 
     {name, transformation_fn} =
       cond do
-        is_atom(transformation) and not is_nil(Atom.to_string(transformation)) and
-            Code.ensure_loaded?(transformation) ->
+        is_atom(transformation) and Code.ensure_loaded?(transformation) ->
           # It's a module
           {transformation, &transformation.transform/2}
 
         is_function(transformation, 2) ->
           # It's a function with name specified as the first argument
-          if is_atom(opts[:name]) do
-            {opts[:name], transformation}
-          else
-            raise ArgumentError,
-                  "When adding a function transformation, a name must be provided via the :name option"
-          end
-
-        is_atom(transformation) and is_function(opts[:function], 2) ->
-          # First arg is the name, function is in the options
-          {transformation, opts[:function]}
+          {opts[:name], transformation}
 
         true ->
           raise ArgumentError,
@@ -213,23 +203,23 @@ defmodule Spacecast.Utils.TransformationPipeline do
   case TransformationPipeline.apply(pipeline, resource) do
     {:ok, transformed_resource} ->
       # Handle success
-      
+
     {:error, reason} ->
       # Handle error
   end
 
   # Apply with additional context
-  TransformationPipeline.apply(pipeline, resource, 
+  TransformationPipeline.apply(pipeline, resource,
     context: %{current_user: user}
   )
 
   # Only apply pre-validation transformations
-  TransformationPipeline.apply(pipeline, resource, 
+  TransformationPipeline.apply(pipeline, resource,
     only_hooks: [:pre_validation]
   )
 
   # Skip post-validation transformations
-  TransformationPipeline.apply(pipeline, resource, 
+  TransformationPipeline.apply(pipeline, resource,
     skip_hooks: [:post_validation]
   )
   ```

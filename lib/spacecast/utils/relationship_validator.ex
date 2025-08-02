@@ -88,13 +88,12 @@ defmodule Spacecast.Utils.RelationshipValidator do
       [%{error: "Resource does not have a __resource_module__ attribute"}]
     else
       # Get relationship definition
-      relationship =
-        RelationshipResolver.get_relationship_definition(resource_module, relationship_name)
+      case RelationshipResolver.get_relationship_definition(resource_module, relationship_name) do
+        {:ok, relationship} ->
+          do_validate_relationship(resource, relationship, check_referential_integrity, deep)
 
-      if is_nil(relationship) do
-        [%{relationship: relationship_name, error: "Relationship not defined in resource"}]
-      else
-        do_validate_relationship(resource, relationship, check_referential_integrity, deep)
+        {:error, reason} ->
+          [%{relationship: relationship_name, error: reason}]
       end
     end
   end
@@ -196,22 +195,9 @@ defmodule Spacecast.Utils.RelationshipValidator do
     if deep && !is_nil(foreign_key_value) do
       case RelationshipResolver.resolve_relationship(resource, relationship.name) do
         {:ok, related} when not is_nil(related) ->
-          case validate_relationships(related,
-                 check_referential_integrity: check_referential_integrity
-               ) do
-            :ok ->
-              errors
-
-            {:error, related_errors} ->
-              Enum.map(related_errors, fn error ->
-                Map.put(error, :relationship_path, [
-                  relationship.name | Map.get(error, :relationship_path, [])
-                ])
-              end) ++ errors
-          end
-
-        _ ->
-          errors
+          validate_relationships(related,
+            check_referential_integrity: check_referential_integrity
+          )
       end
     else
       errors
@@ -220,63 +206,43 @@ defmodule Spacecast.Utils.RelationshipValidator do
 
   # Validates a has_many relationship
   defp validate_has_many(resource, relationship, check_referential_integrity, deep) do
-    _errors = []
-
     # For has_many, we typically don't validate unless deep validation is requested
     if deep do
-      case RelationshipResolver.resolve_relationship(resource, relationship.name) do
-        {:ok, related_items} when is_list(related_items) ->
-          Enum.flat_map(related_items, fn related ->
-            case validate_relationships(related,
-                   check_referential_integrity: check_referential_integrity
-                 ) do
-              :ok ->
-                []
-
-              {:error, related_errors} ->
-                Enum.map(related_errors, fn error ->
-                  Map.put(error, :relationship_path, [
-                    relationship.name | Map.get(error, :relationship_path, [])
-                  ])
-                end)
-            end
-          end)
-
-        _ ->
-          []
-      end
+      validate_has_many_items(resource, relationship, check_referential_integrity)
     else
       []
     end
   end
 
+  defp validate_has_many_items(resource, relationship, check_referential_integrity) do
+    case RelationshipResolver.resolve_relationship(resource, relationship.name) do
+      {:ok, related_items} when is_list(related_items) ->
+        Enum.flat_map(related_items, fn item ->
+          validate_relationships(item, check_referential_integrity: check_referential_integrity)
+        end)
+
+      _ ->
+        []
+    end
+  end
+
   # Validates a has_one relationship
   defp validate_has_one(resource, relationship, check_referential_integrity, deep) do
-    _errors = []
-
     # Similar to has_many, but expecting only one related entity
     if deep do
-      case RelationshipResolver.resolve_relationship(resource, relationship.name) do
-        {:ok, related} when not is_nil(related) ->
-          case validate_relationships(related,
-                 check_referential_integrity: check_referential_integrity
-               ) do
-            :ok ->
-              []
-
-            {:error, related_errors} ->
-              Enum.map(related_errors, fn error ->
-                Map.put(error, :relationship_path, [
-                  relationship.name | Map.get(error, :relationship_path, [])
-                ])
-              end)
-          end
-
-        _ ->
-          []
-      end
+      validate_has_one_item(resource, relationship, check_referential_integrity)
     else
       []
+    end
+  end
+
+  defp validate_has_one_item(resource, relationship, check_referential_integrity) do
+    case RelationshipResolver.resolve_relationship(resource, relationship.name) do
+      {:ok, related} when not is_nil(related) ->
+        validate_relationships(related, check_referential_integrity: check_referential_integrity)
+
+      _ ->
+        []
     end
   end
 
@@ -412,8 +378,7 @@ defmodule Spacecast.Utils.RelationshipValidator do
       [
         %{
           relationship: relationship.name,
-          error:
-            "Invalid polymorphic type: #{type_value}, allowed types: #{inspect(relationship.allowed_types)}",
+          error: "Invalid polymorphic type: #{type_value}, allowed types: #{inspect(relationship.allowed_types)}",
           type_field: type_field,
           type_value: type_value
         }
@@ -482,22 +447,9 @@ defmodule Spacecast.Utils.RelationshipValidator do
     if deep && !is_nil(id_value) && !is_nil(type_value) do
       case RelationshipResolver.resolve_relationship(resource, relationship.name) do
         {:ok, related} when not is_nil(related) ->
-          case validate_relationships(related,
-                 check_referential_integrity: check_referential_integrity
-               ) do
-            :ok ->
-              errors
-
-            {:error, related_errors} ->
-              Enum.map(related_errors, fn error ->
-                Map.put(error, :relationship_path, [
-                  relationship.name | Map.get(error, :relationship_path, [])
-                ])
-              end) ++ errors
-          end
-
-        _ ->
-          errors
+          validate_relationships(related,
+            check_referential_integrity: check_referential_integrity
+          )
       end
     else
       errors
@@ -538,18 +490,21 @@ defmodule Spacecast.Utils.RelationshipValidator do
       updated_resource = Map.merge(resource, updates)
 
       # Validate relationships on the updated resource
-      case validate_relationships(updated_resource) do
-        :ok ->
-          # If cascade updates are enabled, validate cascade operations
-          if cascade do
-            validate_cascade_updates(resource, updated_resource, updates)
-          else
-            :ok
-          end
+      validate_update_with_cascade(resource, updated_resource, updates, cascade)
+    end
+  end
 
-        error ->
-          error
-      end
+  defp validate_update_with_cascade(resource, updated_resource, updates, cascade) do
+    case validate_relationships(updated_resource) do
+      :ok ->
+        if cascade do
+          validate_cascade_updates(resource, updated_resource, updates)
+        else
+          :ok
+        end
+
+      error ->
+        error
     end
   end
 

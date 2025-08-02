@@ -94,8 +94,7 @@ defmodule Spacecast.Utils.RelationshipResolver do
   end
 
   defp validate_resource_module(nil) do
-    {:error,
-     "Cannot resolve relationship: Resource does not have a __resource_module__ attribute"}
+    {:error, "Cannot resolve relationship: Resource does not have a __resource_module__ attribute"}
   end
 
   defp validate_resource_module(resource_module) do
@@ -483,9 +482,7 @@ defmodule Spacecast.Utils.RelationshipResolver do
         end
 
       {:error, reason} ->
-        {:error,
-         "Through relationship #{through} not found in #{inspect(resource_module)}: #{reason}",
-         resource}
+        {:error, "Through relationship #{through} not found in #{inspect(resource_module)}: #{reason}", resource}
     end
   end
 

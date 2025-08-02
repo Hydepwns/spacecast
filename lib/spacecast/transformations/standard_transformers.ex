@@ -160,8 +160,7 @@ defmodule Spacecast.Transformations.StandardTransformers do
 
     # Apply trimming to each field
     {updated_resource, updated_context} =
-      Enum.reduce(fields_to_trim, {resource, context}, fn field,
-                                                          {current_resource, current_context} ->
+      Enum.reduce(fields_to_trim, {resource, context}, fn field, {current_resource, current_context} ->
         value = Map.get(current_resource, field)
 
         if is_binary(value) do
@@ -223,8 +222,7 @@ defmodule Spacecast.Transformations.StandardTransformers do
     conversions = Keyword.get(opts, :conversions, %{})
 
     {updated_resource, updated_context} =
-      Enum.reduce(conversions, {resource, context}, fn {field, type},
-                                                       {current_resource, current_context} ->
+      Enum.reduce(conversions, {resource, context}, fn {field, type}, {current_resource, current_context} ->
         value = Map.get(current_resource, field)
 
         case convert_value(value, type) do
@@ -539,8 +537,7 @@ defmodule Spacecast.Transformations.StandardTransformers do
     defaults = Keyword.get(opts, :defaults, %{})
 
     {updated_resource, updated_context} =
-      Enum.reduce(defaults, {resource, context}, fn {field, default_value},
-                                                    {current_resource, current_context} ->
+      Enum.reduce(defaults, {resource, context}, fn {field, default_value}, {current_resource, current_context} ->
         current_value = Map.get(current_resource, field)
 
         if is_nil(current_value) do

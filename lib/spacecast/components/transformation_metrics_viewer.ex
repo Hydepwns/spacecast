@@ -49,9 +49,7 @@ defmodule Spacecast.Components.TransformationMetricsViewer do
       )
 
     performance_report =
-      TransformationMetrics.generate_performance_report(
-        transformation_module: transformation_module
-      )
+      TransformationMetrics.generate_performance_report(transformation_module: transformation_module)
 
     {
       :ok,

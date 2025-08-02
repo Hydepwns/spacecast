@@ -362,8 +362,7 @@ defmodule Spacecast.Transformations.TransformationMetrics do
     updated_transformation_stats = %{
       transformation_stats
       | execution_count: transformation_stats.execution_count + 1,
-        total_execution_time_ms:
-          transformation_stats.total_execution_time_ms + metric.execution_time_ms
+        total_execution_time_ms: transformation_stats.total_execution_time_ms + metric.execution_time_ms
     }
 
     updated_transformation_stats =
@@ -405,8 +404,7 @@ defmodule Spacecast.Transformations.TransformationMetrics do
     updated_resource_type_stats = %{
       resource_type_stats
       | execution_count: resource_type_stats.execution_count + 1,
-        total_execution_time_ms:
-          resource_type_stats.total_execution_time_ms + metric.execution_time_ms
+        total_execution_time_ms: resource_type_stats.total_execution_time_ms + metric.execution_time_ms
     }
 
     updated_resource_type_stats =
@@ -445,8 +443,7 @@ defmodule Spacecast.Transformations.TransformationMetrics do
     updated_operation_stats = %{
       operation_stats
       | execution_count: operation_stats.execution_count + 1,
-        total_execution_time_ms:
-          operation_stats.total_execution_time_ms + metric.execution_time_ms
+        total_execution_time_ms: operation_stats.total_execution_time_ms + metric.execution_time_ms
     }
 
     updated_operation_stats =
@@ -471,8 +468,7 @@ defmodule Spacecast.Transformations.TransformationMetrics do
   defp calculate_derived_metrics(aggregate_data) do
     if aggregate_data.execution_count > 0 do
       %{
-        average_execution_time_ms:
-          aggregate_data.total_execution_time_ms / aggregate_data.execution_count,
+        average_execution_time_ms: aggregate_data.total_execution_time_ms / aggregate_data.execution_count,
         success_rate: aggregate_data.success_count / aggregate_data.execution_count,
         error_rate: aggregate_data.error_count / aggregate_data.execution_count
       }

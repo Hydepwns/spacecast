@@ -17,34 +17,34 @@ defmodule Spacecast.Utils.ResourceAssigns do
   ```elixir
   defmodule MyAppWeb.UserLive do
     use SpacecastWeb.Resources.ResourceLive
-    
+
     assigns_resource do
       attributes do
         attribute :user_id, :string, required: true
         attribute :username, :string, required: true
         attribute :role, {:one_of, ["admin", "user", "guest"]}, default: "user"
-        
+
         # Nested attributes using map schema
         nested_attribute :settings, :map do
           attribute :theme, {:one_of, ["dark", "light", "system"]}, default: "system"
           attribute :notifications, :boolean, default: true
         end
-        
+
         # List attributes with validation
         attribute :permissions, {:list, :string}, default: []
       end
-      
+
       relationships do
         # Define relationships to other socket resources
         # (Implementation pending)
       end
-      
+
       validations do
         # Custom validations beyond type validation
         # (Implementation pending)
       end
     end
-    
+
     # Your LiveView implementation...
   end
   ```
@@ -182,8 +182,7 @@ defmodule Spacecast.Utils.ResourceAssigns do
     escaped_processed_opts = Macro.escape(processed_opts)
 
     quote do
-      @resource_attributes {unquote(name), unquote(escaped_nested_schema),
-                            unquote(escaped_processed_opts)}
+      @resource_attributes {unquote(name), unquote(escaped_nested_schema), unquote(escaped_processed_opts)}
     end
   end
 
@@ -262,7 +261,7 @@ defmodule Spacecast.Utils.ResourceAssigns do
       end
 
       # Metadata about the resource
-      def __resource_metadata__() do
+      def __resource_metadata__ do
         %{
           attributes: unquote(Macro.escape(attributes)),
           relationships: unquote(Macro.escape(relationships)),

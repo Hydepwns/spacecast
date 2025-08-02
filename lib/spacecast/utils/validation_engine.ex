@@ -55,27 +55,17 @@ defmodule Spacecast.Utils.ValidationEngine do
     # Validate attributes
     case validate_attributes(resource_module, resource, schema.attributes, context) do
       {:ok, _validated_resource} ->
-        # Validate relationships
-        case validate_relationships(resource_module, resource, schema.relationships, context) do
-          {:ok, final_resource} ->
-            # Run custom validations
-            case run_custom_validations(
-                   resource_module,
-                   final_resource,
-                   schema.validations,
-                   context
-                 ) do
-              {:ok, result} -> {:ok, result}
-              {:error, errors} -> {:error, errors}
-            end
-
-          {:error, errors} ->
-            {:error, errors}
-        end
+        validate_relationships_and_custom(resource_module, resource, schema, context)
 
       {:error, errors} ->
         {:error, errors}
     end
+  end
+
+  # Private function to handle relationship and custom validation
+  defp validate_relationships_and_custom(resource_module, resource, schema, context) do
+    {:ok, final_resource} = validate_relationships(resource_module, resource, schema.relationships, context)
+    run_custom_validations(resource_module, final_resource, schema.validations, context)
   end
 
   @doc """
@@ -145,6 +135,8 @@ defmodule Spacecast.Utils.ValidationEngine do
          {:ok, _} <- validate_type(attribute_def.type, value),
          {:ok, validated_value} <- run_custom_validation(attribute_def, value) do
       {:ok, validated_value}
+    else
+      {:error, error} -> {:error, error}
     end
   end
 
@@ -189,97 +181,64 @@ defmodule Spacecast.Utils.ValidationEngine do
   # Private function to validate types
   defp validate_type(type, value) do
     case type do
-      :string when is_binary(value) ->
-        {:ok, value}
-
-      :string when is_nil(value) ->
-        {:ok, value}
-
-      :string ->
-        {:error, "Expected string, got #{inspect(value)}"}
-
-      :integer when is_integer(value) ->
-        {:ok, value}
-
-      :integer when is_nil(value) ->
-        {:ok, value}
-
-      :integer ->
-        {:error, "Expected integer, got #{inspect(value)}"}
-
-      :float when is_float(value) ->
-        {:ok, value}
-
-      :float when is_integer(value) ->
-        {:ok, value * 1.0}
-
-      :float when is_nil(value) ->
-        {:ok, value}
-
-      :float ->
-        {:error, "Expected float, got #{inspect(value)}"}
-
-      :boolean when is_boolean(value) ->
-        {:ok, value}
-
-      :boolean when is_nil(value) ->
-        {:ok, value}
-
-      :boolean ->
-        {:error, "Expected boolean, got #{inspect(value)}"}
-
-      :map when is_map(value) ->
-        {:ok, value}
-
-      :map when is_nil(value) ->
-        {:ok, value}
-
-      :map ->
-        {:error, "Expected map, got #{inspect(value)}"}
-
-      :list when is_list(value) ->
-        {:ok, value}
-
-      :list when is_nil(value) ->
-        {:ok, value}
-
-      :list ->
-        {:error, "Expected list, got #{inspect(value)}"}
-
-      :atom when is_atom(value) ->
-        {:ok, value}
-
-      :atom when is_nil(value) ->
-        {:ok, value}
-
-      :atom ->
-        {:error, "Expected atom, got #{inspect(value)}"}
-
-      {:one_of, allowed_values} when is_list(allowed_values) ->
-        if is_nil(value) do
-          {:ok, value}
-        else
-          if value in allowed_values do
-            {:ok, value}
-          else
-            {:error, "Value must be one of: #{Enum.join(allowed_values, ", ")}"}
-          end
-        end
-
-      {:format, regex} when is_struct(regex, Regex) ->
-        if is_nil(value) do
-          {:ok, value}
-        else
-          if is_binary(value) && Regex.match?(regex, value) do
-            {:ok, value}
-          else
-            {:error, "Value does not match required format"}
-          end
-        end
-
-      # Default to accepting any value
-      _ ->
-        {:ok, value}
+      {:one_of, allowed_values} -> validate_one_of(value, allowed_values)
+      {:format, regex} -> validate_format(value, regex)
+      _ -> validate_basic_type(type, value)
     end
   end
+
+  defp validate_basic_type(type, value) do
+    case type do
+      :string -> validate_string(value)
+      :integer -> validate_integer(value)
+      :float -> validate_float(value)
+      :boolean -> validate_boolean(value)
+      :map -> validate_map(value)
+      :list -> validate_list(value)
+      :atom -> validate_atom(value)
+      _ -> {:ok, value}
+    end
+  end
+
+  defp validate_string(value) when is_binary(value) or is_nil(value), do: {:ok, value}
+  defp validate_string(value), do: {:error, "Expected string, got #{inspect(value)}"}
+
+  defp validate_integer(value) when is_integer(value) or is_nil(value), do: {:ok, value}
+  defp validate_integer(value), do: {:error, "Expected integer, got #{inspect(value)}"}
+
+  defp validate_float(value) when is_float(value) or is_nil(value), do: {:ok, value}
+  defp validate_float(value) when is_integer(value), do: {:ok, value * 1.0}
+  defp validate_float(value), do: {:error, "Expected float, got #{inspect(value)}"}
+
+  defp validate_boolean(value) when is_boolean(value) or is_nil(value), do: {:ok, value}
+  defp validate_boolean(value), do: {:error, "Expected boolean, got #{inspect(value)}"}
+
+  defp validate_map(value) when is_map(value) or is_nil(value), do: {:ok, value}
+  defp validate_map(value), do: {:error, "Expected map, got #{inspect(value)}"}
+
+  defp validate_list(value) when is_list(value) or is_nil(value), do: {:ok, value}
+  defp validate_list(value), do: {:error, "Expected list, got #{inspect(value)}"}
+
+  defp validate_atom(value) when is_atom(value) or is_nil(value), do: {:ok, value}
+  defp validate_atom(value), do: {:error, "Expected atom, got #{inspect(value)}"}
+
+  defp validate_one_of(value, _allowed_values) when is_nil(value), do: {:ok, value}
+  defp validate_one_of(value, allowed_values) when is_list(allowed_values) do
+    if value in allowed_values do
+      {:ok, value}
+    else
+      {:error, "Value must be one of: #{Enum.join(allowed_values, ", ")}"}
+    end
+  end
+  defp validate_one_of(_value, allowed_values), do: {:error, "Value must be one of: #{inspect(allowed_values)}"}
+
+  defp validate_format(value, _regex) when is_nil(value), do: {:ok, value}
+  defp validate_format(value, regex) when is_binary(value) do
+    if Regex.match?(regex, value) do
+      {:ok, value}
+    else
+      {:error, "Value does not match required format"}
+    end
+  end
+  defp validate_format(_value, _regex), do: {:error, "Value does not match required format"}
 end

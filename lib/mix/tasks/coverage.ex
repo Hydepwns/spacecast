@@ -31,8 +31,7 @@ defmodule Mix.Tasks.Coverage do
     # Generate coverage report
     generate_coverage_report(test_results, opts)
 
-    # Exit with the same code as the test run
-    System.halt(exit_code)
+    # Return the exit code
     {:ok, exit_code}
   end
 
@@ -172,6 +171,7 @@ defmodule Mix.Tasks.Coverage do
   defp print_module_coverage(results, opts) do
     if opts[:detail] do
       IO.puts("\n📁 Module Coverage:")
+
       results.module_coverage
       |> Enum.take(10)
       |> Enum.each(fn {module, test_count} ->
@@ -188,6 +188,7 @@ defmodule Mix.Tasks.Coverage do
     end
 
     threshold = opts[:threshold] || 70
+
     if results.coverage_percentage < threshold do
       IO.puts("  📝 Add more tests to reach #{threshold}% coverage threshold")
     end

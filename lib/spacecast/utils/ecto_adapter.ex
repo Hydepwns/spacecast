@@ -11,7 +11,7 @@ defmodule Spacecast.Utils.EctoAdapter do
   ```elixir
   defmodule MyApp.UserResource do
     use Spacecast.Utils.LiveViewResource
-    
+
     # Use the EctoAdapter with the User schema
     adapter Spacecast.Utils.EctoAdapter, schema: MyApp.User
   end
@@ -19,8 +19,6 @@ defmodule Spacecast.Utils.EctoAdapter do
   """
 
   @behaviour Spacecast.Utils.ResourceAdapter
-
-  alias Spacecast.Utils.ResourceAdapter
 
   @doc """
   Extracts attributes from an Ecto schema.
@@ -88,7 +86,7 @@ defmodule Spacecast.Utils.EctoAdapter do
   This function converts Ecto field types to LiveViewResource
   type specifications that can be used for validation.
   """
-  @impl ResourceAdapter
+  @impl Spacecast.Utils.ResourceAdapter
   def generate_type_specs(schema) when is_atom(schema) do
     fields = schema.__schema__(:fields)
     types = Map.new(fields, fn field -> {field, schema.__schema__(:type, field)} end)
@@ -104,7 +102,7 @@ defmodule Spacecast.Utils.EctoAdapter do
   This function uses Ecto's changeset functionality to validate
   a map of values against an Ecto schema's constraints.
   """
-  @impl ResourceAdapter
+  @impl Spacecast.Utils.ResourceAdapter
   def validate(schema, values) when is_atom(schema) and is_map(values) do
     # Try to ensure we have atom keys
     values = keys_to_atoms(values)
@@ -139,7 +137,7 @@ defmodule Spacecast.Utils.EctoAdapter do
   This function uses the provided repo to load data from
   the database based on the primary key value.
   """
-  @impl ResourceAdapter
+  @impl Spacecast.Utils.ResourceAdapter
   def load(schema, id) when is_atom(schema) do
     # We need a repo to actually load the data
     # This implementation assumes a repo is configured
@@ -162,7 +160,7 @@ defmodule Spacecast.Utils.EctoAdapter do
   This function uses the provided repo to save data to
   the database based on the primary key value.
   """
-  @impl ResourceAdapter
+  @impl Spacecast.Utils.ResourceAdapter
   def save(schema, values) when is_atom(schema) and is_map(values) do
     # We need a repo to actually save the data
     # This implementation assumes a repo is configured

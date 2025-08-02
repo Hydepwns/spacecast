@@ -414,7 +414,7 @@ defmodule Spacecast.Utils.TransformationRegistry do
   end
 
   # Discover all transformations
-  defp do_discover_all() do
+  defp do_discover_all do
     try do
       # Get all modules in the application
       {:ok, modules} =

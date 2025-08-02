@@ -3,6 +3,7 @@ defmodule Spacecast.ThemeSystem do
 
   # Mock theme struct that matches the expected interface
   defmodule MockTheme do
+    @moduledoc false
     defstruct [
       :id,
       :name,
@@ -178,6 +179,32 @@ defmodule Spacecast.ThemeSystem do
         _ -> raise Ecto.NoResultsError, queryable: "themes", message: "Theme not found"
       end
     end)
+  end
+
+  def get_theme(id) do
+    ensure_ets_table()
+    table = ets_table()
+
+    # Handle special case for "new" theme
+    case id do
+      "new" ->
+        {:error, "Cannot get theme with ID 'new' - use create_theme/1 instead"}
+
+      id when is_binary(id) ->
+        case Integer.parse(id) do
+          {int_id, ""} -> get_theme(int_id)
+          _ -> {:error, "Invalid theme ID: #{inspect(id)}"}
+        end
+
+      id when is_integer(id) ->
+        case :ets.lookup(table, id) do
+          [{^id, theme}] -> {:ok, mock_to_theme(theme)}
+          _ -> {:error, "Theme not found"}
+        end
+
+      _ ->
+        {:error, "Invalid theme ID: #{inspect(id)}"}
+    end
   end
 
   # For test isolation: clear all themes and reset next_id

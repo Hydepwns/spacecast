@@ -39,6 +39,4 @@ defmodule Spacecast.PromEx do
       {:spacecast, "event_monitoring.json"}
     ]
   end
-
-
 end

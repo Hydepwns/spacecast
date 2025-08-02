@@ -246,7 +246,7 @@ defmodule Spacecast.Accounts do
   Deletes a session token.
   """
   def delete_session_token(token) do
-    Repo.delete_all(from t in UserToken, where: t.token == ^token and t.context == "session")
+    Repo.delete_all(from(t in UserToken, where: t.token == ^token and t.context == "session"))
   end
 
   @doc """
