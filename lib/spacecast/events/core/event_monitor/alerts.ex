@@ -32,7 +32,8 @@ defmodule Spacecast.Events.Core.EventMonitor.Alerts do
   * Alert configuration map
   """
   @spec setup_alerting((map() -> any()) | nil, keyword()) :: map()
-  def setup_alerting(notification_function \\ nil, opts \\ []) when is_list(opts)
+  def setup_alerting(notification_function \\ nil, opts \\ [])
+      when is_list(opts)
       when is_nil(notification_function) or is_function(notification_function, 1) do
     %{
       enabled: true,
@@ -99,6 +100,7 @@ defmodule Spacecast.Events.Core.EventMonitor.Alerts do
   end
 
   defp should_send_alert?(nil, _now), do: true
+
   defp should_send_alert?(last_alert_time, now) do
     DateTime.diff(now, last_alert_time, :second) >= 300
   end
@@ -120,10 +122,11 @@ defmodule Spacecast.Events.Core.EventMonitor.Alerts do
       # Use the NotificationSystem if available
       case Code.ensure_loaded(NotificationSystem) do
         {:module, NotificationSystem} ->
-        NotificationSystem.send_alert(alert,
-          channels: alert_config.notification_channels,
-          recipients: alert_config.recipients
-        )
+          NotificationSystem.send_alert(alert,
+            channels: alert_config.notification_channels,
+            recipients: alert_config.recipients
+          )
+
         _ ->
           # Fallback to logging
           Logger.warning("Alert: #{alert.message} - #{inspect(alert.details)}")
@@ -235,7 +238,9 @@ defmodule Spacecast.Events.Core.EventMonitor.Alerts do
   @spec create_backpressure_alert(atom(), map()) :: map()
   def create_backpressure_alert(status, details) do
     level = if status == :critical, do: :critical, else: :warning
-    message = if status == :critical, do: "Critical backpressure in event system", else: "Warning backpressure in event system"
+
+    message =
+      if status == :critical, do: "Critical backpressure in event system", else: "Warning backpressure in event system"
 
     %{
       type: :backpressure,

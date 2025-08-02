@@ -196,8 +196,7 @@ defmodule Spacecast.Events.Adapters.EmailAdapter do
       message = %Swoosh.Email{
         to: email,
         from:
-          {Map.get(config, :from_name, "Spacecast Liveview"),
-           Map.get(config, :from_email, "noreply@spacecast.com")},
+          {Map.get(config, :from_name, "Spacecast Liveview"), Map.get(config, :from_email, "noreply@spacecast.com")},
         subject: content.subject,
         text_body: content.text,
         html_body: content.html,

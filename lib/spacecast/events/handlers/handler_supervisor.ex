@@ -54,8 +54,8 @@ defmodule Spacecast.Events.Handlers.HandlerSupervisor do
         name -> [name: name]
       end
 
-    # Ensure a unique ID for the child spec. 
-    # Use the :name from opts (which becomes the GenServer name for HandlerProcess) 
+    # Ensure a unique ID for the child spec.
+    # Use the :name from opts (which becomes the GenServer name for HandlerProcess)
     # or the handler_module itself if no name is provided in opts.
     child_id = Keyword.get(opts, :name, handler_module)
 
@@ -64,7 +64,8 @@ defmodule Spacecast.Events.Handlers.HandlerSupervisor do
       start: {HandlerProcess, :start_link, [handler_module, opts, name_opts]},
       # `handler_module` is the actual handler like LoggingHandler.
       # `opts` are the business-logic options for `handler_module` (e.g., event_types it handles).
-      # `name_opts` are the GenServer options for the `HandlerProcess` that wraps `handler_module` (e.g., its registered name).
+      # `name_opts` are the GenServer options for the `HandlerProcess` that wraps
+      # `handler_module` (e.g., its registered name).
       # HandlerProcess is a GenServer, so it's a worker
       type: :worker,
       # Or :transient or :temporary as appropriate

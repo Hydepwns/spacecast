@@ -53,8 +53,7 @@ defmodule Spacecast.Events.Projections.EventProjection do
     case Spacecast.Events.EventStore.get_events(%{sort: [timestamp: :asc]}) do
       {:ok, events} ->
         state =
-          Enum.reduce(events, %{events: [], last_event_id: nil, last_updated: nil}, fn event,
-                                                                                       acc ->
+          Enum.reduce(events, %{events: [], last_event_id: nil, last_updated: nil}, fn event, acc ->
             %{
               acc
               | events: [event | acc.events],

@@ -160,7 +160,9 @@ defmodule Spacecast.Events.SimpleCrypto do
 
   defp unpad_plaintext(padded_plaintext) do
     case byte_size(padded_plaintext) do
-      0 -> {:error, "Empty plaintext"}
+      0 ->
+        {:error, "Empty plaintext"}
+
       size ->
         padding_length = binary_part(padded_plaintext, size - 1, 1) |> :binary.bin_to_list() |> hd()
 

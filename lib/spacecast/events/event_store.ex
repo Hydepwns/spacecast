@@ -133,7 +133,7 @@ defmodule Spacecast.Events.EventStore do
   * `{:ok, event}` - The event was deleted
   * `{:error, :not_found}` - The event was not found
   """
-      @spec delete_event(String.t()) :: {:ok, Event.t()} | {:error, :not_found}
+  @spec delete_event(String.t()) :: {:ok, Event.t()} | {:error, :not_found}
   def delete_event(id), do: event_store_module().delete_event(id)
 
   @doc """

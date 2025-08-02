@@ -96,9 +96,7 @@ defmodule Spacecast.Events.Projections.ProjectionProcess do
         {:ok, process_state}
 
       {:error, reason} ->
-        Logger.error(
-          "Failed to initialize projection #{inspect(projection_module)}: #{inspect(reason)}"
-        )
+        Logger.error("Failed to initialize projection #{inspect(projection_module)}: #{inspect(reason)}")
 
         {:stop, reason}
     end
@@ -186,8 +184,7 @@ defmodule Spacecast.Events.Projections.ProjectionProcess do
         {new_projection_state, new_count, last_event_id} =
           Enum.reduce(
             events,
-            {rebuild_state.projection_state, rebuild_state.event_count,
-             rebuild_state.last_event_id},
+            {rebuild_state.projection_state, rebuild_state.event_count, rebuild_state.last_event_id},
             fn event, {proj_state, count, _last_id} ->
               case state.projection_module.apply_event(event, proj_state) do
                 {:ok, updated_state} ->
@@ -215,9 +212,7 @@ defmodule Spacecast.Events.Projections.ProjectionProcess do
           send(self(), {:rebuild_batch, filter, last_event_id, updated_rebuild_state})
         else
           # No more events, rebuild complete
-          Logger.info(
-            "Rebuild complete for #{inspect(state.projection_module)}, processed #{new_count} events"
-          )
+          Logger.info("Rebuild complete for #{inspect(state.projection_module)}, processed #{new_count} events")
 
           # Update the state with the rebuilt projection
           new_state = %{
@@ -257,9 +252,7 @@ defmodule Spacecast.Events.Projections.ProjectionProcess do
           {:noreply, new_state}
 
         {:error, reason} ->
-          Logger.error(
-            "Error applying event to projection #{inspect(state.projection_module)}: #{inspect(reason)}"
-          )
+          Logger.error("Error applying event to projection #{inspect(state.projection_module)}: #{inspect(reason)}")
 
           {:noreply, state}
       end
@@ -271,9 +264,7 @@ defmodule Spacecast.Events.Projections.ProjectionProcess do
 
   @impl true
   def handle_info(message, state) do
-    Logger.debug(
-      "Projection #{inspect(state.projection_module)} received unexpected message: #{inspect(message)}"
-    )
+    Logger.debug("Projection #{inspect(state.projection_module)} received unexpected message: #{inspect(message)}")
 
     {:noreply, state}
   end

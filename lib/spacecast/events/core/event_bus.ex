@@ -158,6 +158,7 @@ defmodule Spacecast.Events.Core.EventBus do
     subscribers =
       Enum.reduce(event_types_list, state.subscribers, fn event_type, acc ->
         current_subscribers = Map.get(acc, event_type, [])
+
         if subscriber in current_subscribers do
           acc
         else

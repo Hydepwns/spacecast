@@ -2,7 +2,7 @@ defmodule Spacecast.Events.Core.NotificationSystem do
   @moduledoc """
   Notification system for the event processing pipeline.
 
-  This module handles the delivery of alerts and notifications about the 
+  This module handles the delivery of alerts and notifications about the
   event processing system, including:
 
   - Backpressure alerts
@@ -65,9 +65,7 @@ defmodule Spacecast.Events.Core.NotificationSystem do
       |> Enum.into(%{})
 
     # Log that we sent notifications
-    Logger.info(
-      "Sent #{map_size(sent_notifications)} alerts for #{alert.type} (level: #{alert.level})"
-    )
+    Logger.info("Sent #{map_size(sent_notifications)} alerts for #{alert.type} (level: #{alert.level})")
 
     {:ok, sent_notifications}
   end
@@ -281,21 +279,7 @@ defmodule Spacecast.Events.Core.NotificationSystem do
   defp get_summary_for_alert(alert) do
     case alert.type do
       :event_system_backpressure ->
-        backpressure = alert.details.backpressure
-
-        cond do
-          backpressure.queue_pressure ->
-            "Queue pressure detected: #{render_handlers_with_pressure(alert.details.queue_sizes)}"
-
-          length(backpressure.slow_processing_types) > 0 ->
-            "Slow event processing: #{Enum.join(backpressure.slow_processing_types, ", ")}"
-
-          length(backpressure.high_error_types) > 0 ->
-            "High error rates in: #{Enum.join(backpressure.high_error_types, ", ")}"
-
-          true ->
-            "Event system backpressure detected"
-        end
+        get_backpressure_summary(alert.details)
 
       :event_error ->
         "Error processing event: #{alert.details.error_message}"
@@ -308,11 +292,29 @@ defmodule Spacecast.Events.Core.NotificationSystem do
     end
   end
 
+  # Generate summary for backpressure alerts
+  defp get_backpressure_summary(details) do
+    backpressure = details.backpressure
+
+    cond do
+      backpressure.queue_pressure ->
+        "Queue pressure detected: #{render_handlers_with_pressure(details.queue_sizes)}"
+
+      length(backpressure.slow_processing_types) > 0 ->
+        "Slow event processing: #{Enum.join(backpressure.slow_processing_types, ", ")}"
+
+      length(backpressure.high_error_types) > 0 ->
+        "High error rates in: #{Enum.join(backpressure.high_error_types, ", ")}"
+
+      true ->
+        "Event system backpressure detected"
+    end
+  end
+
   # Format handlers with pressure for display
   defp render_handlers_with_pressure(queue_sizes) do
     queue_sizes
     |> Enum.filter(fn {_handler, size} -> size > 1000 end)
-    |> Enum.map(fn {handler, size} -> "#{handler} (#{size})" end)
-    |> Enum.join(", ")
+    |> Enum.map_join(", ", fn {handler, size} -> "#{handler} (#{size})" end)
   end
 end

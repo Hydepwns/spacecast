@@ -63,51 +63,16 @@ defmodule Spacecast.Events.Core.EventInspector do
   """
   @spec compare_events(any(), any()) :: {:ok, map()} | {:error, any()}
   def compare_events(event_id_1, event_id_2) do
-    case {EventStore.get_event(event_id_1), EventStore.get_event(event_id_2)} do
-      {{:ok, event1}, {:ok, event2}} when not is_nil(event1) and not is_nil(event2) ->
-        diff = %{
-          type: if(event1.type == event2.type, do: nil, else: {event1.type, event2.type}),
-          resource_id:
-            if(event1.resource_id == event2.resource_id,
-              do: nil,
-              else: {event1.resource_id, event2.resource_id}
-            ),
-          resource_type:
-            if(event1.resource_type == event2.resource_type,
-              do: nil,
-              else: {event1.resource_type, event2.resource_type}
-            ),
-          data: compare_maps(event1.data, event2.data),
-          metadata: compare_maps(event1.metadata, event2.metadata),
-          timestamp:
-            if(event1.timestamp == event2.timestamp,
-              do: nil,
-              else: {event1.timestamp, event2.timestamp}
-            )
-        }
-
+    case get_events_for_comparison(event_id_1, event_id_2) do
+      {:ok, {event1, event2}} ->
+        diff = calculate_event_diff(event1, event2)
         {:ok, diff}
-
-      {{:ok, nil}, _} ->
-        {:error, :not_found}
-
-      {_, {:ok, nil}} ->
-        {:error, :not_found}
-
-      {{:error, :not_found}, _} ->
-        {:error, :not_found}
-
-      {_, {:error, :not_found}} ->
-        {:error, :not_found}
-
-      {{:error, reason}, _} ->
-        {:error, reason}
-
-      {_, {:error, reason}} ->
+      {:error, reason} ->
         {:error, reason}
     end
   end
 
+  @spec start_replay_for_debugging(any(), any(), any()) :: {:ok, any()} | {:error, any()}
   @doc """
   Creates and starts a replay session for debugging.
 
@@ -127,43 +92,42 @@ defmodule Spacecast.Events.Core.EventInspector do
   @spec start_replay_for_debugging(String.t(), String.t(), String.t(), map()) ::
           {:ok, any()} | {:error, any()}
   def start_replay_for_debugging(name, resource_type, resource_id, opts \\ [])
+  def start_replay_for_debugging(name, resource_type, resource_id, opts)
       when is_binary(name) and is_binary(resource_type) and is_binary(resource_id) and
              is_list(opts) do
     # Validate required parameters
-    cond do
-      is_binary(resource_type) and resource_type != "" and is_binary(resource_id) and
-          resource_id != "" ->
-        # Add debugging metadata
-        metadata =
-          Map.merge(
-            %{purpose: "debugging", created_by: "event_inspector"},
-            Keyword.get(opts, :metadata, %{})
-          )
+    if is_binary(resource_type) and resource_type != "" and is_binary(resource_id) and
+         resource_id != "" do
+      # Add debugging metadata
+      metadata =
+        Map.merge(
+          %{purpose: "debugging", created_by: "event_inspector"},
+          Keyword.get(opts, :metadata, %{})
+        )
 
-        with {:ok, session} <-
-               EventStore.create_replay_session(
-                 name,
-                 resource_type,
-                 resource_id,
-                 Keyword.put(opts, :metadata, metadata)
-               ),
-             {:ok, updated_session} <-
-               EventStore.update_replay_session_status(session.id, "running"),
-             # Get the events for the session
-             {:ok, events} <- EventStore.get_replay_session_events(updated_session.id) do
-          # Record the start of replay
-          record_replay_start(updated_session, events)
+      with {:ok, session} <-
+             EventStore.create_replay_session(
+               name,
+               resource_type,
+               resource_id,
+               Keyword.put(opts, :metadata, metadata)
+             ),
+           {:ok, updated_session} <-
+             EventStore.update_replay_session_status(session.id, "running"),
+           # Get the events for the session
+           {:ok, events} <- EventStore.get_replay_session_events(updated_session.id) do
+        # Record the start of replay
+        record_replay_start(updated_session, events)
 
-          # Start the actual replay process
-          spawn_link(fn ->
-            replay_events(events, updated_session.id)
-          end)
+        # Start the actual replay process
+        spawn_link(fn ->
+          replay_events(events, updated_session.id)
+        end)
 
-          {:ok, updated_session.id}
-        end
-
-      true ->
-        {:error, :invalid_parameters}
+        {:ok, updated_session.id}
+      end
+    else
+      {:error, :invalid_parameters}
     end
   end
 
@@ -207,7 +171,6 @@ defmodule Spacecast.Events.Core.EventInspector do
   * `{:ok, metrics}` - The event system metrics
   * `{:error, reason}` - Error retrieving metrics
   """
-  @spec get_event_system_metrics(integer()) :: {:ok, map()} | {:error, any()}
   @spec get_event_system_metrics(integer()) :: {:ok, map()} | {:error, any()}
   def get_event_system_metrics(time_period \\ 3600) when is_integer(time_period) do
     start_time = DateTime.add(DateTime.utc_now(), -time_period, :second)
@@ -261,6 +224,42 @@ defmodule Spacecast.Events.Core.EventInspector do
   end
 
   # Private functions
+
+  # Gets events for comparison, handling all error cases
+  defp get_events_for_comparison(event_id_1, event_id_2) do
+    case {EventStore.get_event(event_id_1), EventStore.get_event(event_id_2)} do
+      {{:ok, event1}, {:ok, event2}} when not is_nil(event1) and not is_nil(event2) ->
+        {:ok, {event1, event2}}
+      {{:ok, nil}, _} ->
+        {:error, :not_found}
+      {_, {:ok, nil}} ->
+        {:error, :not_found}
+    end
+  end
+
+  # Calculates the difference between two events
+  defp calculate_event_diff(event1, event2) do
+    %{
+      type: if(event1.type == event2.type, do: nil, else: {event1.type, event2.type}),
+      resource_id:
+        if(event1.resource_id == event2.resource_id,
+          do: nil,
+          else: {event1.resource_id, event2.resource_id}
+        ),
+      resource_type:
+        if(event1.resource_type == event2.resource_type,
+          do: nil,
+          else: {event1.resource_type, event2.resource_type}
+        ),
+      data: compare_maps(event1.data, event2.data),
+      metadata: compare_maps(event1.metadata, event2.metadata),
+      timestamp:
+        if(event1.timestamp == event2.timestamp,
+          do: nil,
+          else: {event1.timestamp, event2.timestamp}
+        )
+    }
+  end
 
   # Gets events related to the given event (by correlation and causation)
   defp get_related_events(event) when is_nil(event) do
@@ -499,15 +498,7 @@ defmodule Spacecast.Events.Core.EventInspector do
   end
 
   defp validate_event_sequence(events) do
-    case Enum.find_value(events, :ok, fn event ->
-           case validate_event(event) do
-             :ok -> nil
-             {:error, reason} -> {:error, reason}
-           end
-         end) do
-      :ok -> :ok
-      {:error, reason} -> {:error, reason}
-    end
+    Enum.find_value(events, :ok, &validate_event/1)
   end
 
   defp perform_sequence_analysis(events) do

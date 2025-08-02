@@ -151,8 +151,7 @@ defmodule Spacecast.Events.ResourceIntegration.TransactionalResourceChanges do
     TransactionalEventStore.transaction_with_events(fn ->
       correlation_id = Ecto.UUID.generate()
 
-      Enum.reduce_while(operations, {[], []}, fn {resource_module, id, operation_fn, event_type,
-                                                  event_data, metadata},
+      Enum.reduce_while(operations, {[], []}, fn {resource_module, id, operation_fn, event_type, event_data, metadata},
                                                  {results_acc, events_acc} ->
         with {:ok, resource} <- resource_module.get(id),
              {:ok, result} <- operation_fn.(resource) do

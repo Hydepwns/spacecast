@@ -116,16 +116,18 @@ defmodule Spacecast.Events.SnapshotOperations do
         if event_id do
           # Count events after the snapshot's event
           query =
-            from e in Event,
+            from(e in Event,
               where: e.resource_type == ^resource_type and e.resource_id == ^resource_id,
               where: e.inserted_at > ^snapshot.inserted_at
+            )
 
           {:ok, Repo.aggregate(query, :count)}
         else
           # No event ID in metadata, count all events
           query =
-            from e in Event,
+            from(e in Event,
               where: e.resource_type == ^resource_type and e.resource_id == ^resource_id
+            )
 
           {:ok, Repo.aggregate(query, :count)}
         end
@@ -133,8 +135,9 @@ defmodule Spacecast.Events.SnapshotOperations do
       {:error, :not_found} ->
         # No snapshot, count all events
         query =
-          from e in Event,
+          from(e in Event,
             where: e.resource_type == ^resource_type and e.resource_id == ^resource_id
+          )
 
         {:ok, Repo.aggregate(query, :count)}
 
@@ -210,9 +213,10 @@ defmodule Spacecast.Events.SnapshotOperations do
       when is_binary(resource_type) and byte_size(resource_type) > 0 and
              is_binary(resource_id) and byte_size(resource_id) > 0 do
     query =
-      from s in Snapshot,
+      from(s in Snapshot,
         where: s.resource_type == ^resource_type and s.resource_id == ^resource_id,
         order_by: [asc: s.inserted_at]
+      )
 
     try do
       {:ok, Repo.all(query)}

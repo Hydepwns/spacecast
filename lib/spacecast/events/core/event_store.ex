@@ -482,10 +482,11 @@ defmodule Spacecast.Events.Core.EventStore do
   @spec get_latest_snapshot(String.t(), String.t()) :: {:ok, any()} | {:error, any()}
   def get_latest_snapshot(resource_type, resource_id) do
     query =
-      from s in Snapshot,
+      from(s in Snapshot,
         where: s._resource_type == ^resource_type and s._resource_id == ^resource_id,
         order_by: [desc: s.inserted_at, desc: s.id],
         limit: 1
+      )
 
     case Repo.one(query) do
       nil -> {:error, :not_found}
@@ -514,16 +515,18 @@ defmodule Spacecast.Events.Core.EventStore do
         if event_id do
           # Count events after the snapshot's event
           query =
-            from e in Event,
+            from(e in Event,
               where: e.resource_type == ^resource_type and e.resource_id == ^resource_id,
               where: e.inserted_at > ^snapshot.inserted_at
+            )
 
           {:ok, Repo.aggregate(query, :count)}
         else
           # No event ID in metadata, count all events
           query =
-            from e in Event,
+            from(e in Event,
               where: e.resource_type == ^resource_type and e.resource_id == ^resource_id
+            )
 
           {:ok, Repo.aggregate(query, :count)}
         end
@@ -531,8 +534,9 @@ defmodule Spacecast.Events.Core.EventStore do
       {:error, :not_found} ->
         # No snapshot, count all events
         query =
-          from e in Event,
+          from(e in Event,
             where: e.resource_type == ^resource_type and e.resource_id == ^resource_id
+          )
 
         {:ok, Repo.aggregate(query, :count)}
 
@@ -559,10 +563,11 @@ defmodule Spacecast.Events.Core.EventStore do
     case get_event(after_event_id) do
       {:ok, event} ->
         query =
-          from e in Event,
+          from(e in Event,
             where: e.resource_type == ^resource_type and e.resource_id == ^resource_id,
             where: e.inserted_at > ^event.inserted_at,
             order_by: [asc: e.inserted_at]
+          )
 
         {:ok, Repo.all(query)}
 
@@ -589,9 +594,10 @@ defmodule Spacecast.Events.Core.EventStore do
   @spec get_events_for_resource(String.t(), String.t()) :: {:ok, [Event.t()]} | {:error, any()}
   def get_events_for_resource(resource_type, resource_id) do
     query =
-      from e in Event,
+      from(e in Event,
         where: e.resource_type == ^resource_type and e.resource_id == ^resource_id,
         order_by: [asc: e.timestamp]
+      )
 
     case Repo.all(query) do
       events when is_list(events) -> {:ok, events}
@@ -740,15 +746,15 @@ defmodule Spacecast.Events.Core.EventStore do
   end
 
   defp build_base_query(session) do
-    from e in Event,
-      where:
-        e._resource_type == ^session._resource_type and e._resource_id == ^session._resource_id
+    from(e in Event,
+      where: e._resource_type == ^session._resource_type and e._resource_id == ^session._resource_id
+    )
   end
 
   defp add_start_event_constraint(query, session) do
     if session.start_event_id do
       case get_event(session.start_event_id) do
-        {:ok, start_event} -> from e in query, where: e.inserted_at >= ^start_event.inserted_at
+        {:ok, start_event} -> from(e in query, where: e.inserted_at >= ^start_event.inserted_at)
         _ -> query
       end
     else
@@ -759,7 +765,7 @@ defmodule Spacecast.Events.Core.EventStore do
   defp add_end_event_constraint(query, session) do
     if session.end_event_id do
       case get_event(session.end_event_id) do
-        {:ok, end_event} -> from e in query, where: e.inserted_at <= ^end_event.inserted_at
+        {:ok, end_event} -> from(e in query, where: e.inserted_at <= ^end_event.inserted_at)
         _ -> query
       end
     else
@@ -860,9 +866,10 @@ defmodule Spacecast.Events.Core.EventStore do
   @spec get_snapshots(String.t(), String.t()) :: {:ok, [any()]} | {:error, any()}
   def get_snapshots(resource_type, resource_id) do
     query =
-      from s in Snapshot,
+      from(s in Snapshot,
         where: s._resource_type == ^resource_type and s._resource_id == ^resource_id,
         order_by: [asc: s.inserted_at, asc: s.id]
+      )
 
     try do
       {:ok, Repo.all(query)}
@@ -944,10 +951,11 @@ defmodule Spacecast.Events.Core.EventStore do
   @spec get_latest_versioned_state(String.t(), String.t()) :: {:ok, any()} | {:error, any()}
   def get_latest_versioned_state(resource_type, resource_id) do
     query =
-      from vs in VersionedState,
+      from(vs in VersionedState,
         where: vs._resource_type == ^resource_type and vs._resource_id == ^resource_id,
         order_by: [desc: vs.version],
         limit: 1
+      )
 
     try do
       case Repo.one(query) do
@@ -990,10 +998,11 @@ defmodule Spacecast.Events.Core.EventStore do
           {:ok, [Event.t()]} | {:error, any()}
   def get_events_for_resource_at(resource_type, resource_id, timestamp) do
     query =
-      from e in Event,
+      from(e in Event,
         where: e.resource_type == ^resource_type and e.resource_id == ^resource_id,
         where: e.timestamp <= ^timestamp,
         order_by: [asc: e.timestamp]
+      )
 
     try do
       {:ok, Repo.all(query)}
@@ -1015,7 +1024,7 @@ defmodule Spacecast.Events.Core.EventStore do
   * `{:error, :not_found}` - No event with the given ID exists
   * `{:error, reason}` - Error deleting the event
   """
-    @spec delete_event(any()) :: {:ok, Event.t()} | {:error, any()}
+  @spec delete_event(any()) :: {:ok, Event.t()} | {:error, any()}
   def delete_event(id) do
     try do
       # First get the event to return it after deletion
@@ -1107,7 +1116,7 @@ defmodule Spacecast.Events.Core.EventStore do
   * `{:error, reason}` - Error retrieving events
   """
   @spec list_all_events() :: {:ok, [Event.t()]} | {:error, any()}
-  def list_all_events() do
+  def list_all_events do
     try do
       events = Repo.all(EventSchema)
       {:ok, events}
@@ -1122,7 +1131,7 @@ defmodule Spacecast.Events.Core.EventStore do
   Lists all replay sessions (stub).
   """
   @spec list_replay_sessions() :: {:ok, list()} | {:error, any()}
-  def list_replay_sessions() do
+  def list_replay_sessions do
     {:ok, []}
   end
 

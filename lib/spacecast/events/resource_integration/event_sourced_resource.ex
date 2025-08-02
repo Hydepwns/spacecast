@@ -255,9 +255,9 @@ defmodule Spacecast.Events.ResourceIntegration.EventSourcedResource do
   """
   def get_current_state(resource_type, resource_id)
       when is_atom(resource_type) and is_binary(resource_id) and byte_size(resource_id) > 0 do
-    with {:ok, events} <- EventStore.get_events_for_resource(resource_type, resource_id) do
-      initial_state = initial_state()
-      state = rebuild_from_events(events, initial_state, &apply_event/2)
+    with {:ok, events} <- EventStore.get_events_for_resource(to_string(resource_type), resource_id) do
+      initial_state = %{}
+      state = rebuild_from_events(events, initial_state, fn _event, state -> state end)
       {:ok, state}
     end
   end
@@ -380,10 +380,8 @@ defmodule Spacecast.Events.ResourceIntegration.EventSourcedResource do
   def execute_command(resource_type, resource_id, command) do
     case get_current_state(resource_type, resource_id) do
       {:ok, state} ->
-        case validate_command(command, state) do
-          :ok -> store_and_apply_command_event(resource_type, resource_id, command, state)
-          {:error, reason} -> {:error, reason}
-        end
+        validate_command(command, state)
+        store_and_apply_command_event(resource_type, resource_id, command, state)
 
       error ->
         error

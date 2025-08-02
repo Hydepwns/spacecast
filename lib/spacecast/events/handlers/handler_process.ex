@@ -81,9 +81,7 @@ defmodule Spacecast.Events.Handlers.HandlerProcess do
         {:ok, state}
 
       {:error, reason} ->
-        Logger.error(
-          "Failed to initialize handler #{inspect(handler_module)}: #{inspect(reason)}"
-        )
+        Logger.error("Failed to initialize handler #{inspect(handler_module)}: #{inspect(reason)}")
 
         {:stop, reason}
     end
@@ -101,9 +99,7 @@ defmodule Spacecast.Events.Handlers.HandlerProcess do
         {:noreply, state}
 
       other ->
-        Logger.warning(
-          "Unexpected return from #{inspect(state.handler)}.handle_info/2: #{inspect(other)}"
-        )
+        Logger.warning("Unexpected return from #{inspect(state.handler)}.handle_info/2: #{inspect(other)}")
 
         {:noreply, state}
     end
@@ -122,9 +118,7 @@ defmodule Spacecast.Events.Handlers.HandlerProcess do
           {:noreply, state}
 
         other ->
-          Logger.warning(
-            "Unexpected return from #{inspect(state.handler)}.handle_info/2: #{inspect(other)}"
-          )
+          Logger.warning("Unexpected return from #{inspect(state.handler)}.handle_info/2: #{inspect(other)}")
 
           {:noreply, state}
       end
@@ -157,9 +151,7 @@ defmodule Spacecast.Events.Handlers.HandlerProcess do
           {:stop, reason, %{state | handler_state: new_handler_state}}
 
         other ->
-          Logger.warning(
-            "Unexpected return from #{inspect(state.handler)}.handle_call/3: #{inspect(other)}"
-          )
+          Logger.warning("Unexpected return from #{inspect(state.handler)}.handle_call/3: #{inspect(other)}")
 
           {:reply, {:error, :unexpected_return}, state}
       end
@@ -181,9 +173,7 @@ defmodule Spacecast.Events.Handlers.HandlerProcess do
           {:stop, reason, %{state | handler_state: new_handler_state}}
 
         other ->
-          Logger.warning(
-            "Unexpected return from #{inspect(state.handler)}.handle_cast/2: #{inspect(other)}"
-          )
+          Logger.warning("Unexpected return from #{inspect(state.handler)}.handle_cast/2: #{inspect(other)}")
 
           {:noreply, state}
       end
@@ -234,9 +224,7 @@ defmodule Spacecast.Events.Handlers.HandlerProcess do
             apply(handler_module, :interested_in, [])
           rescue
             e ->
-              Logger.error(
-                "Exception in #{inspect(handler_module)}.interested_in/0: #{inspect(e)}"
-              )
+              Logger.error("Exception in #{inspect(handler_module)}.interested_in/0: #{inspect(e)}")
 
               []
           end

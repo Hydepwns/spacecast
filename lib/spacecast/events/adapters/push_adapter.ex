@@ -74,9 +74,7 @@ defmodule Spacecast.Events.Adapters.PushAdapter do
 
         success_count = Enum.count(results, fn {_token, {status, _}} -> status == :ok end)
 
-        Logger.info(
-          "Bulk notification sent: #{success_count}/#{length(device_tokens)} successful"
-        )
+        Logger.info("Bulk notification sent: #{success_count}/#{length(device_tokens)} successful")
 
         {:ok, results}
 
@@ -148,9 +146,7 @@ defmodule Spacecast.Events.Adapters.PushAdapter do
           status: "scheduled"
         }
 
-        Logger.info(
-          "Notification scheduled for #{device_token} at #{scheduled_time}: #{scheduled_id}"
-        )
+        Logger.info("Notification scheduled for #{device_token} at #{scheduled_time}: #{scheduled_id}")
 
         {:ok, scheduled_id}
 

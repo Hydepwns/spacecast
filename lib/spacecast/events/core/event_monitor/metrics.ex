@@ -123,10 +123,11 @@ defmodule Spacecast.Events.Core.EventMonitor.Metrics do
   """
   @spec update_error_rates(%{any() => map()}, any(), atom()) :: %{any() => map()}
   def update_error_rates(error_rates, event_type, status) do
-    current_metrics = case Map.get(error_rates, event_type) do
-      %{count: count, errors: errors} -> %{count: count, errors: errors}
-      _ -> %{count: 0, errors: 0}
-    end
+    current_metrics =
+      case Map.get(error_rates, event_type) do
+        %{count: count, errors: errors} -> %{count: count, errors: errors}
+        _ -> %{count: 0, errors: 0}
+      end
 
     updated_metrics = %{
       count: current_metrics.count + 1,
@@ -201,15 +202,18 @@ defmodule Spacecast.Events.Core.EventMonitor.Metrics do
         metrics = %{
           event_count: length(events),
           time_period_seconds: DateTime.diff(end_time, start_time, :second),
-          events_per_second: if(DateTime.diff(end_time, start_time, :second) > 0,
-                               do: length(events) / DateTime.diff(end_time, start_time, :second),
-                               else: 0.0),
+          events_per_second:
+            if(DateTime.diff(end_time, start_time, :second) > 0,
+              do: length(events) / DateTime.diff(end_time, start_time, :second),
+              else: 0.0
+            ),
           timestamp: DateTime.utc_now()
         }
 
         {:ok, metrics}
 
-      error -> error
+      error ->
+        error
     end
   end
 

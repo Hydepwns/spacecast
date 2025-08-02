@@ -176,8 +176,7 @@ defmodule Spacecast.Events.Core.TransactionalEventStore do
 
     transaction_with_events(fn ->
       {results, all_events} =
-        Enum.reduce_while(resource_changes, {[], []}, fn {resource_module, id, change_fn},
-                                                         {results_acc, events_acc} ->
+        Enum.reduce_while(resource_changes, {[], []}, fn {resource_module, id, change_fn}, {results_acc, events_acc} ->
           case change_fn.() do
             {:ok, resource, events} ->
               # Enhance events with metadata

@@ -69,16 +69,12 @@ defmodule Spacecast.Events.Projections.ProjectionSupervisor do
         result
 
       {:error, {:already_started, pid}} ->
-        Logger.info(
-          "Projection #{inspect(projection_module)} already started with PID #{inspect(pid)}"
-        )
+        Logger.info("Projection #{inspect(projection_module)} already started with PID #{inspect(pid)}")
 
         {:ok, pid}
 
       {:error, reason} = error ->
-        Logger.error(
-          "Failed to start projection #{inspect(projection_module)}: #{inspect(reason)}"
-        )
+        Logger.error("Failed to start projection #{inspect(projection_module)}: #{inspect(reason)}")
 
         error
     end

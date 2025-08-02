@@ -50,13 +50,14 @@ defmodule Spacecast.Events.Core.Event do
 
   * `changeset` - The changeset for the event
   """
-    def changeset(event, attrs) when is_map(attrs) do
+  def changeset(event, attrs) when is_map(attrs) do
     # Pre-process attributes to set default IDs if not provided
     # Convert to atom keys first, then back to string keys to maintain consistency
-    attrs = attrs
-    |> convert_to_atom_keys()
-    |> set_default_ids()
-    |> convert_to_string_keys()
+    attrs =
+      attrs
+      |> convert_to_atom_keys()
+      |> set_default_ids()
+      |> convert_to_string_keys()
 
     event
     |> cast(attrs, [

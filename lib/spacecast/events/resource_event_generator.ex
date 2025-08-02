@@ -26,14 +26,14 @@ defmodule Spacecast.Events.ResourceEventGenerator do
 
     # Create the event
     case Event.create(
-      event_data.type,
-      %{
-        resource_type: resource_type,
-        resource_id: event_data.resource_id,
-        data: event_data.data || %{},
-        metadata: event_data.metadata || %{}
-      }
-    ) do
+           event_data.type,
+           %{
+             resource_type: resource_type,
+             resource_id: event_data.resource_id,
+             data: event_data.data || %{},
+             metadata: event_data.metadata || %{}
+           }
+         ) do
       {:ok, event} ->
         IO.puts("ResourceEventGenerator: Event created successfully, attempting to store")
 
@@ -70,7 +70,7 @@ defmodule Spacecast.Events.ResourceEventGenerator do
   * `{:error, reason}` - The event failed to publish
   """
   def resource_created(resource, metadata \\ %{}) do
-    resource_id = get_resource_id(resource)
+    resource_id = get_resource_id(resource) || ""
     resource_type = extract_resource_type(resource)
 
     generate_event(resource_type, %{
@@ -96,7 +96,7 @@ defmodule Spacecast.Events.ResourceEventGenerator do
   * `{:error, reason}` - The event failed to publish
   """
   def resource_updated(resource, changes \\ %{}, metadata \\ %{}) do
-    resource_id = get_resource_id(resource)
+    resource_id = get_resource_id(resource) || ""
     resource_type = extract_resource_type(resource)
 
     # Convert changes keys to strings to ensure consistency
@@ -124,7 +124,7 @@ defmodule Spacecast.Events.ResourceEventGenerator do
   * `{:error, reason}` - The event failed to publish
   """
   def resource_deleted(resource, metadata \\ %{}) do
-    resource_id = get_resource_id(resource)
+    resource_id = get_resource_id(resource) || ""
     resource_type = extract_resource_type(resource)
 
     generate_event(resource_type, %{
@@ -151,7 +151,7 @@ defmodule Spacecast.Events.ResourceEventGenerator do
   * `{:error, reason}` - The event failed to publish
   """
   def resource_event(resource, event_type, data \\ %{}, metadata \\ %{}) do
-    resource_id = get_resource_id(resource)
+    resource_id = get_resource_id(resource) || ""
     resource_type = extract_resource_type(resource)
 
     generate_event(resource_type, %{
@@ -168,20 +168,11 @@ defmodule Spacecast.Events.ResourceEventGenerator do
     cond do
       Map.has_key?(resource, :id) -> resource.id
       Map.has_key?(resource, "id") -> resource["id"]
-      true -> nil
+      true -> ""
     end
   end
-  defp get_resource_id(_resource), do: nil
 
-  defp get_resource_module(resource) when is_map(resource) do
-    if Map.has_key?(resource, :__struct__) do
-      resource.__struct__
-    else
-      Spacecast.Resource
-    end
-  end
-  defp get_resource_module(resource) when is_atom(resource), do: resource
-  defp get_resource_module(_resource), do: Spacecast.Resource
+  defp get_resource_id(_resource), do: ""
 
   defp extract_resource_type(module_or_struct) do
     cond do
@@ -195,14 +186,17 @@ defmodule Spacecast.Events.ResourceEventGenerator do
           "" -> "resource"
           type -> type
         end
+
       is_map(module_or_struct) and Map.has_key?(module_or_struct, :type) ->
         to_string(module_or_struct.type)
+
       is_map(module_or_struct) and Map.has_key?(module_or_struct, :__struct__) ->
         module_or_struct.__struct__
         |> Module.split()
         |> List.last()
         |> String.replace("Resource", "")
         |> Macro.underscore()
+
       true ->
         "resource"
     end

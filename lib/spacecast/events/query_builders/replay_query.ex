@@ -26,14 +26,15 @@ defmodule Spacecast.Events.QueryBuilders.ReplayQuery do
   # Private functions
 
   defp build_base_query(session) do
-    from e in Event,
+    from(e in Event,
       where: e.resource_type == ^session.resource_type and e.resource_id == ^session.resource_id
+    )
   end
 
   defp add_start_event_constraint(query, session) do
     if session.start_event_id do
       case get_event(session.start_event_id) do
-        {:ok, start_event} -> from e in query, where: e.inserted_at >= ^start_event.inserted_at
+        {:ok, start_event} -> from(e in query, where: e.inserted_at >= ^start_event.inserted_at)
         _ -> query
       end
     else
@@ -44,7 +45,7 @@ defmodule Spacecast.Events.QueryBuilders.ReplayQuery do
   defp add_end_event_constraint(query, session) do
     if session.end_event_id do
       case get_event(session.end_event_id) do
-        {:ok, end_event} -> from e in query, where: e.inserted_at <= ^end_event.inserted_at
+        {:ok, end_event} -> from(e in query, where: e.inserted_at <= ^end_event.inserted_at)
         _ -> query
       end
     else

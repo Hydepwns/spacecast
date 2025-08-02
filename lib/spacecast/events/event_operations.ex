@@ -57,8 +57,11 @@ defmodule Spacecast.Events.EventOperations do
           metadata: stored_schema.metadata,
           timestamp: stored_schema.timestamp
         }
+
         {:ok, stored_event}
-      {:error, changeset} -> {:error, changeset}
+
+      {:error, changeset} ->
+        {:error, changeset}
     end
   end
 
@@ -118,8 +121,11 @@ defmodule Spacecast.Events.EventOperations do
               metadata: stored_schema.metadata,
               timestamp: stored_schema.timestamp
             }
+
             {:ok, stored_event}
-          {:error, changeset} -> {:error, changeset}
+
+          {:error, changeset} ->
+            {:error, changeset}
         end
 
       {:error, reason} ->
@@ -164,6 +170,7 @@ defmodule Spacecast.Events.EventOperations do
   def get_events(criteria) when is_map(criteria) do
     # Build query and execute directly
     query = EventQuery.build_query(criteria)
+
     case Repo.all(query) do
       events when is_list(events) -> {:ok, events}
       _ -> {:error, :query_failed}
@@ -187,7 +194,9 @@ defmodule Spacecast.Events.EventOperations do
   def get_event(id) when is_binary(id) do
     # Get event directly from database
     case Repo.get(EventSchema, id) do
-      nil -> {:error, :not_found}
+      nil ->
+        {:error, :not_found}
+
       event_schema ->
         # Convert EventSchema back to Event struct
         event = %Event{
@@ -201,6 +210,7 @@ defmodule Spacecast.Events.EventOperations do
           metadata: event_schema.metadata,
           timestamp: event_schema.timestamp
         }
+
         {:ok, event}
     end
   end
@@ -313,6 +323,7 @@ defmodule Spacecast.Events.EventOperations do
   def count_events(criteria \\ %{}) do
     # Count events directly
     query = EventQuery.build_query(criteria)
+
     case Repo.aggregate(query, :count, :id) do
       count when is_integer(count) -> {:ok, count}
       _ -> {:error, :count_failed}
@@ -335,6 +346,7 @@ defmodule Spacecast.Events.EventOperations do
   def purge_events(criteria) when map_size(criteria) > 0 do
     # Purge events directly
     query = EventQuery.build_query(criteria)
+
     case Repo.delete_all(query) do
       {count, _} -> {:ok, count}
       _ -> {:error, :purge_failed}

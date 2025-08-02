@@ -87,7 +87,8 @@ defmodule Spacecast.Events.Core.EventMonitor do
   * `:ok` - Alerting set up successfully
   """
   @spec setup_alerting((map() -> any()) | nil, list()) :: :ok
-  def setup_alerting(notification_function \\ nil, opts \\ []) when is_list(opts)
+  def setup_alerting(notification_function \\ nil, opts \\ [])
+      when is_list(opts)
       when is_nil(notification_function) or is_function(notification_function, 1) do
     GenServer.cast(__MODULE__, {:setup_alerting, notification_function, opts})
   end
@@ -253,9 +254,9 @@ defmodule Spacecast.Events.Core.EventMonitor do
 
     # Get events in the time period using the configured event store
     case state.event_store.get_events(%{
-      timestamp: %{after: start_time},
-      sort: [timestamp: :asc]
-    }) do
+           timestamp: %{after: start_time},
+           sort: [timestamp: :asc]
+         }) do
       {:ok, events} ->
         # Calculate processing times by event type using the Metrics module
         processing_metrics = Metrics.calculate_processing_metrics(events, state)
@@ -267,12 +268,12 @@ defmodule Spacecast.Events.Core.EventMonitor do
         error_rates = Metrics.calculate_error_rates(events, state)
 
         # Check for backpressure using the Backpressure module
-        backpressure = Backpressure.detect_backpressure(queue_sizes, processing_metrics, error_rates, state.alert_config.thresholds)
+        backpressure =
+          Backpressure.detect_backpressure(queue_sizes, processing_metrics, error_rates, state.alert_config.thresholds)
 
         metrics = %{
           event_count: length(events),
-          events_per_second:
-            if(lookback_seconds > 0, do: length(events) / lookback_seconds, else: 0.0),
+          events_per_second: if(lookback_seconds > 0, do: length(events) / lookback_seconds, else: 0.0),
           processing_metrics: processing_metrics,
           queue_sizes: queue_sizes,
           error_rates: error_rates,
@@ -283,7 +284,8 @@ defmodule Spacecast.Events.Core.EventMonitor do
 
         {:reply, {:ok, metrics}, state}
 
-      error -> {:reply, error, state}
+      error ->
+        {:reply, error, state}
     end
   end
 
@@ -298,15 +300,15 @@ defmodule Spacecast.Events.Core.EventMonitor do
     error_rates = Metrics.update_error_rates(state.error_rates, event.type, status)
 
     # Add to history
-    history = Metrics.add_to_history(state.history, %{
-      timestamp: DateTime.utc_now(),
-      event_type: event.type,
-      duration_ms: duration_ms,
-      status: status
-    })
+    history =
+      Metrics.add_to_history(state.history, %{
+        timestamp: DateTime.utc_now(),
+        event_type: event.type,
+        duration_ms: duration_ms,
+        status: status
+      })
 
-    {:noreply,
-     %{state | metrics_by_type: metrics_by_type, error_rates: error_rates, history: history}}
+    {:noreply, %{state | metrics_by_type: metrics_by_type, error_rates: error_rates, history: history}}
   end
 
   @impl true
@@ -475,12 +477,12 @@ defmodule Spacecast.Events.Core.EventMonitor do
       error_rates = Metrics.calculate_error_rates(events, state)
 
       # Check for backpressure using the Backpressure module
-      backpressure = Backpressure.detect_backpressure(queue_sizes, processing_metrics, error_rates, state.alert_config.thresholds)
+      backpressure =
+        Backpressure.detect_backpressure(queue_sizes, processing_metrics, error_rates, state.alert_config.thresholds)
 
       metrics = %{
         event_count: length(events),
-        events_per_second:
-          if(lookback_seconds > 0, do: length(events) / lookback_seconds, else: 0.0),
+        events_per_second: if(lookback_seconds > 0, do: length(events) / lookback_seconds, else: 0.0),
         processing_metrics: processing_metrics,
         queue_sizes: queue_sizes,
         error_rates: error_rates,

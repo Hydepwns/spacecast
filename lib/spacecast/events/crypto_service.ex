@@ -9,9 +9,6 @@ defmodule Spacecast.Events.CryptoService do
   # Use the existing Signal Protocol NIF or fallback to simple crypto
   alias Spacecast.Events.SimpleCrypto, as: SimpleCrypto
 
-  # Try to load Signal Protocol, fallback to simple crypto if not available
-  @signal_available Code.ensure_loaded(SignalProtocol) == {:module, SignalProtocol}
-
   @type session_id :: String.t()
   @type message :: String.t()
   @type encrypted_message :: String.t()
@@ -76,7 +73,7 @@ defmodule Spacecast.Events.CryptoService do
     end
   end
 
-    @doc """
+  @doc """
   Creates a new Signal Protocol session between two parties.
   """
   @spec create_session(String.t(), String.t()) :: {:ok, session_id()} | {:error, String.t()}
@@ -106,7 +103,7 @@ defmodule Spacecast.Events.CryptoService do
     end
   end
 
-    @doc """
+  @doc """
   Encrypts a message using an existing session.
   """
   @spec encrypt_with_session(map(), message()) :: {:ok, encrypted_message()} | {:error, String.t()}
@@ -135,7 +132,7 @@ defmodule Spacecast.Events.CryptoService do
     end
   end
 
-    @doc """
+  @doc """
   Decrypts a message using an existing session.
   """
   @spec decrypt_with_session(map(), encrypted_message()) :: {:ok, message()} | {:error, String.t()}
@@ -266,7 +263,8 @@ defmodule Spacecast.Events.CryptoService do
   @spec cleanup_expired_sessions() :: integer()
   def cleanup_expired_sessions do
     now = DateTime.utc_now()
-    max_age = DateTime.add(now, -24 * 60 * 60, :second) # 24 hours
+    # 24 hours
+    max_age = DateTime.add(now, -24 * 60 * 60, :second)
 
     :ets.tab2list(@session_table)
     |> Enum.count(fn {_key, session_data} ->
@@ -274,7 +272,9 @@ defmodule Spacecast.Events.CryptoService do
         :lt ->
           :ets.delete(@session_table, session_data.session_id)
           true
-        _ -> false
+
+        _ ->
+          false
       end
     end)
   end

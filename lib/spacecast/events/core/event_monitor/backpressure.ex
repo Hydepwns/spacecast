@@ -143,56 +143,67 @@ defmodule Spacecast.Events.Core.EventMonitor.Backpressure do
     recommendations = []
 
     # Check for high queue handlers
-    recommendations = if length(backpressure_data.bottlenecks.high_queue_handlers) > 0 do
-      recommendations ++ [
-        "Consider scaling up handlers for: #{Enum.join(backpressure_data.bottlenecks.high_queue_handlers, ", ")}",
-        "Review handler processing efficiency for high-queue handlers",
-        "Consider implementing backpressure mechanisms in event producers"
-      ]
-    else
-      recommendations
-    end
+    recommendations =
+      if length(backpressure_data.bottlenecks.high_queue_handlers) > 0 do
+        recommendations ++
+          [
+            "Consider scaling up handlers for: #{Enum.join(backpressure_data.bottlenecks.high_queue_handlers, ", ")}",
+            "Review handler processing efficiency for high-queue handlers",
+            "Consider implementing backpressure mechanisms in event producers"
+          ]
+      else
+        recommendations
+      end
 
     # Check for slow event types
-    recommendations = if length(backpressure_data.bottlenecks.slow_event_types) > 0 do
-      recommendations ++ [
-        "Optimize processing for slow event types: #{Enum.join(backpressure_data.bottlenecks.slow_event_types, ", ")}",
-        "Consider parallel processing for slow event types",
-        "Review event handler implementations for performance bottlenecks"
-      ]
-    else
-      recommendations
-    end
+    recommendations =
+      if length(backpressure_data.bottlenecks.slow_event_types) > 0 do
+        recommendations ++
+          [
+            "Optimize processing for slow event types: #{Enum.join(backpressure_data.bottlenecks.slow_event_types, ", ")}",
+            "Consider parallel processing for slow event types",
+            "Review event handler implementations for performance bottlenecks"
+          ]
+      else
+        recommendations
+      end
 
     # Check for high error types
-    recommendations = if length(backpressure_data.bottlenecks.high_error_types) > 0 do
-      recommendations ++ [
-        "Investigate errors in event types: #{Enum.join(backpressure_data.bottlenecks.high_error_types, ", ")}",
-        "Review error handling and retry mechanisms",
-        "Consider implementing circuit breakers for problematic event types"
-      ]
-    else
-      recommendations
-    end
+    recommendations =
+      if length(backpressure_data.bottlenecks.high_error_types) > 0 do
+        recommendations ++
+          [
+            "Investigate errors in event types: #{Enum.join(backpressure_data.bottlenecks.high_error_types, ", ")}",
+            "Review error handling and retry mechanisms",
+            "Consider implementing circuit breakers for problematic event types"
+          ]
+      else
+        recommendations
+      end
 
     # General recommendations based on status
     case backpressure_data.status do
       :critical ->
-        recommendations ++ [
-          "CRITICAL: Immediate action required",
-          "Consider temporarily reducing event load",
-          "Review system capacity and scaling strategy"
-        ]
+        recommendations ++
+          [
+            "CRITICAL: Immediate action required",
+            "Consider temporarily reducing event load",
+            "Review system capacity and scaling strategy"
+          ]
+
       :warning ->
-        recommendations ++ [
-          "Monitor closely and prepare scaling actions",
-          "Review current system performance trends"
-        ]
+        recommendations ++
+          [
+            "Monitor closely and prepare scaling actions",
+            "Review current system performance trends"
+          ]
+
       :normal ->
-        recommendations ++ [
-          "System operating normally",
-          "Continue monitoring for trends"
-        ]
+        recommendations ++
+          [
+            "System operating normally",
+            "Continue monitoring for trends"
+          ]
     end
   end
 
@@ -221,7 +232,7 @@ defmodule Spacecast.Events.Core.EventMonitor.Backpressure do
     queue_score =
       queue_sizes
       |> Enum.map(fn {_handler, size} ->
-        if size >= queue_threshold, do: min(40, (size / queue_threshold) * 20), else: 0
+        if size >= queue_threshold, do: min(40, size / queue_threshold * 20), else: 0
       end)
       |> Enum.max(&(&1 || 0))
 
@@ -229,7 +240,7 @@ defmodule Spacecast.Events.Core.EventMonitor.Backpressure do
     processing_score =
       processing_metrics
       |> Enum.map(fn {_type, metrics} ->
-        if metrics.avg_time >= processing_threshold, do: min(30, (metrics.avg_time / processing_threshold) * 15), else: 0
+        if metrics.avg_time >= processing_threshold, do: min(30, metrics.avg_time / processing_threshold * 15), else: 0
       end)
       |> Enum.max(&(&1 || 0))
 
@@ -237,7 +248,7 @@ defmodule Spacecast.Events.Core.EventMonitor.Backpressure do
     error_score =
       error_rates
       |> Enum.map(fn {_type, rate} ->
-        if rate >= error_threshold, do: min(30, (rate / error_threshold) * 15), else: 0
+        if rate >= error_threshold, do: min(30, rate / error_threshold * 15), else: 0
       end)
       |> Enum.max(&(&1 || 0))
 

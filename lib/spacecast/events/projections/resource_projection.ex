@@ -37,9 +37,7 @@ defmodule Spacecast.Events.Projections.ResourceProjection do
 
   @impl true
   def apply_event(event, state) do
-    Logger.info(
-      "ResourceProjection received event: #{event.type} for resource: #{event.resource_id}"
-    )
+    Logger.info("ResourceProjection received event: #{event.type} for resource: #{event.resource_id}")
 
     new_state = update_state(state, event)
     {:ok, new_state}

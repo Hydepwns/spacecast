@@ -30,16 +30,16 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
     }
 
     case :telemetry.attach_many(
-      "spacecast-liveview-events-monitor",
-      [
-        [:spacecast, :events, :process],
-        [:spacecast, :events, :queue_size],
-        [:spacecast, :events, :backpressure],
-        [:spacecast, :events, :metrics]
-      ],
-      &handle_telemetry_event/4,
-      config
-    ) do
+           "spacecast-liveview-events-monitor",
+           [
+             [:spacecast, :events, :process],
+             [:spacecast, :events, :queue_size],
+             [:spacecast, :events, :backpressure],
+             [:spacecast, :events, :metrics]
+           ],
+           &handle_telemetry_event/4,
+           config
+         ) do
       :ok ->
         Logger.info("EventMonitor: Telemetry handlers registered successfully")
         :ok
@@ -64,8 +64,11 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
 
       # Check for slow processing
       slow_threshold = config.alert_thresholds.slow_processing_ms
+
       if duration_ms > slow_threshold do
-        Logger.warning("Slow event processing: #{event_type} by #{handler} took #{duration_ms}ms (>#{slow_threshold}ms)")
+        Logger.warning(
+          "Slow event processing: #{event_type} by #{handler} took #{duration_ms}ms (>#{slow_threshold}ms)"
+        )
 
         # Send alert for slow processing
         send_slow_processing_alert(event_type, handler, duration_ms, slow_threshold, config)
@@ -88,7 +91,6 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
       if config.enable_external_monitoring do
         send_to_external_monitoring(:process, measurements, metadata, config)
       end
-
     rescue
       e ->
         Logger.error("Error in process telemetry handler: #{inspect(e)}")
@@ -102,6 +104,7 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
 
       # Check for high queue sizes
       high_threshold = config.alert_thresholds.high_queue_size
+
       if queue_size > high_threshold do
         Logger.warning("High queue size: #{handler} has #{queue_size} items (>#{high_threshold})")
 
@@ -118,7 +121,6 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
       if config.enable_external_monitoring do
         send_to_external_monitoring(:queue_size, measurements, metadata, config)
       end
-
     rescue
       e ->
         Logger.error("Error in queue_size telemetry handler: #{inspect(e)}")
@@ -148,7 +150,6 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
       if config.enable_external_monitoring do
         send_to_external_monitoring(:backpressure, measurements, metadata, config)
       end
-
     rescue
       e ->
         Logger.error("Error in backpressure telemetry handler: #{inspect(e)}")
@@ -174,7 +175,6 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
       if config.enable_external_monitoring do
         send_to_external_monitoring(:metrics, measurements, metadata, config)
       end
-
     rescue
       e ->
         Logger.error("Error in metrics telemetry handler: #{inspect(e)}")
@@ -306,7 +306,6 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
       if Map.get(external_config, :http_endpoint) do
         send_to_http_endpoint(event_type, measurements, metadata, external_config)
       end
-
     rescue
       e -> Logger.error("Error sending to external monitoring: #{inspect(e)}")
     end
@@ -345,7 +344,7 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
     end
   end
 
-        defp handle_event_processing_metrics(measurements, metadata) do
+  defp handle_event_processing_metrics(measurements, metadata) do
     duration = Map.get(measurements, :duration, 0)
     event_type = Map.get(metadata, :event_type, "unknown")
     handler = Map.get(metadata, :handler, "unknown")
@@ -360,7 +359,7 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
     :ok
   end
 
-        defp handle_slow_processing_metrics(measurements, metadata) do
+  defp handle_slow_processing_metrics(measurements, metadata) do
     duration = Map.get(measurements, :duration, 0)
     event_type = Map.get(metadata, :event_type, "unknown")
     handler = Map.get(metadata, :handler, "unknown")
@@ -377,7 +376,7 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
     :ok
   end
 
-        defp handle_processing_error_metrics(_measurements, metadata) do
+  defp handle_processing_error_metrics(_measurements, metadata) do
     event_type = Map.get(metadata, :event_type, "unknown")
     handler = Map.get(metadata, :handler, "unknown")
     error_type = Map.get(metadata, :error_type, "unknown")
@@ -392,7 +391,7 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
     :ok
   end
 
-      defp handle_queue_size_metrics(measurements, metadata) do
+  defp handle_queue_size_metrics(measurements, metadata) do
     queue_size = Map.get(measurements, :queue_size, 0)
     handler = Map.get(metadata, :handler, "unknown")
     threshold = Map.get(measurements, :threshold, 0)
@@ -407,7 +406,7 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
     :ok
   end
 
-      defp handle_backpressure_metrics(measurements, _metadata) do
+  defp handle_backpressure_metrics(measurements, _metadata) do
     status = Map.get(measurements, :status, "unknown")
     value = Map.get(measurements, :value, 0)
 
@@ -420,7 +419,7 @@ defmodule Spacecast.Events.Core.EventMonitor.Telemetry do
     :ok
   end
 
-      defp handle_general_metrics(measurements, _metadata) do
+  defp handle_general_metrics(measurements, _metadata) do
     event_count = Map.get(measurements, :event_count, 0)
     events_per_second = Map.get(measurements, :events_per_second, 0.0)
 
