@@ -30,30 +30,31 @@ defmodule IntegrationTestRunner do
   """
 
   def main(args \\ []) do
-    {opts, _} = OptionParser.parse!(args,
-      strict: [
-        test_type: :string,
-        pattern: :string,
-        debug: :boolean,
-        parallel: :boolean,
-        timeout: :integer,
-        report: :boolean,
-        memory: :boolean,
-        coverage: :boolean,
-        help: :boolean
-      ],
-      aliases: [
-        t: :test_type,
-        p: :pattern,
-        d: :debug,
-        P: :parallel,
-        T: :timeout,
-        r: :report,
-        m: :memory,
-        c: :coverage,
-        h: :help
-      ]
-    )
+    {opts, _} =
+      OptionParser.parse!(args,
+        strict: [
+          test_type: :string,
+          pattern: :string,
+          debug: :boolean,
+          parallel: :boolean,
+          timeout: :integer,
+          report: :boolean,
+          memory: :boolean,
+          coverage: :boolean,
+          help: :boolean
+        ],
+        aliases: [
+          t: :test_type,
+          p: :pattern,
+          d: :debug,
+          P: :parallel,
+          T: :timeout,
+          r: :report,
+          m: :memory,
+          c: :coverage,
+          h: :help
+        ]
+      )
 
     if opts[:help] do
       show_help()
@@ -61,16 +62,20 @@ defmodule IntegrationTestRunner do
     end
 
     # Set default options
-    opts = Keyword.merge([
-      test_type: "all",
-      pattern: nil,
-      debug: false,
-      parallel: false,
-      timeout: 30000,
-      report: false,
-      memory: false,
-      coverage: false
-    ], opts)
+    opts =
+      Keyword.merge(
+        [
+          test_type: "all",
+          pattern: nil,
+          debug: false,
+          parallel: false,
+          timeout: 30000,
+          report: false,
+          memory: false,
+          coverage: false
+        ],
+        opts
+      )
 
     # Start the application
     Application.ensure_all_started(:spacecast)
@@ -103,11 +108,12 @@ defmodule IntegrationTestRunner do
     IO.puts("")
 
     # Run tests
-    results = if opts[:parallel] do
-      run_tests_parallel(test_files, opts)
-    else
-      run_tests_sequential(test_files, opts)
-    end
+    results =
+      if opts[:parallel] do
+        run_tests_parallel(test_files, opts)
+      else
+        run_tests_sequential(test_files, opts)
+      end
 
     end_time = System.monotonic_time(:millisecond)
     total_time = end_time - start_time
@@ -132,13 +138,27 @@ defmodule IntegrationTestRunner do
     base_path = "test/spacecast_web/integration"
 
     case test_type do
-      "api" -> find_test_files(base_path, "api_integration_test.exs", pattern)
-      "realtime" -> find_test_files(base_path, "realtime_integration_test.exs", pattern)
-      "events" -> find_test_files(base_path, "event_driven_integration_test.exs", pattern)
-      "external" -> find_test_files(base_path, "external_service_integration_test.exs", pattern)
-      "performance" -> find_test_files(base_path, "performance_integration_test.exs", pattern)
-      "security" -> find_test_files(base_path, "security_integration_test.exs", pattern)
-      "all" -> find_all_test_files(base_path, pattern)
+      "api" ->
+        find_test_files(base_path, "api_integration_test.exs", pattern)
+
+      "realtime" ->
+        find_test_files(base_path, "realtime_integration_test.exs", pattern)
+
+      "events" ->
+        find_test_files(base_path, "event_driven_integration_test.exs", pattern)
+
+      "external" ->
+        find_test_files(base_path, "external_service_integration_test.exs", pattern)
+
+      "performance" ->
+        find_test_files(base_path, "performance_integration_test.exs", pattern)
+
+      "security" ->
+        find_test_files(base_path, "security_integration_test.exs", pattern)
+
+      "all" ->
+        find_all_test_files(base_path, pattern)
+
       _ ->
         IO.puts("❌ Unknown test type: #{test_type}")
         []
@@ -147,6 +167,7 @@ defmodule IntegrationTestRunner do
 
   defp find_test_files(base_path, filename, pattern) do
     file_path = Path.join(base_path, filename)
+
     if File.exists?(file_path) do
       if pattern do
         if String.contains?(filename, pattern) do
@@ -175,7 +196,9 @@ defmodule IntegrationTestRunner do
             true
           end
         end)
-      {:error, _} -> []
+
+      {:error, _} ->
+        []
     end
   end
 
@@ -204,27 +227,30 @@ defmodule IntegrationTestRunner do
     end
 
     # Run the test file
-    result = case run_test_file(file, opts) do
-      {:ok, output} ->
-        end_time = System.monotonic_time(:millisecond)
-        duration = end_time - start_time
+    result =
+      case run_test_file(file, opts) do
+        {:ok, output} ->
+          end_time = System.monotonic_time(:millisecond)
+          duration = end_time - start_time
 
-        {file, %{
-          status: :passed,
-          duration: duration,
-          output: output
-        }}
+          {file,
+           %{
+             status: :passed,
+             duration: duration,
+             output: output
+           }}
 
-      {:error, reason} ->
-        end_time = System.monotonic_time(:millisecond)
-        duration = end_time - start_time
+        {:error, reason} ->
+          end_time = System.monotonic_time(:millisecond)
+          duration = end_time - start_time
 
-        {file, %{
-          status: :failed,
-          duration: duration,
-          error: reason
-        }}
-    end
+          {file,
+           %{
+             status: :failed,
+             duration: duration,
+             error: reason
+           }}
+      end
 
     # Print result
     case result do
@@ -233,6 +259,7 @@ defmodule IntegrationTestRunner do
 
       {_file, %{status: :failed, duration: duration, error: error}} ->
         IO.puts("❌ #{Path.basename(file)} failed in #{duration}ms")
+
         if opts[:debug] do
           IO.puts("   Error: #{inspect(error)}")
         end
@@ -260,17 +287,19 @@ defmodule IntegrationTestRunner do
   defp build_mix_test_command(file, opts) do
     cmd = ["test", file]
 
-    cmd = if opts[:debug] do
-      cmd ++ ["--trace"]
-    else
-      cmd
-    end
+    cmd =
+      if opts[:debug] do
+        cmd ++ ["--trace"]
+      else
+        cmd
+      end
 
-    cmd = if opts[:coverage] do
-      cmd ++ ["--cover"]
-    else
-      cmd
-    end
+    cmd =
+      if opts[:coverage] do
+        cmd ++ ["--cover"]
+      else
+        cmd
+      end
 
     cmd
   end
@@ -300,7 +329,7 @@ defmodule IntegrationTestRunner do
     total_tests = length(results)
     passed_tests = Enum.count(results, fn {_file, result} -> result.status == :passed end)
     failed_tests = total_tests - passed_tests
-    success_rate = if total_tests > 0, do: (passed_tests / total_tests) * 100, else: 0
+    success_rate = if total_tests > 0, do: passed_tests / total_tests * 100, else: 0
 
     # Print summary
     IO.puts("Total Tests: #{total_tests}")
@@ -312,6 +341,7 @@ defmodule IntegrationTestRunner do
     # Print detailed results
     if opts[:debug] or failed_tests > 0 do
       IO.puts("\n📋 Detailed Results:")
+
       Enum.each(results, fn {file, result} ->
         case result do
           %{status: :passed, duration: duration} ->
@@ -341,14 +371,15 @@ defmodule IntegrationTestRunner do
     report_data = %{
       timestamp: DateTime.utc_now() |> DateTime.to_iso8601(),
       total_time: total_time,
-      results: Enum.map(results, fn {file, result} ->
-        %{
-          file: Path.basename(file),
-          status: result.status,
-          duration: result.duration,
-          error: Map.get(result, :error)
-        }
-      end),
+      results:
+        Enum.map(results, fn {file, result} ->
+          %{
+            file: Path.basename(file),
+            status: result.status,
+            duration: result.duration,
+            error: Map.get(result, :error)
+          }
+        end),
       summary: %{
         total: length(results),
         passed: Enum.count(results, fn {_file, result} -> result.status == :passed end),
@@ -411,7 +442,8 @@ defmodule IntegrationTestRunner do
     final_memory = :erlang.memory(:total)
     memory_diff = final_memory - initial_memory
 
-    if memory_diff > 50 * 1024 * 1024 do  # 50MB
+    # 50MB
+    if memory_diff > 50 * 1024 * 1024 do
       IO.puts("⚠️  Warning: Memory usage increased by #{memory_diff} bytes")
     end
   end
