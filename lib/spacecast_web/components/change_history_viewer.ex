@@ -20,6 +20,8 @@ defmodule SpacecastWeb.Components.ChangeHistoryViewer do
   use Phoenix.Component
 
   alias Spacecast.Utils.ChangeTracker
+  alias SpacecastWeb.Components.UI.TimelineView
+  alias SpacecastWeb.Components.UI.ListView
 
   @doc """
   Renders a change history viewer for a resource.
@@ -81,11 +83,11 @@ defmodule SpacecastWeb.Components.ChangeHistoryViewer do
       <p :if={!@has_history} class="text-gray-500 italic">No changes tracked yet.</p>
       <div :if={@has_history}>
         <div :if={@view_mode == "timeline"}>
-          <.render_timeline_view change_history={@change_history} selected_version={@selected_version} on_view_version={@on_view_version} />
+          <TimelineView.render_timeline_view change_history={@change_history} selected_version={@selected_version} on_view_version={@on_view_version} />
         </div>
 
         <div :if={@view_mode == "list"}>
-          <.render_list_view change_history={@change_history} selected_version={@selected_version} on_view_version={@on_view_version} on_diff_versions={@on_diff_versions} />
+          <ListView.render_list_view change_history={@change_history} selected_version={@selected_version} on_view_version={@on_view_version} on_diff_versions={@on_diff_versions} />
         </div>
 
         <div :if={@view_mode == "audit"}>
@@ -184,101 +186,7 @@ defmodule SpacecastWeb.Components.ChangeHistoryViewer do
     Map.get(resource, :__change_history__, [])
   end
 
-  attr :change_history, :list, required: true
-  attr :selected_version, :integer, default: nil
-  attr :on_view_version, :string, default: nil
 
-  def render_timeline_view(assigns) do
-    ~H"""
-    <div class="timeline mb-6">
-      <div class="timeline-track flex items-center justify-between w-full h-16 relative">
-        <div class="timeline-line-bg absolute w-full h-1 bg-gray-200"></div>
-        <div
-          :for={{change, index} <- Enum.with_index(@change_history)}
-          class={"timeline-marker relative z-10 w-4 h-4 rounded-full border-2 cursor-pointer transition-all
-            #{if @selected_version == change.version, do: "bg-blue-500 border-blue-700 w-6 h-6", else: "bg-white border-gray-300 hover:bg-blue-100"}"}
-          phx-click={@on_view_version}
-          phx-value-version={change.version}
-          #
-          Ensure
-          index
-          is
-          not
-          0
-          for
-          division
-          by
-          (length
-          -
-          1)
-          when
-          length
-          is
-          1
-          style={if length(@change_history) > 1, do: "margin-left: #{index * (100 / (length(@change_history) - 1))}%;", else: "margin-left: 0%;"}
-          data-tooltip-id={"tooltip-#{change.version}"}
-        >
-          <div id={"tooltip-#{change.version}"} class="timeline-tooltip absolute bottom-full mb-2 bg-gray-800 text-white text-xs rounded py-1 px-2 left-1/2 transform -translate-x-1/2 w-48 hidden group-hover:block" role="tooltip">
-            <p><strong>Version {change.version}</strong></p>
-            <p>{format_timestamp(Map.get(change.metadata, :timestamp))}</p>
-            <p>{Map.get(change.metadata, :actor) || "Unknown"}</p>
-            <p>{Map.get(change.metadata, :reason) || "No reason provided"}</p>
-          </div>
-        </div>
-      </div>
-      <div class="timeline-labels flex justify-between w-full mt-2">
-        <div :for={change <- @change_history} class="text-xs text-gray-500">
-          {format_timestamp_short(Map.get(change.metadata, :timestamp))}
-        </div>
-      </div>
-    </div>
-    """
-  end
-
-  attr :change_history, :list, required: true
-  attr :selected_version, :integer, default: nil
-  attr :on_view_version, :string, default: nil
-  attr :on_diff_versions, :string, default: nil
-
-  def render_list_view(assigns) do
-    ~H"""
-    <div class="mb-6">
-      <table class="min-w-full bg-white">
-        <thead>
-          <tr>
-            <th class="table-header">Version</th>
-            <th class="table-header">Timestamp</th>
-            <th class="table-header">Actor</th>
-            <th class="table-header">Reason</th>
-            <th class="table-header">Changed Fields</th>
-            <th class="table-header">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr :for={change_item <- @change_history} class={if @selected_version == change_item.version, do: "bg-blue-50", else: ""}>
-            <td class="table-cell">{change_item.version}</td>
-            <td class="table-cell">{format_timestamp(Map.get(change_item.metadata, :timestamp))}</td>
-            <td class="table-cell">{Map.get(change_item.metadata, :actor) || "unknown"}</td>
-            <td class="table-cell">{Map.get(change_item.metadata, :reason) || "No reason provided"}</td>
-            <td class="table-cell">
-              <ul class="list-disc pl-5">
-                <li :for={{key, _value} <- change_item.changes}>{Atom.to_string(key)}</li>
-              </ul>
-            </td>
-            <td class="table-cell">
-              <button :if={@on_view_version} phx-click={@on_view_version} phx-value-version={change_item.version} class="button-link-sm">
-                View
-              </button>
-              <button :if={@on_diff_versions && @selected_version && @selected_version != change_item.version} phx-click={@on_diff_versions} phx-value-version1={@selected_version} phx-value-version2={change_item.version} class="button-link-sm ml-2">
-                Diff with V{@selected_version}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    """
-  end
 
   # This is the new, isolated audit row component function
   attr :entry, :map, required: true
