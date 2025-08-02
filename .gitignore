@@ -28,7 +28,7 @@ cover/
 coverage/
 
 # Temporary files
-tmp/
+tmp/*
 *.tmp
 *.temp
 

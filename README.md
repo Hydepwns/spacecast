@@ -115,9 +115,9 @@ mix credo
 
 ## Documentation
 
-- [Usage Guide](examples/USAGE.md) - Getting started and basic usage
-- [LiveView Guide](examples/LIVEVIEW.md) - LiveView patterns and best practices
-- [Architecture Guide](examples/ARCHITECTURE.md) - System architecture and design decisions
+- [Usage Guide](docs/examples/USAGE.md) - Getting started and basic usage
+- [LiveView Guide](docs/examples/LIVEVIEW.md) - LiveView patterns and best practices
+- [Architecture Guide](docs/examples/ARCHITECTURE.md) - System architecture and design decisions
 
 ## Contributing
 
