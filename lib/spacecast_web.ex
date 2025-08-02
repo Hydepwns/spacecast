@@ -65,7 +65,27 @@ defmodule SpacecastWeb do
       # Base event handlers for all LiveViews
       def handle_event("change_theme", %{"theme" => theme}, socket) do
         theme_class = "#{theme}-theme"
-        {:noreply, Phoenix.Component.assign(socket, :theme_class, theme_class)}
+
+        # Update the theme system
+        case Spacecast.ThemeSystem.set_current_theme(theme) do
+          {:ok, _} ->
+            # Send a custom event to update the DOM theme class
+            socket =
+              socket
+              |> Phoenix.Component.assign(:theme_class, theme_class)
+              |> push_event("update_theme", %{theme: theme, theme_class: theme_class})
+
+            {:noreply, socket}
+
+          {:error, _} ->
+            # Fallback to just updating the LiveView state
+            {:noreply, Phoenix.Component.assign(socket, :theme_class, theme_class)}
+        end
+      end
+
+      def handle_event("toggle_theme_dropdown", _params, socket) do
+        # This event is handled by the JavaScript hook
+        {:noreply, socket}
       end
 
       unquote(verified_routes())
@@ -106,7 +126,7 @@ defmodule SpacecastWeb do
         except: [input: 1, header: 1, error: 1, simple_form: 1, theme_toggle: 1]
 
       import SpacecastWeb.Gettext
-      import SpacecastWeb.Components.Common.ThemeToggle, only: [theme_toggle: 1]
+      import SpacecastWeb.Components.Common.FloatingControls, only: [floating_controls: 1]
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

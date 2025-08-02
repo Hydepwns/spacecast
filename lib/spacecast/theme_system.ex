@@ -489,6 +489,31 @@ defmodule Spacecast.ThemeSystem do
     end
   end
 
+  def set_current_theme(theme_name) do
+    # Create a simple theme based on the theme name
+    theme = %MockTheme{
+      id: 1,
+      name: "#{theme_name} Theme",
+      mode: theme_name,
+      primary_color: "#3B82F6",
+      secondary_color: "#10B981",
+      background_color: "#FFFFFF",
+      text_color: "#1F2937",
+      is_default: true,
+      settings: %{},
+      colors: %{},
+      inserted_at: DateTime.utc_now(),
+      updated_at: DateTime.utc_now()
+    }
+
+    # Store as the current theme
+    ensure_ets_table()
+    table = ets_table()
+    :ets.insert(table, {:applied_theme, theme})
+
+    {:ok, mock_to_theme(theme)}
+  end
+
   # Private validation function
   defp validate_theme_params(params) do
     with {:ok, _} <- validate_required_fields(params),

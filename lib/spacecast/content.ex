@@ -8,30 +8,15 @@ defmodule Spacecast.Content do
   """
   def get_toc_data do
     [
-      %{
-        title: "Getting Started",
-        items: [
-          %{title: "Introduction", path: "/docs/introduction"},
-          %{title: "Installation", path: "/docs/installation"},
-          %{title: "Quick Start", path: "/docs/quick-start"}
-        ]
-      },
-      %{
-        title: "Core Concepts",
-        items: [
-          %{title: "Resources", path: "/docs/resources"},
-          %{title: "Events", path: "/docs/events"},
-          %{title: "Validation", path: "/docs/validation"}
-        ]
-      },
-      %{
-        title: "Advanced Topics",
-        items: [
-          %{title: "Event Sourcing", path: "/docs/event-sourcing"},
-          %{title: "Resource Integration", path: "/docs/resource-integration"},
-          %{title: "Custom Validations", path: "/docs/custom-validations"}
-        ]
-      }
+      {"ascii-banner", "Welcome to Spacecast"},
+      {"introduction", "Introduction"},
+      {"ascii-examples", "ASCII Art Examples"},
+      {"lists", "Lists"},
+      {"tables", "Tables"},
+      {"forms", "Forms"},
+      {"grids", "Grids"},
+      {"features", "Features"},
+      {"discussion", "Discussion"}
     ]
   end
 end
