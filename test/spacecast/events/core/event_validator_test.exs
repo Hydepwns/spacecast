@@ -295,9 +295,7 @@ defmodule Spacecast.Events.Core.EventValidatorTest do
       assert length(schema.optional) == length(Enum.uniq(schema.optional))
 
       # Verify no overlap between required and optional
-      assert Enum.empty?(
-               MapSet.intersection(MapSet.new(schema.required), MapSet.new(schema.optional))
-             )
+      assert Enum.empty?(MapSet.intersection(MapSet.new(schema.required), MapSet.new(schema.optional)))
     end
   end
 

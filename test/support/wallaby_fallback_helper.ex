@@ -45,6 +45,7 @@ defmodule SpacecastWeb.TestHelpers.WallabyFallback do
       %{mock: _, type: :session} ->
         # For mock sessions, return empty list to trigger fallback
         []
+
       _ ->
         # Try Wallaby first for real sessions
         case Wallaby.Browser.all(session, css(css_selector)) do
@@ -127,6 +128,7 @@ defmodule SpacecastWeb.TestHelpers.WallabyFallback do
             #{String.slice(html, 0, 500)}...
             """)
         end
+
       _ ->
         # Try Wallaby first for real sessions
         case Wallaby.Browser.all(session, css(css_selector)) do

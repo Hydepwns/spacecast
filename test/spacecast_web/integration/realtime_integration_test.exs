@@ -92,6 +92,7 @@ defmodule SpacecastWeb.Integration.RealtimeIntegrationTest do
             IO.inspect(Process.info(self(), :messages),
               label: "[TEST] Mailbox after waiting for :DOWN"
             )
+
             flunk("Did not receive :DOWN message for LiveView process")
           else
             # Process is dead but we didn't get the DOWN message, which is acceptable
@@ -324,21 +325,21 @@ defmodule SpacecastWeb.Integration.RealtimeIntegrationTest do
   end
 
   describe "Presence and User Tracking" do
-    test "tracks user presence in real-time", %{conn: conn, user: user} do
+    test "tracks user presence in real-time", %{conn: _conn, user: _user} do
       # For now, skip this test as presence tracking requires proper user authentication setup
       # which is not fully implemented in the test environment
       # TODO: Implement proper user authentication for LiveView tests
       assert true
     end
 
-    test "broadcasts presence updates to other users", %{conn: conn, user: user} do
+    test "broadcasts presence updates to other users", %{conn: _conn, user: _user} do
       # For now, skip this test as presence tracking requires proper user authentication setup
       # which is not fully implemented in the test environment
       # TODO: Implement proper user authentication for LiveView tests
       assert true
     end
 
-    test "handles user disconnection gracefully", %{conn: conn, user: user} do
+    test "handles user disconnection gracefully", %{conn: _conn, user: _user} do
       # For now, skip this test as presence tracking requires proper user authentication setup
       # which is not fully implemented in the test environment
       # TODO: Implement proper user authentication for LiveView tests
@@ -347,7 +348,7 @@ defmodule SpacecastWeb.Integration.RealtimeIntegrationTest do
   end
 
   describe "Event Bus Integration" do
-    test "subscribes to event bus and receives events", %{conn: conn} do
+    test "subscribes to event bus and receives events", %{conn: _conn} do
       Spacecast.Events.Core.EventBus.subscribe(self(), ["document.created"])
 
       {:ok, new_resource} =

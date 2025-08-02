@@ -102,8 +102,10 @@ defmodule Spacecast.Events.SimpleCryptoTest do
 
       # Decryption with wrong key should either fail or produce incorrect plaintext
       case result do
-        {:error, _} -> :ok  # Expected padding error
-        {:ok, decrypted} -> assert decrypted != plaintext  # Incorrect plaintext
+        # Expected padding error
+        {:error, _} -> :ok
+        # Incorrect plaintext
+        {:ok, decrypted} -> assert decrypted != plaintext
       end
     end
 
@@ -118,8 +120,10 @@ defmodule Spacecast.Events.SimpleCryptoTest do
 
       # Decryption with wrong IV should either fail or produce incorrect plaintext
       case result do
-        {:error, _} -> :ok  # Expected padding error
-        {:ok, decrypted} -> assert decrypted != plaintext  # Incorrect plaintext
+        # Expected padding error
+        {:error, _} -> :ok
+        # Incorrect plaintext
+        {:ok, decrypted} -> assert decrypted != plaintext
       end
     end
 

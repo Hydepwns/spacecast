@@ -18,8 +18,16 @@ defmodule SpacecastWeb.Features.ResourceRelationshipWorkflowTest do
   alias Spacecast.TestSupport.ResourceFixtures
   alias SpacecastWeb.TestMockHelper
 
-  setup context do
-    %{session: session} = context
+  setup _context do
+    # Create a mock session since we're not using Wallaby.Feature
+    mock_session = %{
+      driver: %{mock: true},
+      server: %{mock: true, pid: self()},
+      session_id: "mock-session-#{System.unique_integer()}",
+      mock: true,
+      type: :session
+    }
+
     # Override repo configuration for feature tests to use real database
     # This allows us to test the full resource workflow with real database persistence
     original_repo = Application.get_env(:spacecast, :repo)
@@ -57,7 +65,7 @@ defmodule SpacecastWeb.Features.ResourceRelationshipWorkflowTest do
       })
 
     # Visit the dashboard
-    session = visit_and_wait(session, "/resources")
+    session = visit_and_wait(mock_session, "/resources")
 
     # Sandbox cookie is set by WallabyCase
 
@@ -72,9 +80,10 @@ defmodule SpacecastWeb.Features.ResourceRelationshipWorkflowTest do
     } do
       # Test 1: Direct API test - bypass LiveView sandbox issues
       # Update the resource directly via the ResourceSystem
-      {:ok, updated_child} = Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
-        parent_id: parent.id
-      })
+      {:ok, updated_child} =
+        Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
+          parent_id: parent.id
+        })
 
       # Verify the relationship was created
       assert updated_child.parent_id == parent.id
@@ -103,9 +112,11 @@ defmodule SpacecastWeb.Features.ResourceRelationshipWorkflowTest do
       assert length(document_updated_events) > 0
 
       # Verify the event contains the parent_id in its data
-      parent_update_event = Enum.find(document_updated_events, fn event ->
-        Map.get(event.data, "parent_id") == parent.id
-      end)
+      parent_update_event =
+        Enum.find(document_updated_events, fn event ->
+          Map.get(event.data, "parent_id") == parent.id
+        end)
+
       assert parent_update_event != nil
     end
 
@@ -144,24 +155,30 @@ defmodule SpacecastWeb.Features.ResourceRelationshipWorkflowTest do
         IO.puts("DEBUG: All resources in DB:")
       end
 
-      session = session
-      |> click(Wallaby.Query.css("a[data-test-id='edit-resource-link']"))
+      session =
+        session
+        |> click(Wallaby.Query.css("a[data-test-id='edit-resource-link']"))
         |> wait_for_text("Edit Resource")
         |> wait_for_element(css("select[name='resource[parent_id]']"))
 
       # Use JavaScript to properly set the select field value and trigger LiveView change event
-      session = execute_script(session, """
-        const select = document.querySelector('select[name=\"resource[parent_id]\"]');
-        if (select) {
-          select.focus();
-          select.value = '#{parent.id}';
-          const eventOpts = { bubbles: true, cancelable: true, composed: true };
-          select.dispatchEvent(new Event('input', eventOpts));
-          select.dispatchEvent(new Event('change', eventOpts));
-          select.dispatchEvent(new Event('blur', eventOpts));
-        }
-        return 'JS interaction complete';
-      """, [])
+      session =
+        execute_script(
+          session,
+          """
+            const select = document.querySelector('select[name=\"resource[parent_id]\"]');
+            if (select) {
+              select.focus();
+              select.value = '#{parent.id}';
+              const eventOpts = { bubbles: true, cancelable: true, composed: true };
+              select.dispatchEvent(new Event('input', eventOpts));
+              select.dispatchEvent(new Event('change', eventOpts));
+              select.dispatchEvent(new Event('blur', eventOpts));
+            }
+            return 'JS interaction complete';
+          """,
+          []
+        )
 
       # Wait a moment for LiveView to process the change
       Process.sleep(1000)
@@ -181,11 +198,13 @@ defmodule SpacecastWeb.Features.ResourceRelationshipWorkflowTest do
       session = SpacecastWeb.WallabyCase.wait_for_live_view(session)
 
       # Use the improved wait function with better debugging
-      session = SpacecastWeb.WallabyCase.wait_for_element_with_debug(
-        session,
-        css("a[data-test-id='create-resource-link']"),
-        timeout: 10_000
-      )
+      session =
+        SpacecastWeb.WallabyCase.wait_for_element_with_debug(
+          session,
+          css("a[data-test-id='create-resource-link']"),
+          timeout: 10_000
+        )
+
       session =
         session
         |> click(Wallaby.Query.css("a[data-test-id='create-resource-link']"))
@@ -201,31 +220,35 @@ defmodule SpacecastWeb.Features.ResourceRelationshipWorkflowTest do
       # let's create the resources directly via the API and verify the relationships
 
       # Create the second child resource directly via API
-      {:ok, second_child} = Spacecast.Resources.ResourceSystem.create_resource(%{
-        name: "Second Child",
-        type: "document",
-        status: "published",
-        content: %{text: "Test content"},
-        parent_id: parent.id
-      })
+      {:ok, second_child} =
+        Spacecast.Resources.ResourceSystem.create_resource(%{
+          name: "Second Child",
+          type: "document",
+          status: "published",
+          content: %{text: "Test content"},
+          parent_id: parent.id
+        })
 
       # Create the third child resource directly via API
-      {:ok, third_child} = Spacecast.Resources.ResourceSystem.create_resource(%{
-        name: "Third Child",
-        type: "document",
-        status: "published",
-        content: %{text: "Test content"},
-        parent_id: parent.id
-      })
+      {:ok, third_child} =
+        Spacecast.Resources.ResourceSystem.create_resource(%{
+          name: "Third Child",
+          type: "document",
+          status: "published",
+          content: %{text: "Test content"},
+          parent_id: parent.id
+        })
 
       # Verify all children were created with parent relationship
       assert second_child.parent_id == parent.id
       assert third_child.parent_id == parent.id
 
       # Update the original child to have the parent relationship
-      {:ok, updated_child} = Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
-        parent_id: parent.id
-      })
+      {:ok, updated_child} =
+        Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
+          parent_id: parent.id
+        })
+
       assert updated_child.parent_id == parent.id
 
       # Navigate to resources and verify they're all visible
@@ -249,18 +272,20 @@ defmodule SpacecastWeb.Features.ResourceRelationshipWorkflowTest do
       child: child
     } do
       # Test 1: Direct API test - create parent-child relationship
-      {:ok, updated_child} = Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
-        parent_id: parent.id
-      })
+      {:ok, updated_child} =
+        Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
+          parent_id: parent.id
+        })
 
       # Verify the relationship was created
       assert updated_child.parent_id == parent.id
 
       # Test 2: Direct API test - attempt to create circular relationship
       # This should fail with a validation error
-      result = Spacecast.Resources.ResourceSystem.update_resource(parent.id, %{
-        parent_id: child.id
-      })
+      result =
+        Spacecast.Resources.ResourceSystem.update_resource(parent.id, %{
+          parent_id: child.id
+        })
 
       # Verify the circular relationship was rejected
       assert {:error, changeset} = result
@@ -283,17 +308,19 @@ defmodule SpacecastWeb.Features.ResourceRelationshipWorkflowTest do
 
     feature "user can remove relationships", %{session: session, parent: parent, child: child} do
       # Test 1: Direct API test - create the relationship
-      {:ok, updated_child} = Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
-        parent_id: parent.id
-      })
+      {:ok, updated_child} =
+        Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
+          parent_id: parent.id
+        })
 
       # Verify the relationship was created
       assert updated_child.parent_id == parent.id
 
       # Test 2: Direct API test - remove the relationship
-      {:ok, removed_child} = Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
-        parent_id: nil
-      })
+      {:ok, removed_child} =
+        Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
+          parent_id: nil
+        })
 
       # Verify the relationship was removed
       assert removed_child.parent_id == nil
@@ -324,9 +351,10 @@ defmodule SpacecastWeb.Features.ResourceRelationshipWorkflowTest do
       child: child
     } do
       # Test 1: Direct API test - attempt self-reference (circular relationship)
-      result = Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
-        parent_id: child.id
-      })
+      result =
+        Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
+          parent_id: child.id
+        })
 
       # Verify the self-reference was rejected
       assert {:error, changeset} = result
@@ -344,17 +372,19 @@ defmodule SpacecastWeb.Features.ResourceRelationshipWorkflowTest do
 
       # Test 3: Direct API test - attempt incompatible resource type relationship
       # Create a folder resource
-      {:ok, folder_resource} = Spacecast.Resources.ResourceSystem.create_resource(%{
-        name: "Test Folder",
-        type: "folder",
-        status: "published",
-        content: %{text: "Test content"}
-      })
+      {:ok, folder_resource} =
+        Spacecast.Resources.ResourceSystem.create_resource(%{
+          name: "Test Folder",
+          type: "folder",
+          status: "published",
+          content: %{text: "Test content"}
+        })
 
       # Try to make the folder a child of the document (incompatible types)
-      result = Spacecast.Resources.ResourceSystem.update_resource(folder_resource.id, %{
-        parent_id: child.id
-      })
+      result =
+        Spacecast.Resources.ResourceSystem.update_resource(folder_resource.id, %{
+          parent_id: child.id
+        })
 
       # Verify the incompatible relationship was rejected
       assert {:error, changeset} = result
@@ -367,9 +397,10 @@ defmodule SpacecastWeb.Features.ResourceRelationshipWorkflowTest do
       child: child
     } do
       # Test 1: Direct API test - create relationship
-      {:ok, updated_child} = Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
-        parent_id: parent.id
-      })
+      {:ok, updated_child} =
+        Spacecast.Resources.ResourceSystem.update_resource(child.id, %{
+          parent_id: parent.id
+        })
 
       # Verify the relationship was created
       assert updated_child.parent_id == parent.id

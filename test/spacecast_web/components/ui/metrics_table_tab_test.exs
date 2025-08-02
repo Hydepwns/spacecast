@@ -25,15 +25,16 @@ defmodule SpacecastWeb.Components.UI.MetricsTableTabTest do
       format_name = fn name -> String.replace(name, "_", " ") |> String.upcase() end
       sort_function = fn data -> Enum.sort(data, fn {a, _}, {b, _} -> a <= b end) end
 
-      html = MetricsTableTab.render_metrics_table_tab(%{
-        title: "Transformation Performance",
-        data: data,
-        format_time: format_time,
-        format_percentage: format_percentage,
-        format_name: format_name,
-        sort_function: sort_function,
-        no_data_message: "No transformation data available"
-      })
+      html =
+        MetricsTableTab.render_metrics_table_tab(%{
+          title: "Transformation Performance",
+          data: data,
+          format_time: format_time,
+          format_percentage: format_percentage,
+          format_name: format_name,
+          sort_function: sort_function,
+          no_data_message: "No transformation data available"
+        })
 
       assert html =~ "Transformation Performance"
       assert html =~ "USER VALIDATION"
@@ -56,15 +57,16 @@ defmodule SpacecastWeb.Components.UI.MetricsTableTabTest do
       format_name = fn name -> name end
       sort_function = fn data -> Enum.sort(data) end
 
-      html = MetricsTableTab.render_metrics_table_tab(%{
-        title: "Test Performance",
-        data: data,
-        format_time: format_time,
-        format_percentage: format_percentage,
-        format_name: format_name,
-        sort_function: sort_function,
-        no_data_message: "No test data available"
-      })
+      html =
+        MetricsTableTab.render_metrics_table_tab(%{
+          title: "Test Performance",
+          data: data,
+          format_time: format_time,
+          format_percentage: format_percentage,
+          format_name: format_name,
+          sort_function: sort_function,
+          no_data_message: "No test data available"
+        })
 
       assert html =~ "Test Performance"
       assert html =~ "No test data available"
@@ -87,15 +89,16 @@ defmodule SpacecastWeb.Components.UI.MetricsTableTabTest do
       format_name = fn name -> String.upcase(name) end
       sort_function = fn data -> Enum.sort(data) end
 
-      html = MetricsTableTab.render_metrics_table_tab(%{
-        title: "Single Test",
-        data: data,
-        format_time: format_time,
-        format_percentage: format_percentage,
-        format_name: format_name,
-        sort_function: sort_function,
-        no_data_message: "No data"
-      })
+      html =
+        MetricsTableTab.render_metrics_table_tab(%{
+          title: "Single Test",
+          data: data,
+          format_time: format_time,
+          format_percentage: format_percentage,
+          format_name: format_name,
+          sort_function: sort_function,
+          no_data_message: "No data"
+        })
 
       assert html =~ "Single Test"
       assert html =~ "SINGLE TEST"
@@ -120,15 +123,16 @@ defmodule SpacecastWeb.Components.UI.MetricsTableTabTest do
       format_name = fn name -> name end
       sort_function = fn data -> Enum.sort(data) end
 
-      html = MetricsTableTab.render_metrics_table_tab(%{
-        title: "Zero Test",
-        data: data,
-        format_time: format_time,
-        format_percentage: format_percentage,
-        format_name: format_name,
-        sort_function: sort_function,
-        no_data_message: "No data"
-      })
+      html =
+        MetricsTableTab.render_metrics_table_tab(%{
+          title: "Zero Test",
+          data: data,
+          format_time: format_time,
+          format_percentage: format_percentage,
+          format_name: format_name,
+          sort_function: sort_function,
+          no_data_message: "No data"
+        })
 
       assert html =~ "0"
       assert html =~ "0.0ms"
@@ -151,15 +155,16 @@ defmodule SpacecastWeb.Components.UI.MetricsTableTabTest do
       format_name = fn name -> "CUSTOM: #{name}" end
       sort_function = fn data -> Enum.sort(data) end
 
-      html = MetricsTableTab.render_metrics_table_tab(%{
-        title: "Custom Test",
-        data: data,
-        format_time: format_time,
-        format_percentage: format_percentage,
-        format_name: format_name,
-        sort_function: sort_function,
-        no_data_message: "No data"
-      })
+      html =
+        MetricsTableTab.render_metrics_table_tab(%{
+          title: "Custom Test",
+          data: data,
+          format_time: format_time,
+          format_percentage: format_percentage,
+          format_name: format_name,
+          sort_function: sort_function,
+          no_data_message: "No data"
+        })
 
       assert html =~ "42"
       assert html =~ "~29ms"
@@ -179,15 +184,16 @@ defmodule SpacecastWeb.Components.UI.MetricsTableTabTest do
       format_name = fn name -> name end
       sort_function = fn data -> Enum.sort(data, fn {a, _}, {b, _} -> a <= b end) end
 
-      html = MetricsTableTab.render_metrics_table_tab(%{
-        title: "Sorting Test",
-        data: data,
-        format_time: format_time,
-        format_percentage: format_percentage,
-        format_name: format_name,
-        sort_function: sort_function,
-        no_data_message: "No data"
-      })
+      html =
+        MetricsTableTab.render_metrics_table_tab(%{
+          title: "Sorting Test",
+          data: data,
+          format_time: format_time,
+          format_percentage: format_percentage,
+          format_name: format_name,
+          sort_function: sort_function,
+          no_data_message: "No data"
+        })
 
       # Check that items are sorted alphabetically
       alpha_index = String.indexOf(html, "alpha")
@@ -213,15 +219,16 @@ defmodule SpacecastWeb.Components.UI.MetricsTableTabTest do
       format_name = fn name -> name end
       sort_function = fn data -> Enum.sort(data) end
 
-      html = MetricsTableTab.render_metrics_table_tab(%{
-        title: "Large Numbers Test",
-        data: data,
-        format_time: format_time,
-        format_percentage: format_percentage,
-        format_name: format_name,
-        sort_function: sort_function,
-        no_data_message: "No data"
-      })
+      html =
+        MetricsTableTab.render_metrics_table_tab(%{
+          title: "Large Numbers Test",
+          data: data,
+          format_time: format_time,
+          format_percentage: format_percentage,
+          format_name: format_name,
+          sort_function: sort_function,
+          no_data_message: "No data"
+        })
 
       assert html =~ "1000000"
       assert html =~ "50.0ms"
@@ -244,15 +251,16 @@ defmodule SpacecastWeb.Components.UI.MetricsTableTabTest do
       format_name = fn name -> name end
       sort_function = fn data -> Enum.sort(data) end
 
-      html = MetricsTableTab.render_metrics_table_tab(%{
-        title: "Perfect Test",
-        data: data,
-        format_time: format_time,
-        format_percentage: format_percentage,
-        format_name: format_name,
-        sort_function: sort_function,
-        no_data_message: "No data"
-      })
+      html =
+        MetricsTableTab.render_metrics_table_tab(%{
+          title: "Perfect Test",
+          data: data,
+          format_time: format_time,
+          format_percentage: format_percentage,
+          format_name: format_name,
+          sort_function: sort_function,
+          no_data_message: "No data"
+        })
 
       assert html =~ "100"
       assert html =~ "10.0ms"
@@ -275,15 +283,16 @@ defmodule SpacecastWeb.Components.UI.MetricsTableTabTest do
       format_name = fn name -> name end
       sort_function = fn data -> Enum.sort(data) end
 
-      html = MetricsTableTab.render_metrics_table_tab(%{
-        title: "Failed Test",
-        data: data,
-        format_time: format_time,
-        format_percentage: format_percentage,
-        format_name: format_name,
-        sort_function: sort_function,
-        no_data_message: "No data"
-      })
+      html =
+        MetricsTableTab.render_metrics_table_tab(%{
+          title: "Failed Test",
+          data: data,
+          format_time: format_time,
+          format_percentage: format_percentage,
+          format_name: format_name,
+          sort_function: sort_function,
+          no_data_message: "No data"
+        })
 
       assert html =~ "10"
       assert html =~ "50.0ms"

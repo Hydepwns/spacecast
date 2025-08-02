@@ -20,13 +20,14 @@ defmodule SpacecastWeb.Components.ChangeHistoryViewerIntegrationTest do
         }
       ]
 
-      html = ChangeHistoryViewer.render(%{
-        resource: %{__change_history__: change_history},
-        selected_version: 2,
-        view_mode: "timeline",
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ChangeHistoryViewer.render(%{
+          resource: %{__change_history__: change_history},
+          selected_version: 2,
+          view_mode: "timeline",
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       # Should render timeline view
       assert html =~ "timeline-view"
@@ -52,13 +53,14 @@ defmodule SpacecastWeb.Components.ChangeHistoryViewerIntegrationTest do
         }
       ]
 
-      html = ChangeHistoryViewer.render(%{
-        resource: %{__change_history__: change_history},
-        selected_version: 2,
-        view_mode: "list",
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ChangeHistoryViewer.render(%{
+          resource: %{__change_history__: change_history},
+          selected_version: 2,
+          view_mode: "list",
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       # Should render list view
       assert html =~ "list-view"
@@ -69,26 +71,28 @@ defmodule SpacecastWeb.Components.ChangeHistoryViewerIntegrationTest do
     end
 
     test "handles resource without change history" do
-      html = ChangeHistoryViewer.render(%{
-        resource: %{},
-        selected_version: nil,
-        view_mode: "timeline",
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ChangeHistoryViewer.render(%{
+          resource: %{},
+          selected_version: nil,
+          view_mode: "timeline",
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       # Should show no history message
       assert html =~ "No change history available"
     end
 
     test "handles empty change history" do
-      html = ChangeHistoryViewer.render(%{
-        resource: %{__change_history__: []},
-        selected_version: nil,
-        view_mode: "timeline",
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ChangeHistoryViewer.render(%{
+          resource: %{__change_history__: []},
+          selected_version: nil,
+          view_mode: "timeline",
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       # Should show no history message
       assert html =~ "No change history available"
@@ -105,25 +109,27 @@ defmodule SpacecastWeb.Components.ChangeHistoryViewerIntegrationTest do
       ]
 
       # Test timeline mode
-      timeline_html = ChangeHistoryViewer.render(%{
-        resource: %{__change_history__: change_history},
-        selected_version: nil,
-        view_mode: "timeline",
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      timeline_html =
+        ChangeHistoryViewer.render(%{
+          resource: %{__change_history__: change_history},
+          selected_version: nil,
+          view_mode: "timeline",
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       assert timeline_html =~ "timeline-view"
       refute timeline_html =~ "list-view"
 
       # Test list mode
-      list_html = ChangeHistoryViewer.render(%{
-        resource: %{__change_history__: change_history},
-        selected_version: nil,
-        view_mode: "list",
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      list_html =
+        ChangeHistoryViewer.render(%{
+          resource: %{__change_history__: change_history},
+          selected_version: nil,
+          view_mode: "list",
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       assert list_html =~ "list-view"
       refute list_html =~ "timeline-view"
@@ -139,13 +145,14 @@ defmodule SpacecastWeb.Components.ChangeHistoryViewerIntegrationTest do
         }
       ]
 
-      html = ChangeHistoryViewer.render(%{
-        resource: %{__change_history__: change_history},
-        selected_version: 1,
-        view_mode: "timeline",
-        on_view_version: "custom_view",
-        on_diff_versions: "custom_diff"
-      })
+      html =
+        ChangeHistoryViewer.render(%{
+          resource: %{__change_history__: change_history},
+          selected_version: 1,
+          view_mode: "timeline",
+          on_view_version: "custom_view",
+          on_diff_versions: "custom_diff"
+        })
 
       # Should pass the custom event names to child components
       assert html =~ "custom_view"
@@ -163,13 +170,14 @@ defmodule SpacecastWeb.Components.ChangeHistoryViewerIntegrationTest do
         }
       ]
 
-      html = ChangeHistoryViewer.render(%{
-        resource: %{__change_history__: change_history},
-        selected_version: nil,
-        view_mode: "timeline",
-        on_view_version: nil,
-        on_diff_versions: nil
-      })
+      html =
+        ChangeHistoryViewer.render(%{
+          resource: %{__change_history__: change_history},
+          selected_version: nil,
+          view_mode: "timeline",
+          on_view_version: nil,
+          on_diff_versions: nil
+        })
 
       # Should render without errors even with nil handlers
       assert html =~ "timeline-view"

@@ -28,12 +28,16 @@ defmodule SpacecastWeb.ExternalAPIIntegrationTest do
     @tag :external_api_integration
     test "displays data from external API when loaded", %{conn: conn} do
       # Create the resource using ResourceSystem and get the actual ID
-      {:ok, resource} = Spacecast.Resources.ResourceSystem.create_resource(%{
-        name: "Test Resource",
-        description: "A test resource",
-        type: "test_type",
-        status: "active"
-      }, [])
+      {:ok, resource} =
+        Spacecast.Resources.ResourceSystem.create_resource(
+          %{
+            name: "Test Resource",
+            description: "A test resource",
+            type: "test_type",
+            status: "active"
+          },
+          []
+        )
 
       # This is a placeholder test - replace with an actual route in your app
       # that would make external API calls. Uses string path instead of ~p.
@@ -48,12 +52,16 @@ defmodule SpacecastWeb.ExternalAPIIntegrationTest do
     @tag :external_api_integration
     test "handles API errors gracefully", %{conn: conn} do
       # Create the resource using ResourceSystem and get the actual ID
-      {:ok, resource} = Spacecast.Resources.ResourceSystem.create_resource(%{
-        name: "Test Resource",
-        description: "A test resource",
-        type: "test_type",
-        status: "active"
-      }, [])
+      {:ok, resource} =
+        Spacecast.Resources.ResourceSystem.create_resource(
+          %{
+            name: "Test Resource",
+            description: "A test resource",
+            type: "test_type",
+            status: "active"
+          },
+          []
+        )
 
       # This is a placeholder test. Uses string path instead of ~p.
       {:ok, view, _html} = live(conn, "/resources/#{resource.id}")
@@ -66,12 +74,16 @@ defmodule SpacecastWeb.ExternalAPIIntegrationTest do
     @tag :external_api_integration
     test "allows user to update resource data", %{conn: conn} do
       # Create the resource using ResourceSystem and get the actual ID
-      {:ok, resource} = Spacecast.Resources.ResourceSystem.create_resource(%{
-        "name" => "Test Resource",
-        "description" => "Initial Description",
-        "type" => "test_type",
-        "status" => "active"
-      }, [])
+      {:ok, resource} =
+        Spacecast.Resources.ResourceSystem.create_resource(
+          %{
+            "name" => "Test Resource",
+            "description" => "Initial Description",
+            "type" => "test_type",
+            "status" => "active"
+          },
+          []
+        )
 
       # Load the EDIT page using string path instead of ~p
       {:ok, view, _html} = live(conn, "/resources/#{resource.id}/edit")

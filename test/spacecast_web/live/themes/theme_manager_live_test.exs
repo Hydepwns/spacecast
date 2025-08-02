@@ -52,11 +52,7 @@ defmodule SpacecastWeb.Themes.ThemeManagerLiveTest do
       })
 
     {:ok,
-     conn: conn,
-     light_theme: light_theme,
-     dark_theme: dark_theme,
-     system_theme: system_theme,
-     dim_theme: dim_theme}
+     conn: conn, light_theme: light_theme, dark_theme: dark_theme, system_theme: system_theme, dim_theme: dim_theme}
   end
 
   test "renders theme manager page", %{conn: conn} do

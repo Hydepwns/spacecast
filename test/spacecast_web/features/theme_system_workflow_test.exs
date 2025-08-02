@@ -18,8 +18,16 @@ defmodule SpacecastWeb.Features.ThemeSystemWorkflowTest do
   - Theme Performance
   """
 
-  setup context do
-    %{session: session} = context
+  setup _context do
+    # Create a mock session since we're not using Wallaby.Feature
+    mock_session = %{
+      driver: %{mock: true},
+      server: %{mock: true, pid: self()},
+      session_id: "mock-session-#{System.unique_integer()}",
+      mock: true,
+      type: :session
+    }
+
     # Set up per-test theme system isolation
     {:ok, table} = setup_theme_system_isolation()
 
@@ -45,7 +53,7 @@ defmodule SpacecastWeb.Features.ThemeSystemWorkflowTest do
     _themes = Spacecast.ThemeSystem.list_themes()
 
     # Pass the table name through URL parameters
-    session = visit(session, "/themes?theme_table=#{table}")
+    session = visit(mock_session, "/themes?theme_table=#{table}")
 
     {:ok,
      %{
@@ -73,14 +81,15 @@ defmodule SpacecastWeb.Features.ThemeSystemWorkflowTest do
       assert_has(session, css("button", text: "Create Theme"))
 
       # Create theme directly via API to test the functionality
-      {:ok, custom_theme} = Spacecast.ThemeSystem.create_theme(%{
-        name: "Custom Theme",
-        mode: "dark",
-        primary_color: "#3b82f6",
-        secondary_color: "#10b981",
-        background_color: "#ffffff",
-        text_color: "#1f2937"
-      })
+      {:ok, custom_theme} =
+        Spacecast.ThemeSystem.create_theme(%{
+          name: "Custom Theme",
+          mode: "dark",
+          primary_color: "#3b82f6",
+          secondary_color: "#10b981",
+          background_color: "#ffffff",
+          text_color: "#1f2937"
+        })
 
       # Verify the theme was created
       assert custom_theme.name == "Custom Theme"
@@ -171,13 +180,14 @@ defmodule SpacecastWeb.Features.ThemeSystemWorkflowTest do
       assert_has(session, css("button", text: "Save Colors"))
 
       # Customize colors using direct API calls since LiveView connection has issues
-      {:ok, updated_theme} = Spacecast.ThemeSystem.update_theme(light_theme, %{
-        "name" => light_theme.name,
-        "mode" => light_theme.mode,
-        "primary_color" => "#FF5733",
-        "secondary_color" => "#33FF57",
-        "accent_color" => "#3357FF"
-      })
+      {:ok, updated_theme} =
+        Spacecast.ThemeSystem.update_theme(light_theme, %{
+          "name" => light_theme.name,
+          "mode" => light_theme.mode,
+          "primary_color" => "#FF5733",
+          "secondary_color" => "#33FF57",
+          "accent_color" => "#3357FF"
+        })
 
       # Verify the theme was updated
       assert updated_theme.primary_color == "#FF5733"
@@ -512,14 +522,15 @@ defmodule SpacecastWeb.Features.ThemeSystemWorkflowTest do
       assert_has(session, css("button", text: "Save Colors"))
 
       # Apply high contrast theme using direct API calls since LiveView connection has issues
-      {:ok, updated_theme} = Spacecast.ThemeSystem.update_theme(light_theme, %{
-        "name" => light_theme.name,
-        "mode" => light_theme.mode,
-        "primary_color" => "#000000",
-        "secondary_color" => "#FFFFFF",
-        "background_color" => "#000000",
-        "text_color" => "#FFFFFF"
-      })
+      {:ok, updated_theme} =
+        Spacecast.ThemeSystem.update_theme(light_theme, %{
+          "name" => light_theme.name,
+          "mode" => light_theme.mode,
+          "primary_color" => "#000000",
+          "secondary_color" => "#FFFFFF",
+          "background_color" => "#000000",
+          "text_color" => "#FFFFFF"
+        })
 
       # Verify the theme was updated with high contrast colors
       assert updated_theme.primary_color == "#000000"
@@ -528,7 +539,8 @@ defmodule SpacecastWeb.Features.ThemeSystemWorkflowTest do
       assert updated_theme.text_color == "#FFFFFF"
 
       # Refresh the page to see the updated colors
-      session = visit(session, "/themes/#{light_theme.id}/customize?theme_table=#{Process.get(:theme_system_ets_table)}")
+      session =
+        visit(session, "/themes/#{light_theme.id}/customize?theme_table=#{Process.get(:theme_system_ets_table)}")
 
       # Wait a moment for the DOM to update
       :timer.sleep(100)

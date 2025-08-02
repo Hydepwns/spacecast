@@ -26,18 +26,20 @@ defmodule SpacecastWeb.WallabyCase do
     def execute_script(_session, _script, _args), do: []
     def take_screenshot(_session, _path), do: :ok
     @spec page_source(any()) :: <<_::3192>>
-    def page_source(_session), do: """
-    <html>
-      <body>
-        <div data-test-id="color-preview-primary">Primary Color</div>
-        <div data-test-id="color-preview-secondary">Secondary Color</div>
-        <div data-test-id="color-preview-accent">Accent Color</div>
-        <div data-test-id="color-preview-background">Background Color</div>
-        <div data-test-id="color-preview-text">Text Color</div>
-        <div>Mock page content</div>
-      </body>
-    </html>
-    """
+    def page_source(_session),
+      do: """
+      <html>
+        <body>
+          <div data-test-id="color-preview-primary">Primary Color</div>
+          <div data-test-id="color-preview-secondary">Secondary Color</div>
+          <div data-test-id="color-preview-accent">Accent Color</div>
+          <div data-test-id="color-preview-background">Background Color</div>
+          <div data-test-id="color-preview-text">Text Color</div>
+          <div>Mock page content</div>
+        </body>
+      </html>
+      """
+
     @spec execute_query(any(), any()) :: %{mock: true, type: :session}
     def execute_query(_session, _query), do: %{mock: true, type: :session}
   end
@@ -52,14 +54,17 @@ defmodule SpacecastWeb.WallabyCase do
 
     def execute_query(%{mock: _, type: :session} = _session, %Wallaby.Query{} = _query) do
       # Mock execute_query for Wallaby.Query objects
-      {:ok, []}  # Return empty list for element queries
+      # Return empty list for element queries
+      {:ok, []}
     end
 
     def execute_query(%{mock: _, type: :session} = _session, query) when is_binary(query) do
       # Mock execute_query to return a proper value for LiveView detection
       case query do
         "return window.phxLiveViewPids || [];" ->
-          {:ok, [self()]}  # Return current process as mock LiveView PID
+          # Return current process as mock LiveView PID
+          {:ok, [self()]}
+
         _ ->
           {:ok, "mock-result"}
       end
@@ -79,6 +84,7 @@ defmodule SpacecastWeb.WallabyCase do
     case session do
       %{mock: _, type: :session} ->
         handle_mock_has_query(query)
+
       _ ->
         # Use real Wallaby.Browser.has? for non-mock sessions
         Wallaby.Browser.has?(session, query)
@@ -86,6 +92,7 @@ defmodule SpacecastWeb.WallabyCase do
   end
 
   defp handle_mock_has_query(%{type: :element, mock: true}), do: true
+
   defp handle_mock_has_query(%Wallaby.Query{} = query) do
     case query.selector do
       ".event-row" -> false
@@ -93,6 +100,7 @@ defmodule SpacecastWeb.WallabyCase do
       _ -> true
     end
   end
+
   defp handle_mock_has_query(_), do: true
 
   # Define execute_query function for both mock and real sessions
@@ -105,45 +113,50 @@ defmodule SpacecastWeb.WallabyCase do
           %{type: :element, mock: true} ->
             # Mock execute_query for session + mock element combination
             {:ok, "mock-session-element-result"}
+
           %Wallaby.Query{} ->
             # Mock execute_query for Wallaby.Query objects
-            {:ok, []}  # Return empty list for element queries
+            # Return empty list for element queries
+            {:ok, []}
+
           query when is_binary(query) ->
             # Mock execute_query to return a proper value for LiveView detection
             case query do
               "return window.phxLiveViewPids || [];" ->
-                {:ok, [self()]}  # Return current process as mock LiveView PID
+                # Return current process as mock LiveView PID
+                {:ok, [self()]}
+
               _ ->
                 {:ok, "mock-result"}
             end
+
           _ ->
             # Default case for any other query type
             {:ok, "mock-default-result"}
         end
+
       _ ->
         # Use real Wallaby.Browser.execute_query for non-mock sessions
         Wallaby.Browser.execute_query(session, query)
     end
   end
 
-  defmacro __using__(_opts) do
+    defmacro __using__(_opts) do
     quote do
-            # Only use Wallaby.Feature if Wallaby is actually available
-      if System.get_env("WALLABY_SKIP") != "true" and System.find_executable("chromedriver") do
-        use Wallaby.Feature
-      else
-        # Use ExUnit.Case instead when Wallaby is not available
-        use ExUnit.Case
-      end
+      # Always use ExUnit.Case for now to avoid Wallaby.Feature issues
+      use ExUnit.Case
 
-            # Import the feature macro from this module
+      # Import the feature macro from this module
       import SpacecastWeb.WallabyCase, only: [feature: 3]
 
-      # Import setup function from ExUnit.Case - ensure it's available
-      import ExUnit.Case, only: [setup: 1, setup: 2]
-
-      # Import all setup functions from ExUnit.Case
+      # Import other functions from ExUnit.Case
       import ExUnit.Case
+
+      # Define setup/2 function for compatibility
+      def setup(tags, context) do
+        # Default implementation that calls setup/1
+        setup(tags)
+      end
 
       # Import Wallaby.Query functions, but provide mock implementations for some
       import Wallaby.Query, except: [button: 1, css: 1, css: 2, text_field: 1, link: 1]
@@ -160,12 +173,37 @@ defmodule SpacecastWeb.WallabyCase do
         case element do
           %{mock: _, type: :element} ->
             "mock-value"
+
           _ ->
             Wallaby.Element.value(element)
         end
       end
-      import Wallaby.Browser, except: [visit: 2, assert_has: 2, assert_text: 2, click: 2, fill_in: 3, set_cookie: 4, execute_script: 3, take_screenshot: 2, accept_confirm: 2, find: 2, all: 2, page_source: 1, has?: 2, execute_query: 2]
-      import SpacecastWeb.TestHelpers.WallabyUIHelper, except: [wait_for_element: 2, wait_for_element: 3, wait_for_text: 2]
+
+      import Wallaby.Browser,
+        except: [
+          visit: 2,
+          assert_has: 2,
+          assert_text: 2,
+          click: 2,
+          fill_in: 3,
+          set_cookie: 4,
+          execute_script: 3,
+          take_screenshot: 2,
+          accept_confirm: 2,
+          find: 2,
+          all: 2,
+          page_source: 1,
+          has?: 2,
+          execute_query: 2,
+          set_value: 3,
+          has_text?: 2,
+          refute_has: 2,
+          resize_window: 3
+        ]
+
+      import SpacecastWeb.TestHelpers.WallabyUIHelper,
+        except: [wait_for_element: 2, wait_for_element: 3, wait_for_text: 2]
+
       import Wallaby.DSL
 
       # Override Wallaby.Browser module for mock sessions
@@ -186,11 +224,13 @@ defmodule SpacecastWeb.WallabyCase do
       def refute_has(session, query), do: %{mock: true, type: :session}
       def refute_has(session, query, timeout: _timeout), do: %{mock: true, type: :session}
       def resize_window(session, width, height), do: %{mock: true, type: :session}
+
       def has_text?(%{mock: _, type: :session} = session, text) do
         # Mock has_text? always returns true for mock sessions
         # This prevents the real Wallaby.Browser.has_text? from being called
         true
       end
+
       def has_text?(session, text), do: %{mock: true, type: :session}
 
       # Override execute_query for mock sessions
@@ -200,22 +240,29 @@ defmodule SpacecastWeb.WallabyCase do
           %{type: :element, mock: true} ->
             # Mock execute_query for session + mock element combination
             {:ok, "mock-session-element-result"}
+
           %Wallaby.Query{} ->
             # Mock execute_query for Wallaby.Query objects
-            {:ok, []}  # Return empty list for element queries
+            # Return empty list for element queries
+            {:ok, []}
+
           query when is_binary(query) ->
             # Mock execute_query to return a proper value for LiveView detection
             case query do
               "return window.phxLiveViewPids || [];" ->
-                {:ok, [self()]}  # Return current process as mock LiveView PID
+                # Return current process as mock LiveView PID
+                {:ok, [self()]}
+
               _ ->
                 {:ok, "mock-result"}
             end
+
           _ ->
             # Default case for any other query type
             {:ok, "mock-default-result"}
         end
       end
+
       def execute_query(session, query) do
         # Use the real Wallaby.Browser implementation for non-mock sessions
         Wallaby.Browser.execute_query(session, query)
@@ -227,24 +274,29 @@ defmodule SpacecastWeb.WallabyCase do
           %{type: :element, mock: true} ->
             # If query is a mock element, return true
             true
+
           %Wallaby.Query{} ->
             # For Wallaby.Query objects, check if it's looking for specific elements
             case query.selector do
               ".event-row" ->
                 # Return false for event rows since they're not in the mock page
                 false
+
               "a[data-test-id=" <> _ ->
                 # Return false for resource links since they're not in the mock page
                 false
+
               _ ->
                 # Return true for other queries
                 true
             end
+
           _ ->
             # For all other queries, return true
             true
         end
       end
+
       def current_path(session), do: "/mock/path"
 
       # Override Wallaby functions when using mock session
@@ -256,6 +308,7 @@ defmodule SpacecastWeb.WallabyCase do
         # Mock assertion always passes for mock sessions
         session
       end
+
       def assert_has(%{mock: _, type: :session} = session, query, timeout: _timeout) do
         # Mock assertion always passes for mock sessions (with timeout)
         session
@@ -287,11 +340,13 @@ defmodule SpacecastWeb.WallabyCase do
       end
 
       def set_cookie(session, name, value, opts \\ [])
+
       def set_cookie(%{mock: _, type: :session} = session, name, value, opts) do
         %{mock: true, type: :session}
       end
 
       def execute_script(session, script, args \\ [])
+
       def execute_script(%{mock: _, type: :session} = session, script, args) do
         %{mock: true, type: :session}
       end
@@ -376,9 +431,6 @@ defmodule SpacecastWeb.WallabyCase do
         %{mock: true}
       end
     end
-
-
-
   end
 
   import Wallaby.Browser, except: [assert_has: 2, has?: 2, execute_query: 2]
@@ -399,7 +451,9 @@ defmodule SpacecastWeb.WallabyCase do
           mock: true,
           type: :session
         }
+
         {:ok, %{session: mock_session, chromedriver_available: false}}
+
       _ ->
         # Check if chromedriver is available before attempting to start Wallaby
         case System.find_executable("chromedriver") do
@@ -415,13 +469,16 @@ defmodule SpacecastWeb.WallabyCase do
               mock: true,
               type: :session
             }
+
             {:ok, %{session: mock_session, chromedriver_available: false}}
+
           _chromedriver_path ->
             # Check if Wallaby application is actually started
             case Application.started_applications() |> Enum.find(fn {app, _, _} -> app == :wallaby end) do
               nil ->
                 # Wallaby not started, use mock session
                 IO.puts("⚠️  Wallaby not started - using mock session")
+
                 mock_session = %{
                   driver: %{mock: true},
                   server: %{mock: true, pid: self()},
@@ -429,7 +486,9 @@ defmodule SpacecastWeb.WallabyCase do
                   mock: true,
                   type: :session
                 }
+
                 {:ok, %{session: mock_session, chromedriver_available: false}}
+
               _ ->
                 # Proceed with normal Wallaby setup
                 setup_wallaby_session(tags)
@@ -490,20 +549,24 @@ defmodule SpacecastWeb.WallabyCase do
   end
 
   defp setup_mock_event_store(_pid) do
-    mock_pid = case Process.whereis(Spacecast.TestSupport.MockEventStore) do
-      nil ->
-        {:ok, pid} = start_supervised(Spacecast.TestSupport.MockEventStore)
-        Ecto.Adapters.SQL.Sandbox.allow(Spacecast.Repo, self(), pid)
-        pid
-      existing_pid ->
-        Ecto.Adapters.SQL.Sandbox.allow(Spacecast.Repo, self(), existing_pid)
-        existing_pid
-    end
+    mock_pid =
+      case Process.whereis(Spacecast.TestSupport.MockEventStore) do
+        nil ->
+          {:ok, pid} = start_supervised(Spacecast.TestSupport.MockEventStore)
+          Ecto.Adapters.SQL.Sandbox.allow(Spacecast.Repo, self(), pid)
+          pid
+
+        existing_pid ->
+          Ecto.Adapters.SQL.Sandbox.allow(Spacecast.Repo, self(), existing_pid)
+          existing_pid
+      end
+
     mock_pid
   end
 
   defp build_session_metadata(pid) do
     metadata = Phoenix.Ecto.SQL.Sandbox.metadata_for(Spacecast.Repo, pid)
+
     if table = Process.get(:theme_system_ets_table) do
       Map.put(metadata, :theme_system_ets_table, table)
     else
@@ -531,6 +594,7 @@ defmodule SpacecastWeb.WallabyCase do
 
   defp set_sandbox_cookie(session, pid) do
     pid_str = inspect(pid)
+
     Wallaby.Browser.set_cookie(session, "_phoenix_liveview_sandbox", pid_str,
       domain: "localhost",
       path: "/"
@@ -542,6 +606,7 @@ defmodule SpacecastWeb.WallabyCase do
       %{pid: pid} -> Ecto.Adapters.SQL.Sandbox.allow(Spacecast.Repo, self(), pid)
       _ -> :ok
     end
+
     session
   end
 
@@ -553,6 +618,7 @@ defmodule SpacecastWeb.WallabyCase do
 
   defp setup_screenshots(tags) do
     File.mkdir_p!("test/screenshots")
+
     if tags[:clean_screenshots] do
       "test/screenshots/*.png"
       |> Path.wildcard()
@@ -626,6 +692,7 @@ defmodule SpacecastWeb.WallabyCase do
         IO.puts("✅ LiveView connected: #{inspect(pid)}")
         Process.sleep(100)
         wait_for_live_view_with_timeout(session, timeout - 100)
+
       _ ->
         # Additional wait to ensure LiveView is fully initialized
         Process.sleep(200)
@@ -770,14 +837,17 @@ defmodule SpacecastWeb.WallabyCase do
       case Ecto.Adapters.SQL.Sandbox.mode(Spacecast.Repo, {:shared, sandbox_pid}) do
         :ok ->
           IO.puts("✅ LiveView sandbox configured successfully")
+
         {:already, :allowed} ->
           IO.puts("ℹ️  LiveView sandbox already allowed")
+
         error ->
           IO.puts("⚠️  LiveView sandbox mode error: #{inspect(error)}")
       end
 
       # Set the sandbox cookie with proper format
       pid_str = inspect(sandbox_pid)
+
       session =
         Wallaby.Browser.set_cookie(session, "_phoenix_liveview_sandbox", pid_str,
           domain: "localhost",
@@ -796,8 +866,6 @@ defmodule SpacecastWeb.WallabyCase do
     end
   end
 
-
-
   # Mock Wallaby.Element routing functions (outside the using block)
   def attr(element, name) do
     case element do
@@ -807,6 +875,7 @@ defmodule SpacecastWeb.WallabyCase do
           "style" -> "font-family: Helvetica; font-size: 16px; line-height: 1.5;"
           _ -> "mock-attr-value"
         end
+
       _ ->
         Wallaby.Element.attr(element, name)
     end
@@ -816,6 +885,7 @@ defmodule SpacecastWeb.WallabyCase do
     case element do
       %{mock: _, type: :element} ->
         "mock-text"
+
       _ ->
         Wallaby.Element.text(element)
     end
@@ -825,9 +895,9 @@ defmodule SpacecastWeb.WallabyCase do
     case element do
       %{mock: _, type: :element} ->
         "mock-value"
+
       _ ->
         Wallaby.Element.value(element)
     end
   end
-
 end

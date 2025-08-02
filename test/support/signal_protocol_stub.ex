@@ -33,7 +33,8 @@ defmodule Spacecast.SignalProtocolStub do
     SignalNif.generate_signed_pre_key(identity_key, key_id)
   end
 
-  @spec create_session({<<_::120>>, <<_::112>>}, {<<_::120>>, <<_::112>>}) :: {:ok, {<<_::120>>, <<_::112>>}} | {:error, any()}
+  @spec create_session({<<_::120>>, <<_::112>>}, {<<_::120>>, <<_::112>>}) ::
+          {:ok, {<<_::120>>, <<_::112>>}} | {:error, any()}
   @doc """
   Stub for create_session/2
   """
@@ -41,7 +42,8 @@ defmodule Spacecast.SignalProtocolStub do
     SignalNif.create_session(local_identity_key, remote_identity_key)
   end
 
-  @spec process_pre_key_bundle({<<_::120>>, <<_::112>>}, {<<_::120>>, <<_::112>>}) :: {:ok, {<<_::120>>, <<_::112>>}} | {:error, any()}
+  @spec process_pre_key_bundle({<<_::120>>, <<_::112>>}, {<<_::120>>, <<_::112>>}) ::
+          {:ok, {<<_::120>>, <<_::112>>}} | {:error, any()}
   @doc """
   Stub for process_pre_key_bundle/2
   """

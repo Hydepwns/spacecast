@@ -14,15 +14,19 @@ defmodule SpacecastWeb.Integration.PerformanceIntegrationTest do
     # Use a more robust sandbox setup that handles concurrent access
     case Ecto.Adapters.SQL.Sandbox.checkout(Spacecast.Repo) do
       :ok -> :ok
-      {:already, :allowed} -> :ok  # Already allowed, which is fine
-      {:already, :checked_out} -> :ok  # Already checked out, which is fine
+      # Already allowed, which is fine
+      {:already, :allowed} -> :ok
+      # Already checked out, which is fine
+      {:already, :checked_out} -> :ok
       error -> raise "Failed to checkout sandbox: #{inspect(error)}"
     end
 
     case Ecto.Adapters.SQL.Sandbox.mode(Spacecast.Repo, {:shared, self()}) do
       :ok -> :ok
-      {:already, :allowed} -> :ok  # Already allowed, which is fine
-      :not_owner -> :ok  # Not the owner, which is fine in shared mode
+      # Already allowed, which is fine
+      {:already, :allowed} -> :ok
+      # Not the owner, which is fine in shared mode
+      :not_owner -> :ok
       error -> raise "Failed to set sandbox mode: #{inspect(error)}"
     end
 
@@ -132,6 +136,7 @@ defmodule SpacecastWeb.Integration.PerformanceIntegrationTest do
 
       # Ensure all resources were created successfully
       assert length(resources) == 100
+
       Enum.each(resources, fn resource ->
         assert resource.name =~ "Query Test Resource"
       end)
@@ -141,7 +146,8 @@ defmodule SpacecastWeb.Integration.PerformanceIntegrationTest do
 
       # Test query performance
       start_time = System.monotonic_time(:millisecond)
-      all_resources = ResourceSystem.list_resources(limit: 150)  # Get more than the 100 we created
+      # Get more than the 100 we created
+      all_resources = ResourceSystem.list_resources(limit: 150)
       end_time = System.monotonic_time(:millisecond)
       query_time = end_time - start_time
 
@@ -365,20 +371,25 @@ defmodule SpacecastWeb.Integration.PerformanceIntegrationTest do
       start_time = System.monotonic_time(:millisecond)
 
       # Use batch creation for better performance
-      resources_attrs = for i <- 1..100 do
-        %{
-          name: "Large Data Resource #{i}",
-          type: "document",
-          status: "published",
-          content: large_content
-        }
-      end
+      resources_attrs =
+        for i <- 1..100 do
+          %{
+            name: "Large Data Resource #{i}",
+            type: "document",
+            status: "published",
+            content: large_content
+          }
+        end
 
-      {:ok, _resources} = ResourceSystem.create_resources_batch(resources_attrs, [
-        skip_events: true,  # Skip events for performance test
-        skip_pubsub: true,  # Skip PubSub for performance test
-        skip_cache_invalidation: true  # Skip cache invalidation for performance test
-      ])
+      {:ok, _resources} =
+        ResourceSystem.create_resources_batch(resources_attrs,
+          # Skip events for performance test
+          skip_events: true,
+          # Skip PubSub for performance test
+          skip_pubsub: true,
+          # Skip cache invalidation for performance test
+          skip_cache_invalidation: true
+        )
 
       end_time = System.monotonic_time(:millisecond)
       processing_time = end_time - start_time
@@ -400,19 +411,20 @@ defmodule SpacecastWeb.Integration.PerformanceIntegrationTest do
         for i <- 1..process_count do
           Task.async(fn ->
             # Each process creates resources in batch
-            resources_attrs = for j <- 1..10 do
-              %{
-                name: "Process #{i} Resource #{j}",
-                type: "document",
-                status: "published"
-              }
-            end
+            resources_attrs =
+              for j <- 1..10 do
+                %{
+                  name: "Process #{i} Resource #{j}",
+                  type: "document",
+                  status: "published"
+                }
+              end
 
-            ResourceSystem.create_resources_batch(resources_attrs, [
+            ResourceSystem.create_resources_batch(resources_attrs,
               skip_events: true,
               skip_pubsub: true,
               skip_cache_invalidation: true
-            ])
+            )
           end)
         end
 
@@ -433,25 +445,27 @@ defmodule SpacecastWeb.Integration.PerformanceIntegrationTest do
         start_time = System.monotonic_time(:millisecond)
 
         # Create resources with varying content sizes in batch
-        resources_attrs = for i <- 1..size do
-          content = %{
-            text: String.duplicate("Content #{i} ", 10),
-            metadata: %{size: size, index: i}
-          }
+        resources_attrs =
+          for i <- 1..size do
+            content = %{
+              text: String.duplicate("Content #{i} ", 10),
+              metadata: %{size: size, index: i}
+            }
 
-          %{
-            name: "Size Test Resource #{i}",
-            type: "document",
-            status: "published",
-            content: content
-          }
-        end
+            %{
+              name: "Size Test Resource #{i}",
+              type: "document",
+              status: "published",
+              content: content
+            }
+          end
 
-        {:ok, _resources} = ResourceSystem.create_resources_batch(resources_attrs, [
-          skip_events: true,
-          skip_pubsub: true,
-          skip_cache_invalidation: true
-        ])
+        {:ok, _resources} =
+          ResourceSystem.create_resources_batch(resources_attrs,
+            skip_events: true,
+            skip_pubsub: true,
+            skip_cache_invalidation: true
+          )
 
         end_time = System.monotonic_time(:millisecond)
         processing_time = end_time - start_time
@@ -473,19 +487,20 @@ defmodule SpacecastWeb.Integration.PerformanceIntegrationTest do
         for i <- 1..pool_size do
           Task.async(fn ->
             # Each task performs database operations in batch
-            resources_attrs = for j <- 1..5 do
-              %{
-                name: "Pool Test Resource #{i}-#{j}",
-                type: "document",
-                status: "published"
-              }
-            end
+            resources_attrs =
+              for j <- 1..5 do
+                %{
+                  name: "Pool Test Resource #{i}-#{j}",
+                  type: "document",
+                  status: "published"
+                }
+              end
 
-            ResourceSystem.create_resources_batch(resources_attrs, [
+            ResourceSystem.create_resources_batch(resources_attrs,
               skip_events: true,
               skip_pubsub: true,
               skip_cache_invalidation: true
-            ])
+            )
           end)
         end
 
@@ -593,10 +608,10 @@ defmodule SpacecastWeb.Integration.PerformanceIntegrationTest do
 
       # Use optimized query (e.g., with proper indexing)
       resources =
-        ResourceSystem.list_resources([
+        ResourceSystem.list_resources(
           limit: 10,
           offset: 0
-        ])
+        )
 
       end_time = System.monotonic_time(:millisecond)
       query_time = end_time - start_time

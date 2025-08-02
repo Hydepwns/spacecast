@@ -6,8 +6,8 @@ defmodule Spacecast.Events.TestEventStore do
   but delegates all operations to the MockEventStore for in-memory testing.
   """
 
-  alias Spacecast.TestSupport.MockEventStore
   alias Spacecast.Events.Core.Event
+  alias Spacecast.TestSupport.MockEventStore
 
   @doc """
   Stores a single event in the mock event store.
@@ -23,8 +23,7 @@ defmodule Spacecast.Events.TestEventStore do
       id: Ecto.UUID.generate(),
       type: type,
       data: data,
-      resource_id:
-        data[:resource_id] || data["resource_id"] || data[:id] || data["id"] || "unknown",
+      resource_id: data[:resource_id] || data["resource_id"] || data[:id] || data["id"] || "unknown",
       resource_type: data[:resource_type] || data["resource_type"] || "unknown",
       correlation_id: Ecto.UUID.generate(),
       causation_id: nil,

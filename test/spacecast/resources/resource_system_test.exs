@@ -37,12 +37,15 @@ defmodule Spacecast.Resources.ResourceSystemTest do
 
     test "updates a resource successfully" do
       {:ok, resource} =
-        ResourceSystem.create_resource(%{
-          name: "To Update",
-          type: "document",
-          status: "published",
-          content: %{text: "Test content"}
-        }, [])
+        ResourceSystem.create_resource(
+          %{
+            name: "To Update",
+            type: "document",
+            status: "published",
+            content: %{text: "Test content"}
+          },
+          []
+        )
 
       assert {:ok, updated} = ResourceSystem.update_resource(resource.id, %{name: "Updated Name"})
       assert updated.name == "Updated Name"
@@ -50,12 +53,15 @@ defmodule Spacecast.Resources.ResourceSystemTest do
 
     test "deletes a resource successfully" do
       {:ok, resource} =
-        ResourceSystem.create_resource(%{
-          name: "To Delete",
-          type: "document",
-          status: "published",
-          content: %{text: "Test content"}
-        }, [])
+        ResourceSystem.create_resource(
+          %{
+            name: "To Delete",
+            type: "document",
+            status: "published",
+            content: %{text: "Test content"}
+          },
+          []
+        )
 
       assert {:ok, deleted} = ResourceSystem.delete_resource(resource.id)
       assert deleted.id == resource.id

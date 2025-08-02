@@ -6,6 +6,7 @@ defmodule SpacecastWeb.Features.ResourceCreationWorkflowTest do
     Mox.set_mox_global(false)
     :ok
   end
+
   import Mox
   setup :set_mox_from_context
   setup :verify_on_exit!
@@ -15,6 +16,19 @@ defmodule SpacecastWeb.Features.ResourceCreationWorkflowTest do
 
   import Spacecast.TestSupport.ResourceSystemHelper
   alias SpacecastWeb.TestMockHelper
+
+  setup _context do
+    # Create a mock session since we're not using Wallaby.Feature
+    mock_session = %{
+      driver: %{mock: true},
+      server: %{mock: true, pid: self()},
+      session_id: "mock-session-#{System.unique_integer()}",
+      mock: true,
+      type: :session
+    }
+
+    {:ok, session: mock_session}
+  end
 
   setup do
     # Configure application to use mock repository
@@ -35,6 +49,7 @@ defmodule SpacecastWeb.Features.ResourceCreationWorkflowTest do
     |> stub(:insert, fn changeset, _opts ->
       # Return a mock resource based on the changeset
       resource_data = Ecto.Changeset.apply_changes(changeset)
+
       mock_resource = %Spacecast.Resources.Resource{
         id: shared_resource_id,
         name: resource_data.name,
@@ -54,6 +69,7 @@ defmodule SpacecastWeb.Features.ResourceCreationWorkflowTest do
     |> stub(:get, fn _module, id, _opts ->
       # Return the stored resource or a default one
       resources = Process.get(:mock_resources, %{})
+
       case Map.get(resources, id) do
         nil ->
           # Return a default resource if not found
@@ -66,6 +82,7 @@ defmodule SpacecastWeb.Features.ResourceCreationWorkflowTest do
             inserted_at: DateTime.utc_now(),
             updated_at: DateTime.utc_now()
           }
+
         resource ->
           resource
       end
@@ -133,8 +150,10 @@ defmodule SpacecastWeb.Features.ResourceCreationWorkflowTest do
         assert retrieved_resource.type == resource.type
         assert retrieved_resource.status == resource.status
         assert retrieved_resource.content == resource.content
+
       {:error, reason} ->
         flunk("Failed to retrieve resource: #{inspect(reason)}")
+
       error ->
         flunk("Unexpected error retrieving resource: #{inspect(error)}")
     end

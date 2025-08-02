@@ -29,8 +29,7 @@ defmodule Spacecast.TestSupport.MockEventStore do
       type: type,
       data: data,
       resource_type: data[:resource_type] || data["resource_type"] || "unknown",
-      resource_id:
-        data[:resource_id] || data["resource_id"] || data[:id] || data["id"] || "unknown",
+      resource_id: data[:resource_id] || data["resource_id"] || data[:id] || data["id"] || "unknown",
       correlation_id: Ecto.UUID.generate(),
       causation_id: nil,
       timestamp: DateTime.utc_now(),
@@ -43,27 +42,33 @@ defmodule Spacecast.TestSupport.MockEventStore do
 
   def handle_call({:store_event, event, _metadata}, _from, state) when is_map(event) do
     # Preserve the original event ID if it's already provided
-    event = event
-    |> Map.update(:id, Ecto.UUID.generate(), fn id ->
-      if is_binary(id) and byte_size(id) > 0, do: id, else: Ecto.UUID.generate()
-    end)
-    |> Map.update(:correlation_id, Ecto.UUID.generate(), &ensure_uuid/1)
-    |> Map.update(:causation_id, nil, fn val -> if val, do: ensure_uuid(val), else: nil end)
+    event =
+      event
+      |> Map.update(:id, Ecto.UUID.generate(), fn id ->
+        if is_binary(id) and byte_size(id) > 0, do: id, else: Ecto.UUID.generate()
+      end)
+      |> Map.update(:correlation_id, Ecto.UUID.generate(), &ensure_uuid/1)
+      |> Map.update(:causation_id, nil, fn val -> if val, do: ensure_uuid(val), else: nil end)
 
     # Keep the original event struct or convert map to struct
     event_struct =
       case event do
         %{__struct__: Spacecast.Events.Core.Event} ->
-          %{event |
-            id: if(is_binary(event.id) and byte_size(event.id) > 0, do: event.id, else: Ecto.UUID.generate()),
-            correlation_id: ensure_uuid(event.correlation_id),
-            causation_id: if(event.causation_id, do: ensure_uuid(event.causation_id), else: nil)
+          %{
+            event
+            | id: if(is_binary(event.id) and byte_size(event.id) > 0, do: event.id, else: Ecto.UUID.generate()),
+              correlation_id: ensure_uuid(event.correlation_id),
+              causation_id: if(event.causation_id, do: ensure_uuid(event.causation_id), else: nil)
           }
 
         %{} ->
           # Convert map to Event struct
           %Spacecast.Events.Core.Event{
-            id: if(Map.get(event, :id) || Map.get(event, "id"), do: Map.get(event, :id) || Map.get(event, "id"), else: Ecto.UUID.generate()),
+            id:
+              if(Map.get(event, :id) || Map.get(event, "id"),
+                do: Map.get(event, :id) || Map.get(event, "id"),
+                else: Ecto.UUID.generate()
+              ),
             type: Map.get(event, :type) || Map.get(event, "type"),
             data: Map.get(event, :data) || Map.get(event, "data") || %{},
             resource_type: Map.get(event, :resource_type) || Map.get(event, "resource_type"),
@@ -76,8 +81,7 @@ defmodule Spacecast.TestSupport.MockEventStore do
                 val -> ensure_uuid(val)
               end,
             metadata: Map.get(event, :metadata) || Map.get(event, "metadata") || %{},
-            timestamp:
-              Map.get(event, :timestamp) || Map.get(event, "timestamp") || DateTime.utc_now()
+            timestamp: Map.get(event, :timestamp) || Map.get(event, "timestamp") || DateTime.utc_now()
           }
 
         _ ->
@@ -102,16 +106,21 @@ defmodule Spacecast.TestSupport.MockEventStore do
     event_struct =
       case event do
         %{__struct__: Spacecast.Events.Core.Event} ->
-          %{event |
-            id: if(is_binary(event.id) and byte_size(event.id) > 0, do: event.id, else: Ecto.UUID.generate()),
-            correlation_id: ensure_uuid(event.correlation_id),
-            causation_id: if(event.causation_id, do: ensure_uuid(event.causation_id), else: nil)
+          %{
+            event
+            | id: if(is_binary(event.id) and byte_size(event.id) > 0, do: event.id, else: Ecto.UUID.generate()),
+              correlation_id: ensure_uuid(event.correlation_id),
+              causation_id: if(event.causation_id, do: ensure_uuid(event.causation_id), else: nil)
           }
 
         %{} ->
           # Convert map to Event struct
           %Spacecast.Events.Core.Event{
-            id: if(Map.get(event, :id) || Map.get(event, "id"), do: Map.get(event, :id) || Map.get(event, "id"), else: Ecto.UUID.generate()),
+            id:
+              if(Map.get(event, :id) || Map.get(event, "id"),
+                do: Map.get(event, :id) || Map.get(event, "id"),
+                else: Ecto.UUID.generate()
+              ),
             type: Map.get(event, :type) || Map.get(event, "type"),
             data: Map.get(event, :data) || Map.get(event, "data") || %{},
             resource_type: Map.get(event, :resource_type) || Map.get(event, "resource_type"),
@@ -124,8 +133,7 @@ defmodule Spacecast.TestSupport.MockEventStore do
                 val -> ensure_uuid(val)
               end,
             metadata: Map.get(event, :metadata) || Map.get(event, "metadata") || %{},
-            timestamp:
-              Map.get(event, :timestamp) || Map.get(event, "timestamp") || DateTime.utc_now()
+            timestamp: Map.get(event, :timestamp) || Map.get(event, "timestamp") || DateTime.utc_now()
           }
 
         _ ->
@@ -167,8 +175,7 @@ defmodule Spacecast.TestSupport.MockEventStore do
                     Ecto.UUID.generate(),
                 causation_id: Map.get(event, :causation_id) || Map.get(event, "causation_id"),
                 metadata: Map.get(event, :metadata) || Map.get(event, "metadata") || %{},
-                timestamp:
-                  Map.get(event, :timestamp) || Map.get(event, "timestamp") || DateTime.utc_now()
+                timestamp: Map.get(event, :timestamp) || Map.get(event, "timestamp") || DateTime.utc_now()
               }
 
             _ ->
@@ -210,27 +217,31 @@ defmodule Spacecast.TestSupport.MockEventStore do
 
   def handle_call({:purge_events, criteria}, _from, state) do
     # Remove events that match the criteria
-    remaining_events = Enum.reject(state.events, fn event ->
-      Enum.all?(criteria, fn {key, value} ->
-        case key do
-          :type ->
-            case event do
-              %Spacecast.Events.Core.Event{} -> event.type == value
-              %{} -> Map.get(event, :type) == value
-              _ -> false
-            end
-          _ ->
-            case event do
-              %Spacecast.Events.Core.Event{} ->
-                Map.get(Map.from_struct(event), key) == value
-              %{} ->
-                Map.get(event, key) == value
-              _ ->
-                false
-            end
-        end
+    remaining_events =
+      Enum.reject(state.events, fn event ->
+        Enum.all?(criteria, fn {key, value} ->
+          case key do
+            :type ->
+              case event do
+                %Spacecast.Events.Core.Event{} -> event.type == value
+                %{} -> Map.get(event, :type) == value
+                _ -> false
+              end
+
+            _ ->
+              case event do
+                %Spacecast.Events.Core.Event{} ->
+                  Map.get(Map.from_struct(event), key) == value
+
+                %{} ->
+                  Map.get(event, key) == value
+
+                _ ->
+                  false
+              end
+          end
+        end)
       end)
-    end)
 
     {:reply, :ok, %{state | events: remaining_events}}
   end
@@ -248,6 +259,7 @@ defmodule Spacecast.TestSupport.MockEventStore do
     case Enum.find(state.events, fn event -> event.id == id end) do
       nil ->
         {:reply, {:error, :not_found}, state}
+
       event ->
         remaining_events = Enum.reject(state.events, fn e -> e.id == id end)
         {:reply, {:ok, event}, %{state | events: remaining_events}}
@@ -385,6 +397,7 @@ defmodule Spacecast.TestSupport.MockEventStore do
     case get_events(criteria) do
       {:ok, events} ->
         {:ok, Stream.map(events, & &1)}
+
       {:error, reason} ->
         {:error, reason}
     end
@@ -394,6 +407,7 @@ defmodule Spacecast.TestSupport.MockEventStore do
     case get_events(criteria) do
       {:ok, events} ->
         {:ok, length(events)}
+
       {:error, reason} ->
         {:error, reason}
     end
@@ -406,6 +420,7 @@ defmodule Spacecast.TestSupport.MockEventStore do
         # Remove the events from memory
         GenServer.call(__MODULE__, {:purge_events, criteria})
         {:ok, {count, nil}}
+
       {:error, reason} ->
         {:error, reason}
     end
@@ -433,6 +448,7 @@ defmodule Spacecast.TestSupport.MockEventStore do
 
               %{} ->
                 event_type = Map.get(event, :type)
+
                 if is_list(value) do
                   event_type in value
                 else

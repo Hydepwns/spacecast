@@ -9,7 +9,7 @@ defmodule Spacecast.TestSupport.ResourceSystemHelper do
   Sets up the resource system for tests.
   This ensures the ResourceSystem is available and the store is reset.
   """
-  def setup_resource_system() do
+  def setup_resource_system do
     # Ensure we have proper database connection ownership
     Ecto.Adapters.SQL.Sandbox.checkout(Spacecast.Repo)
 

@@ -73,7 +73,8 @@ defmodule Spacecast.Events.SnapshotOperationsTest do
     test "retrieves the _latest snapshot", %{snapshots: [snapshot1, snapshot2, snapshot3], resource_id: resource_id} do
       # Verify timestamps are in ascending order (with tolerance for race conditions)
       # Use a small tolerance to account for database transaction timing
-      tolerance = 1  # 1 second tolerance
+      # 1 second tolerance
+      tolerance = 1
       assert DateTime.diff(snapshot2.inserted_at, snapshot1.inserted_at, :second) >= -tolerance
       assert DateTime.diff(snapshot3.inserted_at, snapshot2.inserted_at, :second) >= -tolerance
 

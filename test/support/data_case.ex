@@ -41,7 +41,7 @@ defmodule Spacecast.DataCase do
   @doc """
   Sets up the sandbox based on the test tags.
   """
-    def setup_sandbox(tags) do
+  def setup_sandbox(tags) do
     # Use shared mode for async tests, manual for sync tests
     shared = tags[:async] || false
 
@@ -62,6 +62,7 @@ defmodule Spacecast.DataCase do
         else
           reraise e, __STACKTRACE__
         end
+
       e in MatchError ->
         # Handle various sandbox errors
         case e.term do
@@ -69,15 +70,18 @@ defmodule Spacecast.DataCase do
             # For shared mode, we can just allow the current process
             Ecto.Adapters.SQL.Sandbox.allow(Spacecast.Repo, self(), self())
             self()
+
           {:error, {{:badmatch, {:already, :allowed}}, _}} ->
             # Sandbox is already allowed, continue
             self()
+
           {:error, {{:badmatch, :not_found}, _}} ->
             # Handle not_found error - try to use manual mode instead
             :ok = Ecto.Adapters.SQL.Sandbox.checkout(Spacecast.Repo)
             Ecto.Adapters.SQL.Sandbox.mode(Spacecast.Repo, :manual)
             Ecto.Adapters.SQL.Sandbox.allow(Spacecast.Repo, self(), self())
             self()
+
           _ ->
             reraise e, __STACKTRACE__
         end

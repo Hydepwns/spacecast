@@ -40,9 +40,7 @@ defmodule SpacecastWeb.StyleGuideLiveTest do
 
       # Check that the theme class has changed
       assert view
-             |> has_element?(
-               "#style-guide-theme-toggle-light-button[aria-label='Switch to light theme']"
-             )
+             |> has_element?("#style-guide-theme-toggle-light-button[aria-label='Switch to light theme']")
     end
   end
 end

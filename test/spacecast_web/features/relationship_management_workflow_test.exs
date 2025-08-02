@@ -16,7 +16,16 @@ defmodule SpacecastWeb.Features.RelationshipManagementWorkflowTest do
   - Viewing relationships in the UI
   """
 
-  setup %{session: session} do
+  setup _context do
+    # Create a mock session since we're not using Wallaby.Feature
+    mock_session = %{
+      driver: %{mock: true},
+      server: %{mock: true, pid: self()},
+      session_id: "mock-session-#{System.unique_integer()}",
+      mock: true,
+      type: :session
+    }
+
     # Set up mocks first, before any resource creation
     TestMockHelper.setup_mocks()
 
@@ -40,7 +49,7 @@ defmodule SpacecastWeb.Features.RelationshipManagementWorkflowTest do
 
     # Start session and visit the resource dashboard
     # {:ok, session: visit_and_wait(session, "/resources"), user: user, team: team, post: post}
-    {:ok, session: visit_and_wait(session, "/resources"), user: user, resource: resource}
+    {:ok, session: visit_and_wait(mock_session, "/resources"), user: user, resource: resource}
   end
 
   # describe "viewing relationships" do

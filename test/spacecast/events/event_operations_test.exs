@@ -12,6 +12,7 @@ defmodule Spacecast.Events.EventOperationsTest do
     if Process.whereis(Spacecast.TestSupport.MockEventStore) do
       Spacecast.TestSupport.MockEventStore.reset()
     end
+
     :ok
   end
 
@@ -22,6 +23,7 @@ defmodule Spacecast.Events.EventOperationsTest do
     if Process.whereis(Spacecast.TestSupport.MockEventStore) do
       Spacecast.TestSupport.MockEventStore.reset()
     end
+
     :ok
   end
 

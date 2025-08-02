@@ -23,11 +23,12 @@ defmodule SpacecastWeb.Components.UI.TimelineViewTest do
         }
       ]
 
-      html = TimelineView.render_timeline_view(%{
-        change_history: change_history,
-        selected_version: 2,
-        on_view_version: "view_version"
-      })
+      html =
+        TimelineView.render_timeline_view(%{
+          change_history: change_history,
+          selected_version: 2,
+          on_view_version: "view_version"
+        })
 
       assert html =~ "Version 3"
       assert html =~ "Version 2"
@@ -47,11 +48,12 @@ defmodule SpacecastWeb.Components.UI.TimelineViewTest do
         }
       ]
 
-      html = TimelineView.render_timeline_view(%{
-        change_history: change_history,
-        selected_version: nil,
-        on_view_version: "view_version"
-      })
+      html =
+        TimelineView.render_timeline_view(%{
+          change_history: change_history,
+          selected_version: nil,
+          on_view_version: "view_version"
+        })
 
       assert html =~ "Version 1"
       refute html =~ "Currently Selected"
@@ -71,11 +73,12 @@ defmodule SpacecastWeb.Components.UI.TimelineViewTest do
         }
       ]
 
-      html = TimelineView.render_timeline_view(%{
-        change_history: change_history,
-        selected_version: 2,
-        on_view_version: "view_version"
-      })
+      html =
+        TimelineView.render_timeline_view(%{
+          change_history: change_history,
+          selected_version: 2,
+          on_view_version: "view_version"
+        })
 
       assert html =~ "Currently Selected"
       assert html =~ "phx-value-version=\"2\""
@@ -90,21 +93,23 @@ defmodule SpacecastWeb.Components.UI.TimelineViewTest do
         }
       ]
 
-      html = TimelineView.render_timeline_view(%{
-        change_history: change_history,
-        selected_version: nil,
-        on_view_version: nil
-      })
+      html =
+        TimelineView.render_timeline_view(%{
+          change_history: change_history,
+          selected_version: nil,
+          on_view_version: nil
+        })
 
       assert html =~ "disabled"
     end
 
     test "handles empty change history" do
-      html = TimelineView.render_timeline_view(%{
-        change_history: [],
-        selected_version: nil,
-        on_view_version: "view_version"
-      })
+      html =
+        TimelineView.render_timeline_view(%{
+          change_history: [],
+          selected_version: nil,
+          on_view_version: "view_version"
+        })
 
       refute html =~ "Version"
       refute html =~ "timeline-item"
@@ -120,16 +125,18 @@ defmodule SpacecastWeb.Components.UI.TimelineViewTest do
         }
       ]
 
-      html_string = TimelineView.render_timeline_view(%{
-        change_history: change_history_string,
-        selected_version: nil,
-        on_view_version: "view_version"
-      })
+      html_string =
+        TimelineView.render_timeline_view(%{
+          change_history: change_history_string,
+          selected_version: nil,
+          on_view_version: "view_version"
+        })
 
       assert html_string =~ "2024-01-15 08:00:00"
 
       # Test with DateTime timestamp
       datetime = DateTime.new!(~D[2024-01-15], ~T[08:00:00], "Etc/UTC")
+
       change_history_datetime = [
         %{
           version: 1,
@@ -138,11 +145,12 @@ defmodule SpacecastWeb.Components.UI.TimelineViewTest do
         }
       ]
 
-      html_datetime = TimelineView.render_timeline_view(%{
-        change_history: change_history_datetime,
-        selected_version: nil,
-        on_view_version: "view_version"
-      })
+      html_datetime =
+        TimelineView.render_timeline_view(%{
+          change_history: change_history_datetime,
+          selected_version: nil,
+          on_view_version: "view_version"
+        })
 
       assert html_datetime =~ "2024-01-15 08:00:00"
     end
@@ -156,11 +164,12 @@ defmodule SpacecastWeb.Components.UI.TimelineViewTest do
         }
       ]
 
-      html = TimelineView.render_timeline_view(%{
-        change_history: change_history,
-        selected_version: nil,
-        on_view_version: "view_version"
-      })
+      html =
+        TimelineView.render_timeline_view(%{
+          change_history: change_history,
+          selected_version: nil,
+          on_view_version: "view_version"
+        })
 
       assert html =~ "Change made to resource"
     end
@@ -174,11 +183,12 @@ defmodule SpacecastWeb.Components.UI.TimelineViewTest do
         }
       ]
 
-      html = TimelineView.render_timeline_view(%{
-        change_history: change_history,
-        selected_version: nil,
-        on_view_version: "view_version"
-      })
+      html =
+        TimelineView.render_timeline_view(%{
+          change_history: change_history,
+          selected_version: nil,
+          on_view_version: "view_version"
+        })
 
       assert html =~ "invalid-timestamp"
     end

@@ -122,6 +122,7 @@ defmodule SpacecastWeb.Integration.SecurityIntegrationTest do
             {:error, {:redirect, %{to: "/users/log_in"}}} ->
               # Redirected to login, which is expected behavior
               assert true
+
             {:ok, _view, _html} ->
               # If it doesn't redirect, that's also acceptable
               assert true

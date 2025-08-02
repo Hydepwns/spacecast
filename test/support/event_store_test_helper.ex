@@ -81,9 +81,7 @@ defmodule Spacecast.TestSupport.EventStoreTestHelper do
       end)
 
     unless event_exists? do
-      flunk(
-        "Expected event of type '#{event_type}' for resource #{resource_type}:#{resource_id}, but it was not found"
-      )
+      flunk("Expected event of type '#{event_type}' for resource #{resource_type}:#{resource_id}, but it was not found")
     end
 
     true
@@ -103,9 +101,7 @@ defmodule Spacecast.TestSupport.EventStoreTestHelper do
     {:ok, events} = get_events_for_resource(resource_type, resource_id)
 
     unless Enum.empty?(events) do
-      flunk(
-        "Expected no events for resource #{resource_type}:#{resource_id}, but found #{length(events)} events"
-      )
+      flunk("Expected no events for resource #{resource_type}:#{resource_id}, but found #{length(events)} events")
     end
 
     true
@@ -127,9 +123,7 @@ defmodule Spacecast.TestSupport.EventStoreTestHelper do
     actual_count = length(events)
 
     unless actual_count == expected_count do
-      flunk(
-        "Expected #{expected_count} events for resource #{resource_type}:#{resource_id}, but found #{actual_count}"
-      )
+      flunk("Expected #{expected_count} events for resource #{resource_type}:#{resource_id}, but found #{actual_count}")
     end
 
     true

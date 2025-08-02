@@ -228,7 +228,8 @@ defmodule SpacecastWeb.TestSetupHelper do
         "resource[content]" => ""
       },
       invalid_long: %{
-        "resource[name]" => String.duplicate("a", 1000), # Assuming there's a length limit
+        # Assuming there's a length limit
+        "resource[name]" => String.duplicate("a", 1000),
         "resource[description]" => "Valid description",
         "resource[content]" => "Valid content"
       }

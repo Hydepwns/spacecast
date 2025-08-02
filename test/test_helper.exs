@@ -26,12 +26,15 @@ case System.find_executable("chromedriver") do
     IO.puts("   Browser tests will be skipped. Run 'nix-shell' and './scripts/test_browser.sh' for browser tests.")
     # Set environment variable to indicate Wallaby should be skipped
     System.put_env("WALLABY_SKIP", "true")
+
   _chromedriver_path ->
     IO.puts("✅ Chromedriver found - starting Wallaby")
+
     case Application.ensure_all_started(:wallaby) do
       {:ok, _} ->
         IO.puts("✅ Wallaby started successfully")
         :ok
+
       {:error, reason} ->
         IO.puts("⚠️  Failed to start Wallaby: #{inspect(reason)}")
         IO.puts("   Browser tests will be skipped.")
@@ -53,9 +56,7 @@ case Spacecast.TestSupport.MockEventStore.start_link([]) do
 end
 
 # Start EventMonitor globally for all tests with TestEventStore
-case Spacecast.Events.Core.EventMonitor.start_link(
-       event_store: Spacecast.Events.TestEventStore
-     ) do
+case Spacecast.Events.Core.EventMonitor.start_link(event_store: Spacecast.Events.TestEventStore) do
   {:ok, _pid} -> :ok
   {:error, {:already_started, _pid}} -> :ok
 end

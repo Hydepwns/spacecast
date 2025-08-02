@@ -42,6 +42,7 @@ defmodule SpacecastWeb.Integration.APIIntegrationTest do
 
     # Create test user with unique email
     unique_email = "api_test_#{System.system_time(:millisecond)}@example.com"
+
     {:ok, user} =
       Accounts.register_user(%{
         email: unique_email,
@@ -52,6 +53,7 @@ defmodule SpacecastWeb.Integration.APIIntegrationTest do
 
     # Create test resource with unique name
     unique_resource_name = "API Test Resource #{System.system_time(:millisecond)}"
+
     {:ok, resource} =
       ResourceSystem.create_resource(%{
         name: unique_resource_name,
@@ -63,6 +65,7 @@ defmodule SpacecastWeb.Integration.APIIntegrationTest do
 
     # Create test theme with unique name to avoid constraint violations
     unique_theme_name = "API Test Theme #{System.system_time(:millisecond)}"
+
     {:ok, theme} =
       ThemeSystem.create_theme(%{
         name: unique_theme_name,

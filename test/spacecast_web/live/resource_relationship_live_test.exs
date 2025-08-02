@@ -64,6 +64,7 @@ defmodule SpacecastWeb.ResourceRelationshipLiveTest do
           {:error, {{:badmatch, {:already, :allowed}}, _stacktrace}} ->
             # Sandbox is already allowed, continue
             :ok
+
           _ ->
             reraise e, __STACKTRACE__
         end
@@ -110,11 +111,13 @@ defmodule SpacecastWeb.ResourceRelationshipLiveTest do
 
       {:ok, new_view, _html} = live(conn, new_path)
 
-      form = form(new_view, "#resource-form", %{
-        "resource[name]" => "New Child Resource",
-        "resource[type]" => "document",
-        "resource[parent_id]" => parent.id
-      })
+      form =
+        form(new_view, "#resource-form", %{
+          "resource[name]" => "New Child Resource",
+          "resource[type]" => "document",
+          "resource[parent_id]" => parent.id
+        })
+
       render_submit(form)
 
       # Wait for the live redirect to happen
@@ -134,10 +137,12 @@ defmodule SpacecastWeb.ResourceRelationshipLiveTest do
       # Navigate to the edit page for the child resource
       {:ok, edit_view, _html} = live(conn, "/resources/#{child.id}/edit")
 
-      form = form(edit_view, "#resource-form", %{
-        "resource[name]" => "Updated Child Resource",
-        "resource[parent_id]" => parent.id
-      })
+      form =
+        form(edit_view, "#resource-form", %{
+          "resource[name]" => "Updated Child Resource",
+          "resource[parent_id]" => parent.id
+        })
+
       render_submit(form)
 
       # Wait for the live redirect to happen
@@ -176,22 +181,26 @@ defmodule SpacecastWeb.ResourceRelationshipLiveTest do
       {:ok, new_view, _html} = live(conn, new_path)
 
       # Try to create a document with a document as parent (should fail)
-      form = form(new_view, "#resource-form", %{
-        "resource[name]" => "Child Document",
-        "resource[type]" => "document",
-        "resource[parent_id]" => child.id
-      })
+      form =
+        form(new_view, "#resource-form", %{
+          "resource[name]" => "Child Document",
+          "resource[type]" => "document",
+          "resource[parent_id]" => child.id
+        })
+
       render_submit(form)
 
       # Should stay on the form page with validation errors
       assert has_element?(new_view, "[data-test-id='resource-form']")
 
       # Try to create a folder with a folder as parent (should work)
-      form = form(new_view, "#resource-form", %{
-        "resource[name]" => "Child Folder",
-        "resource[type]" => "folder",
-        "resource[parent_id]" => parent.id
-      })
+      form =
+        form(new_view, "#resource-form", %{
+          "resource[name]" => "Child Folder",
+          "resource[type]" => "folder",
+          "resource[parent_id]" => parent.id
+        })
+
       render_submit(form)
 
       # Should redirect to resources page
@@ -206,10 +215,12 @@ defmodule SpacecastWeb.ResourceRelationshipLiveTest do
       {:ok, edit_view, _html} = live(conn, "/resources/#{child.id}/edit")
 
       # Remove the parent relationship by setting parent_id to empty string
-      form = form(edit_view, "#resource-form", %{
-        "resource[name]" => child.name,
-        "resource[parent_id]" => ""
-      })
+      form =
+        form(edit_view, "#resource-form", %{
+          "resource[name]" => child.name,
+          "resource[parent_id]" => ""
+        })
+
       render_submit(form)
 
       # Wait for the live redirect to happen

@@ -18,6 +18,19 @@ defmodule SpacecastWeb.ResourceEventWorkflowTest do
   alias Spacecast.TestSupport.ResourceFixtures
   alias SpacecastWeb.TestMockHelper
 
+  setup _context do
+    # Create a mock session since we're not using Wallaby.Feature
+    mock_session = %{
+      driver: %{mock: true},
+      server: %{mock: true, pid: self()},
+      session_id: "mock-session-#{System.unique_integer()}",
+      mock: true,
+      type: :session
+    }
+
+    {:ok, session: mock_session}
+  end
+
   @tag :skip
   feature "events are generated and processed during resource updates", %{session: session} do
     # Navigate to resources page first

@@ -299,7 +299,7 @@ defmodule Spacecast.Events.Core.EventBusTest do
   end
 
   describe "multiple subscribers" do
-            test "multiple subscribers receive the same event" do
+    test "multiple subscribers receive the same event" do
       test_pid = self()
 
       # Create test processes that stay alive longer
@@ -355,11 +355,12 @@ defmodule Spacecast.Events.Core.EventBusTest do
   describe "process monitoring" do
     test "removes dead processes from subscriptions" do
       # Create a test process that will die
-      test_pid = spawn(fn ->
-        # Keep the process alive long enough for subscription
-        Process.sleep(10)
-        :ok
-      end)
+      test_pid =
+        spawn(fn ->
+          # Keep the process alive long enough for subscription
+          Process.sleep(10)
+          :ok
+        end)
 
       event_type = "test_dead_process"
 
@@ -422,29 +423,32 @@ defmodule Spacecast.Events.Core.EventBusTest do
       pids =
         for i <- 1..5 do
           IO.puts("[DEBUG] Spawning subscriber \\#{i}")
-          pid = spawn(fn ->
-            try do
-              IO.puts("[DEBUG] Subscriber \\#{i} subscribing...")
-              result = EventBus.subscribe(self(), event_type)
-              IO.puts("[DEBUG] Subscriber \\#{i} subscribed: \\#{inspect(result)}")
-              send(test_pid, {:subscribed, result, i})
 
-              # Listen for events and forward them to test process
-              receive do
-                {:event, event} ->
-                  IO.puts("[DEBUG] Subscriber \\#{i} received event")
-                  send(test_pid, {:event, event, i})
-              after
-                5000 ->
-                  IO.puts("[DEBUG] Subscriber \\#{i} timeout waiting for event")
-                  send(test_pid, {:event_timeout, i})
+          pid =
+            spawn(fn ->
+              try do
+                IO.puts("[DEBUG] Subscriber \\#{i} subscribing...")
+                result = EventBus.subscribe(self(), event_type)
+                IO.puts("[DEBUG] Subscriber \\#{i} subscribed: \\#{inspect(result)}")
+                send(test_pid, {:subscribed, result, i})
+
+                # Listen for events and forward them to test process
+                receive do
+                  {:event, event} ->
+                    IO.puts("[DEBUG] Subscriber \\#{i} received event")
+                    send(test_pid, {:event, event, i})
+                after
+                  5000 ->
+                    IO.puts("[DEBUG] Subscriber \\#{i} timeout waiting for event")
+                    send(test_pid, {:event_timeout, i})
+                end
+              catch
+                kind, error ->
+                  IO.puts("[DEBUG] Subscriber \\#{i} error: \\#{inspect({kind, error})}")
+                  send(test_pid, {:subscribed_error, {kind, error}, i})
               end
-            catch
-              kind, error ->
-                IO.puts("[DEBUG] Subscriber \\#{i} error: \\#{inspect({kind, error})}")
-                send(test_pid, {:subscribed_error, {kind, error}, i})
-            end
-          end)
+            end)
+
           # Stagger the spawns
           Process.sleep(20)
           pid
@@ -453,10 +457,16 @@ defmodule Spacecast.Events.Core.EventBusTest do
       # Wait for all to subscribe with increased timeout and better error handling
       for _pid <- pids do
         receive do
-          {:subscribed, :ok, i} -> IO.puts("[DEBUG] Test process received :subscribed from \\#{i}")
-          {:subscribed_error, {kind, error}, i} -> IO.puts("[DEBUG] Test process received error from \\#{i}: \\#{inspect({kind, error})}"); flunk("Subscriber \\#{i} error: \\#{inspect({kind, error})}")
+          {:subscribed, :ok, i} ->
+            IO.puts("[DEBUG] Test process received :subscribed from \\#{i}")
+
+          {:subscribed_error, {kind, error}, i} ->
+            IO.puts("[DEBUG] Test process received error from \\#{i}: \\#{inspect({kind, error})}")
+            flunk("Subscriber \\#{i} error: \\#{inspect({kind, error})}")
         after
-          10_000 -> IO.puts("[DEBUG] Timeout waiting for subscriber"); flunk("Timeout waiting for subscriber")
+          10_000 ->
+            IO.puts("[DEBUG] Timeout waiting for subscriber")
+            flunk("Timeout waiting for subscriber")
         end
       end
 
@@ -468,11 +478,13 @@ defmodule Spacecast.Events.Core.EventBusTest do
       assert length(subscribers) == 5
 
       # Publish an event using proper Event struct
-      event = Event.create!(event_type, %{
-        resource_id: "test-resource",
-        resource_type: "test",
-        data: %{foo: "bar"}
-      })
+      event =
+        Event.create!(event_type, %{
+          resource_id: "test-resource",
+          resource_type: "test",
+          data: %{foo: "bar"}
+        })
+
       :ok = EventBus.publish(event)
 
       # All subscribers should receive the event

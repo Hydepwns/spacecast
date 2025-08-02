@@ -26,12 +26,13 @@ defmodule SpacecastWeb.Components.UI.ListViewTest do
         }
       ]
 
-      html = ListView.render_list_view(%{
-        change_history: change_history,
-        selected_version: 2,
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ListView.render_list_view(%{
+          change_history: change_history,
+          selected_version: 2,
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       assert html =~ "v3"
       assert html =~ "v2"
@@ -53,12 +54,13 @@ defmodule SpacecastWeb.Components.UI.ListViewTest do
         }
       ]
 
-      html = ListView.render_list_view(%{
-        change_history: change_history,
-        selected_version: nil,
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ListView.render_list_view(%{
+          change_history: change_history,
+          selected_version: nil,
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       assert html =~ "v1"
       refute html =~ "Selected"
@@ -80,12 +82,13 @@ defmodule SpacecastWeb.Components.UI.ListViewTest do
         }
       ]
 
-      html = ListView.render_list_view(%{
-        change_history: change_history,
-        selected_version: 2,
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ListView.render_list_view(%{
+          change_history: change_history,
+          selected_version: 2,
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       assert html =~ "Selected"
       assert html =~ "phx-value-version=\"2\""
@@ -101,12 +104,13 @@ defmodule SpacecastWeb.Components.UI.ListViewTest do
         }
       ]
 
-      html = ListView.render_list_view(%{
-        change_history: change_history,
-        selected_version: nil,
-        on_view_version: nil,
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ListView.render_list_view(%{
+          change_history: change_history,
+          selected_version: nil,
+          on_view_version: nil,
+          on_diff_versions: "diff_versions"
+        })
 
       assert html =~ "disabled"
     end
@@ -121,23 +125,25 @@ defmodule SpacecastWeb.Components.UI.ListViewTest do
         }
       ]
 
-      html = ListView.render_list_view(%{
-        change_history: change_history,
-        selected_version: nil,
-        on_view_version: "view_version",
-        on_diff_versions: nil
-      })
+      html =
+        ListView.render_list_view(%{
+          change_history: change_history,
+          selected_version: nil,
+          on_view_version: "view_version",
+          on_diff_versions: nil
+        })
 
       assert html =~ "disabled"
     end
 
     test "handles empty change history" do
-      html = ListView.render_list_view(%{
-        change_history: [],
-        selected_version: nil,
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ListView.render_list_view(%{
+          change_history: [],
+          selected_version: nil,
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       refute html =~ "v1"
       refute html =~ "list-row"
@@ -154,17 +160,19 @@ defmodule SpacecastWeb.Components.UI.ListViewTest do
         }
       ]
 
-      html_string = ListView.render_list_view(%{
-        change_history: change_history_string,
-        selected_version: nil,
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html_string =
+        ListView.render_list_view(%{
+          change_history: change_history_string,
+          selected_version: nil,
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       assert html_string =~ "2024-01-15 08:00"
 
       # Test with DateTime timestamp
       datetime = DateTime.new!(~D[2024-01-15], ~T[08:00:00], "Etc/UTC")
+
       change_history_datetime = [
         %{
           version: 1,
@@ -174,12 +182,13 @@ defmodule SpacecastWeb.Components.UI.ListViewTest do
         }
       ]
 
-      html_datetime = ListView.render_list_view(%{
-        change_history: change_history_datetime,
-        selected_version: nil,
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html_datetime =
+        ListView.render_list_view(%{
+          change_history: change_history_datetime,
+          selected_version: nil,
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       assert html_datetime =~ "2024-01-15 08:00"
     end
@@ -194,12 +203,13 @@ defmodule SpacecastWeb.Components.UI.ListViewTest do
         }
       ]
 
-      html = ListView.render_list_view(%{
-        change_history: change_history,
-        selected_version: nil,
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ListView.render_list_view(%{
+          change_history: change_history,
+          selected_version: nil,
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       assert html =~ "Change made to resource"
     end
@@ -218,12 +228,13 @@ defmodule SpacecastWeb.Components.UI.ListViewTest do
         }
       ]
 
-      html = ListView.render_list_view(%{
-        change_history: change_history,
-        selected_version: nil,
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ListView.render_list_view(%{
+          change_history: change_history,
+          selected_version: nil,
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       assert html =~ "updated name"
       assert html =~ "added email"
@@ -240,12 +251,13 @@ defmodule SpacecastWeb.Components.UI.ListViewTest do
         }
       ]
 
-      html = ListView.render_list_view(%{
-        change_history: change_history,
-        selected_version: nil,
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ListView.render_list_view(%{
+          change_history: change_history,
+          selected_version: nil,
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       assert html =~ "invalid-timestamp"
     end
@@ -260,12 +272,13 @@ defmodule SpacecastWeb.Components.UI.ListViewTest do
         }
       ]
 
-      html = ListView.render_list_view(%{
-        change_history: change_history,
-        selected_version: nil,
-        on_view_version: "view_version",
-        on_diff_versions: "diff_versions"
-      })
+      html =
+        ListView.render_list_view(%{
+          change_history: change_history,
+          selected_version: nil,
+          on_view_version: "view_version",
+          on_diff_versions: "diff_versions"
+        })
 
       assert html =~ "Unknown"
     end

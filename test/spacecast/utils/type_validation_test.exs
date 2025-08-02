@@ -68,8 +68,7 @@ defmodule Spacecast.Utils.TypeValidationTest do
                TypeValidation.validate_type(["a", "b", "c"], {:list, :string})
 
       # Invalid list with wrong element type
-      assert {:error,
-              "list validation failed: [error: \"expected integer, got: \\\"not a number\\\"\"]"} =
+      assert {:error, "list validation failed: [error: \"expected integer, got: \\\"not a number\\\"\"]"} =
                TypeValidation.validate_type([1, "not a number", 3], {:list, :integer})
 
       # Not a list
@@ -113,8 +112,7 @@ defmodule Spacecast.Utils.TypeValidationTest do
         active: true
       }
 
-      assert {:error,
-              "schema validation failed: [age: {:error, \"expected integer, got: \\\"not a number\\\"\"}]"} =
+      assert {:error, "schema validation failed: [age: {:error, \"expected integer, got: \\\"not a number\\\"\"}]"} =
                TypeValidation.validate_type(invalid_type_map, {:map, schema})
 
       # Not a map
@@ -213,8 +211,7 @@ defmodule Spacecast.Utils.TypeValidationTest do
       assert {:ok, [1, 2, 3]} =
                TypeValidation.validate_field(:numbers, {:list, :integer}, [1, 2, 3])
 
-      assert {:error,
-              "numbers: list validation failed: [error: \"expected integer, got: \\\"not a number\\\"\"]"} =
+      assert {:error, "numbers: list validation failed: [error: \"expected integer, got: \\\"not a number\\\"\"]"} =
                TypeValidation.validate_field(:numbers, {:list, :integer}, [1, "not a number", 3])
     end
   end
@@ -440,8 +437,7 @@ defmodule Spacecast.Utils.TypeValidationTest do
       assert {:ok, %{name: "John"}} = TypeValidation.validate_type(%{name: "John"}, complex_union)
 
       # Invalid
-      assert {:error,
-              "Value matched none of the union types: [list: :string, map: %{name: :string}]"} =
+      assert {:error, "Value matched none of the union types: [list: :string, map: %{name: :string}]"} =
                TypeValidation.validate_type("not a list or map", complex_union)
     end
   end

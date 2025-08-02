@@ -35,9 +35,8 @@ defmodule SpacecastWeb.Integration.EventDrivenIntegrationTest do
     end)
 
     # Start the resource projection using the ProjectionSupervisor
-    {:ok, projection_pid} = Spacecast.Events.ProjectionSupervisor.start_projection(
-      Spacecast.Events.Projections.ResourceProjection
-    )
+    {:ok, projection_pid} =
+      Spacecast.Events.ProjectionSupervisor.start_projection(Spacecast.Events.Projections.ResourceProjection)
 
     # Allow ResourceProjection process to use the test DB connection
     Ecto.Adapters.SQL.Sandbox.allow(
@@ -592,9 +591,7 @@ defmodule SpacecastWeb.Integration.EventDrivenIntegrationTest do
               )
 
             {:ok, resource} =
-              Spacecast.Resources.ResourceSystem.create_resource(
-                atomize_keys(test_resource)
-              )
+              Spacecast.Resources.ResourceSystem.create_resource(atomize_keys(test_resource))
 
             Spacecast.Resources.ResourceSystem.update_resource(
               resource.id,

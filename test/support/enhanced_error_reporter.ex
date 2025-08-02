@@ -154,15 +154,16 @@ defmodule SpacecastWeb.EnhancedErrorReporter do
   {session, validation_results}
   """
   def validate_page_elements(session, expected_elements, test_name) do
-    validation_results = Enum.map(expected_elements, fn {element_name, selector, description} ->
-      has_element = Wallaby.Browser.has?(session, Wallaby.Query.css(selector))
+    validation_results =
+      Enum.map(expected_elements, fn {element_name, selector, description} ->
+        has_element = Wallaby.Browser.has?(session, Wallaby.Query.css(selector))
 
-      if not has_element do
-        IO.puts("❌ Missing element: #{element_name} (#{description})")
-      end
+        if not has_element do
+          IO.puts("❌ Missing element: #{element_name} (#{description})")
+        end
 
-      {element_name, has_element, description}
-    end)
+        {element_name, has_element, description}
+      end)
 
     missing_elements = Enum.filter(validation_results, fn {_name, has_element, _desc} -> not has_element end)
 
@@ -202,6 +203,7 @@ defmodule SpacecastWeb.EnhancedErrorReporter do
     case Regex.scan(pattern, page_source) do
       matches when is_list(matches) ->
         Enum.map(matches, fn [_, message] -> String.trim(message) end)
+
       _ ->
         []
     end
@@ -233,6 +235,7 @@ defmodule SpacecastWeb.EnhancedErrorReporter do
     case Regex.scan(pattern, page_source) do
       matches when is_list(matches) ->
         Enum.map(matches, fn [error] -> error end)
+
       _ ->
         []
     end
@@ -264,6 +267,7 @@ defmodule SpacecastWeb.EnhancedErrorReporter do
     case Regex.scan(pattern, page_source) do
       matches when is_list(matches) ->
         Enum.map(matches, fn [error] -> error end)
+
       _ ->
         []
     end

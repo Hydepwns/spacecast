@@ -60,10 +60,13 @@ defmodule SpacecastWeb.TestDataFactory do
   Map of resource attributes
   """
   def build_resource_with_type(type, status, overrides \\ %{}) do
-    build_resource(%{
-      type: type,
-      status: status
-    } |> Map.merge(overrides))
+    build_resource(
+      %{
+        type: type,
+        status: status
+      }
+      |> Map.merge(overrides)
+    )
   end
 
   @doc """
@@ -118,7 +121,8 @@ defmodule SpacecastWeb.TestDataFactory do
 
       # Recursively create children for each resource at this level
       Enum.reduce(level_resources, %{resources: all_resources, hierarchy: %{}}, fn resource, acc ->
-        child_result = build_hierarchy_level(current_level + 1, max_depth, children_per_level, resource.id, acc.resources)
+        child_result =
+          build_hierarchy_level(current_level + 1, max_depth, children_per_level, resource.id, acc.resources)
 
         %{
           resources: child_result.resources,
@@ -159,7 +163,6 @@ defmodule SpacecastWeb.TestDataFactory do
   def build_validation_test_data do
     %{
       valid: build_resource(),
-
       invalid_empty: %{
         name: "",
         description: "",
@@ -167,19 +170,18 @@ defmodule SpacecastWeb.TestDataFactory do
         type: "document",
         status: "published"
       },
-
-      invalid_long_name: build_resource(%{
-        name: String.duplicate("a", 1000)
-      }),
-
-      invalid_invalid_type: build_resource(%{
-        type: "invalid_type"
-      }),
-
-      invalid_invalid_status: build_resource(%{
-        status: "invalid_status"
-      }),
-
+      invalid_long_name:
+        build_resource(%{
+          name: String.duplicate("a", 1000)
+        }),
+      invalid_invalid_type:
+        build_resource(%{
+          type: "invalid_type"
+        }),
+      invalid_invalid_status:
+        build_resource(%{
+          status: "invalid_status"
+        }),
       edge_cases: %{
         minimal: %{
           name: "Minimal",
@@ -188,10 +190,10 @@ defmodule SpacecastWeb.TestDataFactory do
           type: "document",
           status: "draft"
         },
-
         maximal: %{
           name: "Maximal Resource with Very Long Name",
-          description: "A very detailed description with lots of information about this resource and its purpose in the system",
+          description:
+            "A very detailed description with lots of information about this resource and its purpose in the system",
           content: %{text: "Very detailed content with lots of information and data"},
           type: "document",
           status: "published",
@@ -214,13 +216,11 @@ defmodule SpacecastWeb.TestDataFactory do
         published: build_resource_with_type("document", "published"),
         archived: build_resource_with_type("document", "archived")
       },
-
       type_workflow: %{
         document: build_resource_with_type("document", "published"),
         task: build_resource_with_type("task", "published"),
         note: build_resource_with_type("note", "published")
       },
-
       relationship_workflow: %{
         parent: build_resource_with_type("document", "published"),
         child: build_resource_with_type("document", "published"),
@@ -265,13 +265,11 @@ defmodule SpacecastWeb.TestDataFactory do
         build_resource_with_type("document", "published", %{name: "User Guide"}),
         build_resource_with_type("document", "draft", %{name: "Draft Specification"})
       ],
-
       tasks: [
         build_resource_with_type("task", "published", %{name: "Implement Feature A"}),
         build_resource_with_type("task", "published", %{name: "Fix Bug B"}),
         build_resource_with_type("task", "draft", %{name: "Plan Feature C"})
       ],
-
       notes: [
         build_resource_with_type("note", "published", %{name: "Meeting Notes"}),
         build_resource_with_type("note", "published", %{name: "Ideas for Improvement"}),
@@ -293,7 +291,6 @@ defmodule SpacecastWeb.TestDataFactory do
         build_resource_with_type("task", "published", %{name: "Event Trigger 2"}),
         build_resource_with_type("note", "archived", %{name: "Event Trigger 3"})
       ],
-
       event_subscribers: [
         build_resource_with_type("document", "published", %{name: "Event Subscriber 1"}),
         build_resource_with_type("task", "published", %{name: "Event Subscriber 2"})

@@ -48,8 +48,7 @@ defmodule SpacecastWeb.RenderHelper do
             %{"component_module" => module, "function" => function, "assigns" => assigns},
             socket
           ) do
-        {:ok,
-         assign(socket, component_module: module, function: function, component_assigns: assigns)}
+        {:ok, assign(socket, component_module: module, function: function, component_assigns: assigns)}
       end
 
       def render(assigns) do

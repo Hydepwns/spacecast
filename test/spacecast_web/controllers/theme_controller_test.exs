@@ -119,9 +119,9 @@ defmodule SpacecastWeb.ThemeControllerTest do
       conn = delete(conn, ~p"/themes/#{theme.id}")
       assert redirected_to(conn) == ~p"/themes"
 
-      assert_error_sent 404, fn ->
+      assert_error_sent(404, fn ->
         get(conn, ~p"/themes/#{theme.id}")
-      end
+      end)
     end
   end
 

@@ -16,10 +16,8 @@ defmodule Spacecast.Events.ReminderDeliveryTest do
           data: %{
             title: "Test Event",
             description: "Test Description",
-            start_time:
-              DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.truncate(:second),
-            end_time:
-              DateTime.utc_now() |> DateTime.add(7200, :second) |> DateTime.truncate(:second)
+            start_time: DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.truncate(:second),
+            end_time: DateTime.utc_now() |> DateTime.add(7200, :second) |> DateTime.truncate(:second)
           },
           resource_type: "calendar_event",
           resource_id: Ecto.UUID.generate()
@@ -40,8 +38,7 @@ defmodule Spacecast.Events.ReminderDeliveryTest do
         Events.create_event_reminder(%{
           event_id: event.id,
           # 30 minutes from now
-          reminder_time:
-            DateTime.utc_now() |> DateTime.add(1800, :second) |> DateTime.truncate(:second),
+          reminder_time: DateTime.utc_now() |> DateTime.add(1800, :second) |> DateTime.truncate(:second),
           status: "pending",
           recipient: "test@example.com"
         })

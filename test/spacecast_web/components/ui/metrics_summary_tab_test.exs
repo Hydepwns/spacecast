@@ -17,11 +17,12 @@ defmodule SpacecastWeb.Components.UI.MetricsSummaryTabTest do
       format_time = fn time -> "#{time}ms" end
       format_percentage = fn rate -> "#{Float.round(rate * 100, 1)}%" end
 
-      html = MetricsSummaryTab.render_summary_tab(%{
-        metrics: metrics,
-        format_time: format_time,
-        format_percentage: format_percentage
-      })
+      html =
+        MetricsSummaryTab.render_summary_tab(%{
+          metrics: metrics,
+          format_time: format_time,
+          format_percentage: format_percentage
+        })
 
       assert html =~ "150"
       assert html =~ "45.5ms"
@@ -46,11 +47,12 @@ defmodule SpacecastWeb.Components.UI.MetricsSummaryTabTest do
       format_time = fn time -> "#{time}ms" end
       format_percentage = fn rate -> "#{Float.round(rate * 100, 1)}%" end
 
-      html = MetricsSummaryTab.render_summary_tab(%{
-        metrics: metrics,
-        format_time: format_time,
-        format_percentage: format_percentage
-      })
+      html =
+        MetricsSummaryTab.render_summary_tab(%{
+          metrics: metrics,
+          format_time: format_time,
+          format_percentage: format_percentage
+        })
 
       assert html =~ "0"
       assert html =~ "N/A"
@@ -70,11 +72,12 @@ defmodule SpacecastWeb.Components.UI.MetricsSummaryTabTest do
       format_time = fn time -> "#{time}ms" end
       format_percentage = fn rate -> "#{Float.round(rate * 100, 1)}%" end
 
-      html = MetricsSummaryTab.render_summary_tab(%{
-        metrics: metrics,
-        format_time: format_time,
-        format_percentage: format_percentage
-      })
+      html =
+        MetricsSummaryTab.render_summary_tab(%{
+          metrics: metrics,
+          format_time: format_time,
+          format_percentage: format_percentage
+        })
 
       assert html =~ "1000"
       assert html =~ "12.3ms"
@@ -97,11 +100,12 @@ defmodule SpacecastWeb.Components.UI.MetricsSummaryTabTest do
       format_time = fn time -> "#{time}ms" end
       format_percentage = fn rate -> "#{Float.round(rate * 100, 1)}%" end
 
-      html = MetricsSummaryTab.render_summary_tab(%{
-        metrics: metrics,
-        format_time: format_time,
-        format_percentage: format_percentage
-      })
+      html =
+        MetricsSummaryTab.render_summary_tab(%{
+          metrics: metrics,
+          format_time: format_time,
+          format_percentage: format_percentage
+        })
 
       assert html =~ "50"
       assert html =~ "200.0ms"
@@ -124,11 +128,12 @@ defmodule SpacecastWeb.Components.UI.MetricsSummaryTabTest do
       format_time = fn time -> "#{time}ms" end
       format_percentage = fn rate -> "#{Float.round(rate * 100, 1)}%" end
 
-      html = MetricsSummaryTab.render_summary_tab(%{
-        metrics: metrics,
-        format_time: format_time,
-        format_percentage: format_percentage
-      })
+      html =
+        MetricsSummaryTab.render_summary_tab(%{
+          metrics: metrics,
+          format_time: format_time,
+          format_percentage: format_percentage
+        })
 
       assert html =~ "75%"
       assert html =~ "Success"
@@ -150,11 +155,12 @@ defmodule SpacecastWeb.Components.UI.MetricsSummaryTabTest do
       format_time = fn time -> "~#{Float.round(time, 0)}ms" end
       format_percentage = fn rate -> "#{Float.round(rate * 100, 0)}%" end
 
-      html = MetricsSummaryTab.render_summary_tab(%{
-        metrics: metrics,
-        format_time: format_time,
-        format_percentage: format_percentage
-      })
+      html =
+        MetricsSummaryTab.render_summary_tab(%{
+          metrics: metrics,
+          format_time: format_time,
+          format_percentage: format_percentage
+        })
 
       assert html =~ "42"
       assert html =~ "~123ms"
@@ -175,11 +181,12 @@ defmodule SpacecastWeb.Components.UI.MetricsSummaryTabTest do
       format_time = fn time -> "#{time}ms" end
       format_percentage = fn rate -> "#{Float.round(rate * 100, 1)}%" end
 
-      html = MetricsSummaryTab.render_summary_tab(%{
-        metrics: metrics,
-        format_time: format_time,
-        format_percentage: format_percentage
-      })
+      html =
+        MetricsSummaryTab.render_summary_tab(%{
+          metrics: metrics,
+          format_time: format_time,
+          format_percentage: format_percentage
+        })
 
       assert html =~ "1"
       assert html =~ "100.0ms"
@@ -200,11 +207,12 @@ defmodule SpacecastWeb.Components.UI.MetricsSummaryTabTest do
       format_time = fn time -> "#{time}ms" end
       format_percentage = fn rate -> "#{Float.round(rate * 100, 2)}%" end
 
-      html = MetricsSummaryTab.render_summary_tab(%{
-        metrics: metrics,
-        format_time: format_time,
-        format_percentage: format_percentage
-      })
+      html =
+        MetricsSummaryTab.render_summary_tab(%{
+          metrics: metrics,
+          format_time: format_time,
+          format_percentage: format_percentage
+        })
 
       assert html =~ "1000000"
       assert html =~ "0.001ms"

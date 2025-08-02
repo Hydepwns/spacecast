@@ -246,9 +246,7 @@ defmodule SpacecastWeb.Components.ChangeHistoryViewerTest do
       assert render(view) =~ "view_version:2"
       # Click the diff button for version 2
       view
-      |> element(
-        "button[phx-click=\"diff_versions\"][phx-value-version1=\"1\"][phx-value-version2=\"2\"]"
-      )
+      |> element("button[phx-click=\"diff_versions\"][phx-value-version1=\"1\"][phx-value-version2=\"2\"]")
       |> render_click()
 
       assert render(view) =~ "diff_versions:1-2"

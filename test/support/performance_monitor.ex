@@ -45,9 +45,14 @@ defmodule SpacecastWeb.PerformanceMonitor do
   {session, result, execution_time_ms}
   """
   def measure_session_operation(session, operation_name, operation_fun, threshold_ms \\ 1000) do
-    {result, execution_time} = measure_operation(operation_name, fn ->
-      operation_fun.(session)
-    end, threshold_ms)
+    {result, execution_time} =
+      measure_operation(
+        operation_name,
+        fn ->
+          operation_fun.(session)
+        end,
+        threshold_ms
+      )
 
     {session, result, execution_time}
   end
@@ -65,17 +70,18 @@ defmodule SpacecastWeb.PerformanceMonitor do
   {session, load_time_ms}
   """
   def measure_page_load(session, page_name, threshold_ms \\ 2000) do
-    {session, _result, load_time} = measure_session_operation(
-      session,
-      "Page load: #{page_name}",
-      fn session ->
-        start_time = System.monotonic_time(:millisecond)
-        _session = SpacecastWeb.TestHelpers.WallabyUIHelper.wait_for_live_view(session)
-        end_time = System.monotonic_time(:millisecond)
-        {session, end_time - start_time}
-      end,
-      threshold_ms
-    )
+    {session, _result, load_time} =
+      measure_session_operation(
+        session,
+        "Page load: #{page_name}",
+        fn session ->
+          start_time = System.monotonic_time(:millisecond)
+          _session = SpacecastWeb.TestHelpers.WallabyUIHelper.wait_for_live_view(session)
+          end_time = System.monotonic_time(:millisecond)
+          {session, end_time - start_time}
+        end,
+        threshold_ms
+      )
 
     {session, load_time}
   end
@@ -94,19 +100,25 @@ defmodule SpacecastWeb.PerformanceMonitor do
   {session, submission_time_ms}
   """
   def measure_form_submission(session, form_name, form_data, submit_button, threshold_ms \\ 3000) do
-    {session, _result, submission_time} = measure_session_operation(
-      session,
-      "Form submission: #{form_name}",
-      fn session ->
-        start_time = System.monotonic_time(:millisecond)
-        session = SpacecastWeb.TestHelpers.WallabyUIHelper.fill_and_submit_form(
-          session, form_data, submit_button
-        )
-        end_time = System.monotonic_time(:millisecond)
-        {session, end_time - start_time}
-      end,
-      threshold_ms
-    )
+    {session, _result, submission_time} =
+      measure_session_operation(
+        session,
+        "Form submission: #{form_name}",
+        fn session ->
+          start_time = System.monotonic_time(:millisecond)
+
+          session =
+            SpacecastWeb.TestHelpers.WallabyUIHelper.fill_and_submit_form(
+              session,
+              form_data,
+              submit_button
+            )
+
+          end_time = System.monotonic_time(:millisecond)
+          {session, end_time - start_time}
+        end,
+        threshold_ms
+      )
 
     {session, submission_time}
   end
@@ -124,19 +136,25 @@ defmodule SpacecastWeb.PerformanceMonitor do
   {session, wait_time_ms}
   """
   def measure_flash_wait(session, message_type, message_text, threshold_ms \\ 2000) do
-    {session, _result, wait_time} = measure_session_operation(
-      session,
-      "Flash message wait: #{message_type} - #{message_text}",
-      fn session ->
-        start_time = System.monotonic_time(:millisecond)
-        session = SpacecastWeb.TestHelpers.WallabyUIHelper.wait_for_flash_message(
-          session, message_type, message_text
-        )
-        end_time = System.monotonic_time(:millisecond)
-        {session, end_time - start_time}
-      end,
-      threshold_ms
-    )
+    {session, _result, wait_time} =
+      measure_session_operation(
+        session,
+        "Flash message wait: #{message_type} - #{message_text}",
+        fn session ->
+          start_time = System.monotonic_time(:millisecond)
+
+          session =
+            SpacecastWeb.TestHelpers.WallabyUIHelper.wait_for_flash_message(
+              session,
+              message_type,
+              message_text
+            )
+
+          end_time = System.monotonic_time(:millisecond)
+          {session, end_time - start_time}
+        end,
+        threshold_ms
+      )
 
     {session, wait_time}
   end
@@ -226,20 +244,25 @@ defmodule SpacecastWeb.PerformanceMonitor do
 
     # Benchmark form operations
     _session = visit(session, "/resources/new")
-    {session, form_submission_time} = measure_form_submission(
-      session,
-      "Resource Creation",
-      %{"resource[name]" => "Benchmark Resource"},
-      "Create Resource"
-    )
+
+    {session, form_submission_time} =
+      measure_form_submission(
+        session,
+        "Resource Creation",
+        %{"resource[name]" => "Benchmark Resource"},
+        "Create Resource"
+      )
+
     measurements = [{:form_submission, form_submission_time} | measurements]
 
     # Benchmark flash message wait
-    {session, flash_wait_time} = measure_flash_wait(
-      session,
-      "info",
-      "Resource created successfully"
-    )
+    {session, flash_wait_time} =
+      measure_flash_wait(
+        session,
+        "info",
+        "Resource created successfully"
+      )
+
     measurements = [{:flash_wait, flash_wait_time} | measurements]
 
     # Generate report

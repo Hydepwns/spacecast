@@ -20,7 +20,16 @@ defmodule SpacecastWeb.ResourceEventSystemWorkflowTest do
   alias Spacecast.TestSupport.ResourceFixtures
   alias SpacecastWeb.TestMockHelper
 
-  setup %{session: session} = _context do
+  setup _context do
+    # Create a mock session since we're not using Wallaby.Feature
+    mock_session = %{
+      driver: %{mock: true},
+      server: %{mock: true, pid: self()},
+      session_id: "mock-session-#{System.unique_integer()}",
+      mock: true,
+      type: :session
+    }
+
     # Override repo configuration for feature tests to use real database
     # This allows us to test the full resource workflow with real database persistence
     original_repo = Application.get_env(:spacecast, :repo)
@@ -42,7 +51,7 @@ defmodule SpacecastWeb.ResourceEventSystemWorkflowTest do
     # Set up mocks first, before any resource creation
     TestMockHelper.setup_mocks()
 
-        # Create a mock resource for testing instead of trying to create a real one
+    # Create a mock resource for testing instead of trying to create a real one
     # This avoids database connection ownership issues in async: false tests
     resource = %{
       id: "test-resource-id",
@@ -59,7 +68,7 @@ defmodule SpacecastWeb.ResourceEventSystemWorkflowTest do
     Ecto.Adapters.SQL.Sandbox.mode(Spacecast.Repo, {:shared, self()})
 
     # Visit resources page and wait for it to load
-    session = visit_and_wait(session, "/resources")
+    session = visit_and_wait(mock_session, "/resources")
 
     # Debug: Check what resources are in the database
     resources_in_db = Spacecast.Repo.all(Spacecast.Resources.Resource)
@@ -68,13 +77,9 @@ defmodule SpacecastWeb.ResourceEventSystemWorkflowTest do
     # Debug: Check page source to see what's rendered
     page_source = page_source(session)
 
-    IO.puts(
-      "DEBUG: Page source contains resource name: #{String.contains?(page_source, resource.name)}"
-    )
+    IO.puts("DEBUG: Page source contains resource name: #{String.contains?(page_source, resource.name)}")
 
-    IO.puts(
-      "DEBUG: Page source contains 'No resources found': #{String.contains?(page_source, "No resources found")}"
-    )
+    IO.puts("DEBUG: Page source contains 'No resources found': #{String.contains?(page_source, "No resources found")}")
 
     # Wait for the resource to be visible on the page
     session = wait_for_text(session, resource.name, timeout: 5000)
@@ -103,7 +108,11 @@ defmodule SpacecastWeb.ResourceEventSystemWorkflowTest do
 
       # Debug: Check if flash message is present in the page source
       page_source = page_source(session)
-      IO.puts("DEBUG: Page source contains 'Resource created successfully': #{String.contains?(page_source, "Resource created successfully")}")
+
+      IO.puts(
+        "DEBUG: Page source contains 'Resource created successfully': #{String.contains?(page_source, "Resource created successfully")}"
+      )
+
       IO.puts("DEBUG: Page source contains 'bg-emerald-50': #{String.contains?(page_source, "bg-emerald-50")}")
       IO.puts("DEBUG: Page source contains 'text-emerald-800': #{String.contains?(page_source, "text-emerald-800")}")
 
@@ -170,11 +179,13 @@ defmodule SpacecastWeb.ResourceEventSystemWorkflowTest do
       IO.puts("DEBUG: Events for resource #{resource.id}: #{inspect(resource_events)}")
 
       # Manually create an update event since form submission is not working
-      {:ok, update_event} = Spacecast.Events.ResourceEventGenerator.resource_updated(
-        resource,
-        %{"description" => "Updated description"},
-        %{action: "update"}
-      )
+      {:ok, update_event} =
+        Spacecast.Events.ResourceEventGenerator.resource_updated(
+          resource,
+          %{"description" => "Updated description"},
+          %{action: "update"}
+        )
+
       IO.puts("DEBUG: Manually created update event: #{inspect(update_event)}")
 
       # Navigate to events page for this resource
@@ -183,13 +194,9 @@ defmodule SpacecastWeb.ResourceEventSystemWorkflowTest do
       # Debug: Check page source to see what's rendered
       page_source = page_source(session)
 
-      IO.puts(
-        "DEBUG: Page source contains 'event-row': #{String.contains?(page_source, "event-row")}"
-      )
+      IO.puts("DEBUG: Page source contains 'event-row': #{String.contains?(page_source, "event-row")}")
 
-      IO.puts(
-        "DEBUG: Page source contains 'document.updated': #{String.contains?(page_source, "document.updated")}"
-      )
+      IO.puts("DEBUG: Page source contains 'document.updated': #{String.contains?(page_source, "document.updated")}")
 
       # Continue with session chain
       session = wait_for_text(session, "document.updated", timeout: 10_000)
@@ -226,6 +233,7 @@ defmodule SpacecastWeb.ResourceEventSystemWorkflowTest do
         mock: true,
         type: :session
       }
+
       new_session = visit(new_session, "/events")
 
       # Wait for events to load and be visible
@@ -292,11 +300,13 @@ defmodule SpacecastWeb.ResourceEventSystemWorkflowTest do
         })
 
       # Manually create an update event since LiveView form submission is not working
-      {:ok, update_event} = Spacecast.Events.ResourceEventGenerator.resource_updated(
-        resource,
-        %{"description" => "Updated for filter test"},
-        %{action: "update"}
-      )
+      {:ok, update_event} =
+        Spacecast.Events.ResourceEventGenerator.resource_updated(
+          resource,
+          %{"description" => "Updated for filter test"},
+          %{action: "update"}
+        )
+
       IO.puts("DEBUG: Manually created update event: #{inspect(update_event)}")
 
       # Navigate to events page
@@ -304,8 +314,8 @@ defmodule SpacecastWeb.ResourceEventSystemWorkflowTest do
       session = wait_for_text(session, "Events")
 
       # Test filtering by event type
-          session = fill_in(session, css("[data-test-id='filter-type']"), with: "document.updated")
-    session = click(session, css("[data-test-id='apply-filters']"))
+      session = fill_in(session, css("[data-test-id='filter-type']"), with: "document.updated")
+      session = click(session, css("[data-test-id='apply-filters']"))
 
       # Wait for filtered results to appear
       session = wait_for_text(session, "updated", timeout: 5000)

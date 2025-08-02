@@ -181,9 +181,7 @@ defmodule SpacecastWeb.LiveSocketTestHelpers do
     if Enum.any?(results, fn result -> match?({:ok, _}, result) end) do
       :ok
     else
-      flunk(
-        "#{context} expected to match one of the union types: #{inspect(type_specs)}, got: #{inspect(value)}"
-      )
+      flunk("#{context} expected to match one of the union types: #{inspect(type_specs)}, got: #{inspect(value)}")
     end
   end
 

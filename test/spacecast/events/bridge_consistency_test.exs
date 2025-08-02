@@ -4,13 +4,10 @@ defmodule Spacecast.Events.BridgeConsistencyTest do
   # Define bridge modules and their core implementations
   @bridge_mappings [
     {Spacecast.Events.EventStore, Spacecast.Events.Core.EventStore},
-    {Spacecast.Events.HandlerSupervisor,
-     Spacecast.Events.Handlers.HandlerSupervisor},
+    {Spacecast.Events.HandlerSupervisor, Spacecast.Events.Handlers.HandlerSupervisor},
     {Spacecast.Events.HandlerProcess, Spacecast.Events.Handlers.HandlerProcess},
-    {Spacecast.Events.ProjectionSupervisor,
-     Spacecast.Events.Projections.ProjectionSupervisor},
-    {Spacecast.Events.EventSourcedResource,
-     Spacecast.Events.ResourceIntegration.EventSourcedResource}
+    {Spacecast.Events.ProjectionSupervisor, Spacecast.Events.Projections.ProjectionSupervisor},
+    {Spacecast.Events.EventSourcedResource, Spacecast.Events.ResourceIntegration.EventSourcedResource}
   ]
 
   describe "bridge module consistency" do

@@ -331,32 +331,40 @@ defmodule SpacecastWeb.TestHelpers.WallabyUIHelper do
 
     # Map message types to the actual CSS classes used by the flash components
     # Try multiple selectors to handle different flash implementations
-    selectors = case message_type do
-      "info" -> [
-        "[class*='bg-emerald-50'][class*='text-emerald-800']",
-        "[class*='alert-success']",
-        "[class*='bg-green-100']",
-        "[data-test-id='flash-success']"
-      ]
-      "error" -> [
-        "[class*='bg-rose-50'][class*='text-rose-900']",
-        "[class*='alert-error']",
-        "[class*='bg-red-100']",
-        "[data-test-id='flash-error']"
-      ]
-      "success" -> [
-        "[class*='bg-emerald-50'][class*='text-emerald-800']",
-        "[class*='alert-success']",
-        "[class*='bg-green-100']",
-        "[data-test-id='flash-success']"
-      ]
-      _ -> [
-        "[class*='bg-emerald-50'][class*='text-emerald-800']",
-        "[class*='alert-success']",
-        "[class*='bg-green-100']",
-        "[data-test-id='flash-success']"
-      ]
-    end
+    selectors =
+      case message_type do
+        "info" ->
+          [
+            "[class*='bg-emerald-50'][class*='text-emerald-800']",
+            "[class*='alert-success']",
+            "[class*='bg-green-100']",
+            "[data-test-id='flash-success']"
+          ]
+
+        "error" ->
+          [
+            "[class*='bg-rose-50'][class*='text-rose-900']",
+            "[class*='alert-error']",
+            "[class*='bg-red-100']",
+            "[data-test-id='flash-error']"
+          ]
+
+        "success" ->
+          [
+            "[class*='bg-emerald-50'][class*='text-emerald-800']",
+            "[class*='alert-success']",
+            "[class*='bg-green-100']",
+            "[data-test-id='flash-success']"
+          ]
+
+        _ ->
+          [
+            "[class*='bg-emerald-50'][class*='text-emerald-800']",
+            "[class*='alert-success']",
+            "[class*='bg-green-100']",
+            "[data-test-id='flash-success']"
+          ]
+      end
 
     # Try each selector until one works
     Enum.reduce_while(selectors, session, fn selector, session ->
@@ -393,6 +401,7 @@ defmodule SpacecastWeb.TestHelpers.WallabyUIHelper do
     # If expected path is provided, verify we're on the right page
     if expected_path do
       current_path = current_path(session)
+
       if current_path != expected_path do
         flunk("Expected to be on #{expected_path}, but was on #{current_path}")
       end
@@ -424,6 +433,7 @@ defmodule SpacecastWeb.TestHelpers.WallabyUIHelper do
     if String.contains?(page_source, "bg-emerald-50") do
       IO.puts("✅ Found success flash message in page source")
     end
+
     if String.contains?(page_source, "bg-rose-50") do
       IO.puts("❌ Found error flash message in page source")
     end
@@ -432,6 +442,7 @@ defmodule SpacecastWeb.TestHelpers.WallabyUIHelper do
     if String.contains?(page_source, "Resource created successfully") do
       IO.puts("✅ Found 'Resource created successfully' in page source")
     end
+
     if String.contains?(page_source, "Resource updated successfully") do
       IO.puts("✅ Found 'Resource updated successfully' in page source")
     end
@@ -511,20 +522,22 @@ defmodule SpacecastWeb.TestHelpers.WallabyUIHelper do
     # Wait for LiveView to be ready before filling the form
     session = wait_for_live_view(session)
 
-    session = Enum.reduce(form_data, session, fn {field, value}, session ->
-      case field do
-        field_name when is_binary(field_name) ->
-          # Handle nested field names like "resource[name]"
-          if String.contains?(field_name, "[") do
-            fill_in(session, text_field(field_name), with: value)
-          else
-            # Handle simple field names
-            fill_in(session, text_field(field_name), with: value)
-          end
-        _ ->
-          session
-      end
-    end)
+    session =
+      Enum.reduce(form_data, session, fn {field, value}, session ->
+        case field do
+          field_name when is_binary(field_name) ->
+            # Handle nested field names like "resource[name]"
+            if String.contains?(field_name, "[") do
+              fill_in(session, text_field(field_name), with: value)
+            else
+              # Handle simple field names
+              fill_in(session, text_field(field_name), with: value)
+            end
+
+          _ ->
+            session
+        end
+      end)
 
     # Wait a bit before submitting to ensure form is ready
     Process.sleep(200)
