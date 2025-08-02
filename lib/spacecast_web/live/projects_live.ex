@@ -57,7 +57,7 @@ defmodule SpacecastWeb.ProjectsLive do
       Experimental projects exploring the boundaries of monospace design and typography.
     </p>
 
-    <pre><code>{@diagram}</code></pre>
+    <pre><code><%= Jason.encode!(@diagram, pretty: true) %></code></pre>
 
     <p>
       More experiments coming soon. Check back for updates.

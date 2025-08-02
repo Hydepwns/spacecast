@@ -12,7 +12,7 @@ defmodule SpacecastWeb.Socket do
     end
   end
 
-  def id(_socket), do: nil
+  def id(socket), do: "user_socket:#{socket.assigns[:user_id] || "anonymous"}"
 
   defp handle_test_connection(_params, socket, connect_info) do
     session = Map.get(connect_info, :session, %{})
