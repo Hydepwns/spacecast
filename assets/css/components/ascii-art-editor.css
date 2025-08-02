@@ -1,0 +1,127 @@
+/* ASCII Art Editor Styles */
+.ascii-art-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.editor-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.file-info {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.editor-main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  min-width: 200px;
+}
+
+.tool-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tool-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.char-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: monospace;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.canvas-container {
+  flex: 1;
+  padding: 1rem;
+  overflow: auto;
+}
+
+.ascii-canvas {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+}
+
+.ascii-cell {
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1ch;
+  min-height: 1.2em;
+}
+
+.ascii-cell:hover {
+  background: var(--bg-hover);
+}
+
+.cell-content {
+  font-family: monospace;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.editor-footer {
+  padding: 1rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .editor-main {
+    flex-direction: column;
+  }
+
+  .toolbar {
+    min-width: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+} 

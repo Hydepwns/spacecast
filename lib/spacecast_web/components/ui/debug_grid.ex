@@ -25,8 +25,8 @@ defmodule SpacecastWeb.Components.UI.DebugGrid do
       <div class="debug-grid" style="display: none;"></div>
       <div class="debug-toggle">
         <label class="debug-toggle-label" for={@id}>
+          <span>Debug</span>
           <input type="checkbox" id={@id} phx-hook="DebugGridToggle" />
-          <span style="font-size: 0.75rem;">Grid</span>
         </label>
       </div>
     </div>

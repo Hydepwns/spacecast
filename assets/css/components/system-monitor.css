@@ -1,0 +1,248 @@
+/* System Monitor Styles */
+.system-monitor {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: monospace;
+}
+
+.monitor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.monitor-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.system-info {
+  display: flex;
+  gap: 2rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.monitor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  flex: 1;
+  overflow: auto;
+}
+
+.metric-chart {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  padding: 1rem;
+}
+
+.metric-chart h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chart-bars {
+  display: flex;
+  align-items: end;
+  gap: 0.25rem;
+  height: 100px;
+}
+
+.chart-bar {
+  flex: 1;
+  background: var(--primary-color);
+  min-height: 4px;
+  border-radius: 2px;
+  position: relative;
+  transition: height 0.3s ease;
+}
+
+.bar-label {
+  font-size: 0.75rem;
+  text-align: center;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+.chart-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+.memory-display, .disk-display {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  padding: 1rem;
+}
+
+.memory-bar, .disk-bar {
+  width: 100%;
+  height: 20px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.memory-fill, .disk-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--success-color), var(--warning-color));
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.memory-details, .disk-details {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.network-display {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  padding: 1rem;
+}
+
+.network-in, .network-out {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.network-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.network-value {
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+.network-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.network-fill {
+  height: 100%;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.network-fill.in {
+  background: var(--success-color);
+}
+
+.network-fill.out {
+  background: var(--warning-color);
+}
+
+.process-list {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  grid-column: 1 / -1;
+}
+
+.process-list h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.process-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  gap: 1rem;
+  padding: 0.5rem;
+  background: var(--bg-primary);
+  border-radius: 0.25rem;
+  font-weight: bold;
+  font-size: 0.875rem;
+}
+
+.process-rows {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.process-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  gap: 1rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.875rem;
+}
+
+.process-row:hover {
+  background: var(--bg-hover);
+}
+
+.status {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.status.running {
+  background: var(--success-color);
+  color: white;
+}
+
+.status.sleeping {
+  background: var(--warning-color);
+  color: white;
+}
+
+.status.stopped {
+  background: var(--accent-color);
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .monitor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .system-info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+} 

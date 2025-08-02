@@ -1,0 +1,189 @@
+/* 
+ * Spacecast Component CSS Index
+ * 
+ * This file serves as the main entry point for all component-specific styles.
+ * It implements a CSS module system where each component has its own scoped styles.
+ * 
+ * Import order matters - more specific components should be imported later
+ * to ensure proper CSS cascade and specificity.
+ */
+
+/* ==========================================================================
+   Base Component Styles
+   ========================================================================== */
+
+/* Core UI Components */
+@import './modal_components.css';
+@import './timeline_view.css';
+@import './list_view.css';
+
+/* ==========================================================================
+   Feature-Specific Components
+   ========================================================================== */
+
+/* Interactive Examples */
+@import './ascii-art-editor.css';
+@import './system-monitor.css';
+@import './code-flow-visualizer.css';
+@import './network-topology.css';
+@import './data-visualizer.css';
+@import './examples-index.css';
+
+/* ==========================================================================
+   Business Logic Components
+   ========================================================================== */
+
+/* Metrics and Analytics */
+@import './transformation-metrics.css';
+
+/* ==========================================================================
+   Component-Specific Utilities
+   ========================================================================== */
+
+/* 
+ * CSS Custom Properties for Component Theming
+ * These can be overridden per component if needed
+ */
+:root {
+  /* Component-specific spacing */
+  --component-padding-sm: 0.5rem;
+  --component-padding-md: 1rem;
+  --component-padding-lg: 1.5rem;
+  --component-padding-xl: 2rem;
+  
+  /* Component-specific border radius */
+  --component-radius-sm: 0.25rem;
+  --component-radius-md: 0.5rem;
+  --component-radius-lg: 0.75rem;
+  
+  /* Component-specific shadows */
+  --component-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --component-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --component-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Component-specific transitions */
+  --component-transition-fast: 0.15s ease;
+  --component-transition-normal: 0.2s ease;
+  --component-transition-slow: 0.3s ease;
+}
+
+/* 
+ * Component Isolation Utilities
+ * These classes help prevent style leakage between components
+ */
+.component-isolated {
+  /* Ensure component styles don't leak */
+  contain: layout style;
+}
+
+.component-scoped {
+  /* Scope component styles to this element */
+  isolation: isolate;
+}
+
+/* 
+ * Component Loading States
+ * Common loading patterns across components
+ */
+.component-loading {
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity var(--component-transition-normal);
+}
+
+.component-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: -0.75rem 0 0 -0.75rem;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: component-spin 1s linear infinite;
+}
+
+@keyframes component-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 
+ * Component Error States
+ * Common error patterns across components
+ */
+.component-error {
+  border-color: var(--accent-color);
+  background-color: color-mix(in srgb, var(--accent-color) 10%, transparent);
+}
+
+.component-error-message {
+  color: var(--accent-color);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* 
+ * Component Success States
+ * Common success patterns across components
+ */
+.component-success {
+  border-color: var(--success-color);
+  background-color: color-mix(in srgb, var(--success-color) 10%, transparent);
+}
+
+.component-success-message {
+  color: var(--success-color);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* 
+ * Component Focus States
+ * Consistent focus handling across components
+ */
+.component-focusable:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* 
+ * Component Disabled States
+ * Consistent disabled styling across components
+ */
+.component-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* 
+ * Component Responsive Utilities
+ * Common responsive patterns across components
+ */
+@media (max-width: 768px) {
+  .component-mobile-stack {
+    flex-direction: column;
+  }
+  
+  .component-mobile-full {
+    width: 100%;
+  }
+  
+  .component-mobile-hidden {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .component-mobile-compact {
+    padding: var(--component-padding-sm);
+  }
+  
+  .component-mobile-text-small {
+    font-size: 0.875rem;
+  }
+} 
