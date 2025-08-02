@@ -55,7 +55,9 @@ config :wallaby,
     headless: true,
     capabilities: %{
       chromeOptions: %{
-        binary: System.get_env("CHROME_BIN") || "/nix/store/543z3c6jdqf4j9zkfy58il7vracyn28g-google-chrome-137.0.7151.103/bin/google-chrome-stable",
+        binary:
+          System.get_env("CHROME_BIN") ||
+            "/nix/store/543z3c6jdqf4j9zkfy58il7vracyn28g-google-chrome-137.0.7151.103/bin/google-chrome-stable",
         args: [
           "no-sandbox",
           "disable-dev-shm-usage",
@@ -69,7 +71,9 @@ config :wallaby,
   ],
   chromedriver: [
     # Use environment variable for chromedriver path
-    path: System.get_env("CHROMEDRIVER_PATH") || "/nix/store/qjk1gkbjfm88c0kwr5lx32d4vpknn12i-chromedriver-unwrapped-137.0.7151.103/bin/chromedriver"
+    path:
+      System.get_env("CHROMEDRIVER_PATH") ||
+        "/nix/store/qjk1gkbjfm88c0kwr5lx32d4vpknn12i-chromedriver-unwrapped-137.0.7151.103/bin/chromedriver"
   ],
   base_url: "http://localhost:4002"
 

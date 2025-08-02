@@ -91,9 +91,9 @@ config :telemetry,
 
   # Attach handlers for Ecto events
   ecto_events: [
-      [:spacecast, :repo, :query, :start],
-  [:spacecast, :repo, :query, :stop],
-  [:spacecast, :repo, :query, :exception]
+    [:spacecast, :repo, :query, :start],
+    [:spacecast, :repo, :query, :stop],
+    [:spacecast, :repo, :query, :exception]
   ],
 
   # Attach handlers for custom events
@@ -104,9 +104,9 @@ config :telemetry,
     [:spacecast, :socket, :validation, :metrics],
 
     # Event system events
-      [:spacecast, :events, :process, :start],
-  [:spacecast, :events, :process, :stop],
-  [:spacecast, :events, :process, :exception],
+    [:spacecast, :events, :process, :start],
+    [:spacecast, :events, :process, :stop],
+    [:spacecast, :events, :process, :exception],
 
     # Resource events
     [:spacecast, :resources, :operation, :start],
@@ -193,8 +193,7 @@ config :telemetry_metrics,
 config :telemetry_metrics,
   reporters: [
     # Console reporter for development
-    {Telemetry.Metrics.ConsoleReporter,
-     metrics: Spacecast.Telemetry.metrics(), enabled: config_env() == :dev},
+    {Telemetry.Metrics.ConsoleReporter, metrics: Spacecast.Telemetry.metrics(), enabled: config_env() == :dev},
 
     # Prometheus reporter for production
     {Telemetry.Metrics.PrometheusReporter,
