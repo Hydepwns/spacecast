@@ -47,6 +47,9 @@ Thumbs.db
 *.swp
 *.swo
 
+# Elixir Language Server
+.elixir_ls/
+
 # Compiled assets (if not using git-lfs)
 priv/static/assets/
 
