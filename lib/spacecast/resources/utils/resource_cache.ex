@@ -131,6 +131,7 @@ defmodule Spacecast.Resources.ResourceCache do
   defp check_cache_status(resource_type, id, cached_acc, uncached_acc) do
     # Check if it's in the cache
     cache_key = "#{resource_type}:#{id}"
+
     case :ets.lookup(@resource_cache_table, cache_key) do
       [{^cache_key, resource, expiry}] ->
         if DateTime.compare(expiry, DateTime.utc_now()) == :gt do

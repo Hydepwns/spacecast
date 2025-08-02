@@ -83,10 +83,11 @@ defmodule Spacecast.Resources.PerformanceMeasurer do
     # Start batch measurement
     batch_start = System.monotonic_time(:millisecond)
 
-    results = Enum.map(operations, fn {operation, args} ->
-      operation_name = "#{batch_name}_item"
-      measure(operation, args, Keyword.put(opts, :name, operation_name))
-    end)
+    results =
+      Enum.map(operations, fn {operation, args} ->
+        operation_name = "#{batch_name}_item"
+        measure(operation, args, Keyword.put(opts, :name, operation_name))
+      end)
 
     batch_end = System.monotonic_time(:millisecond)
 
@@ -122,7 +123,7 @@ defmodule Spacecast.Resources.PerformanceMeasurer do
         p99_execution_time_ms: :rand.uniform(300) + 100,
         error_rate: :rand.uniform() * 0.05,
         avg_memory_delta_bytes: :rand.uniform(1024 * 1024),
-        success_rate: 1.0 - (:rand.uniform() * 0.05)
+        success_rate: 1.0 - :rand.uniform() * 0.05
       }
 
       {:ok, stats}
@@ -135,9 +136,12 @@ defmodule Spacecast.Resources.PerformanceMeasurer do
   @spec register_telemetry_handlers() :: :ok
   def register_telemetry_handlers do
     handlers = [
-      {"resource-performance-handler", [:spacecast, :resources, :operation, :stop], &handle_resource_operation_telemetry/4},
-      {"resource-performance-start-handler", [:spacecast, :resources, :operation, :start], &handle_resource_start_telemetry/4},
-      {"resource-performance-exception-handler", [:spacecast, :resources, :operation, :exception], &handle_resource_exception_telemetry/4},
+      {"resource-performance-handler", [:spacecast, :resources, :operation, :stop],
+       &handle_resource_operation_telemetry/4},
+      {"resource-performance-start-handler", [:spacecast, :resources, :operation, :start],
+       &handle_resource_start_telemetry/4},
+      {"resource-performance-exception-handler", [:spacecast, :resources, :operation, :exception],
+       &handle_resource_exception_telemetry/4},
       {"resource-batch-handler", [:spacecast, :resources, :batch, :stop], &handle_batch_telemetry/4}
     ]
 
@@ -232,7 +236,8 @@ defmodule Spacecast.Resources.PerformanceMeasurer do
     # Default thresholds
     thresholds = %{
       execution_time_ms: 1000,
-      memory_delta_bytes: 10 * 1024 * 1024  # 10MB
+      # 10MB
+      memory_delta_bytes: 10 * 1024 * 1024
     }
 
     # Check execution time threshold
@@ -263,12 +268,14 @@ defmodule Spacecast.Resources.PerformanceMeasurer do
     case :ets.whereis(table_name) do
       :undefined ->
         :ets.new(table_name, [:named_table, :public, :bag])
+
       _ ->
         :ok
     end
 
     # Store the metrics with timestamp
     timestamp = DateTime.utc_now()
+
     metric_entry = {
       operation_name,
       timestamp,
@@ -285,7 +292,8 @@ defmodule Spacecast.Resources.PerformanceMeasurer do
 
     case get_recent_metrics(operation_name, 10) do
       [] ->
-        :ok  # Not enough data
+        # Not enough data
+        :ok
 
       recent_metrics ->
         avg_time = Enum.sum(Enum.map(recent_metrics, & &1.execution_time_ms)) / length(recent_metrics)
@@ -325,6 +333,7 @@ defmodule Spacecast.Resources.PerformanceMeasurer do
     case :ets.whereis(table_name) do
       :undefined ->
         :ets.new(table_name, [:named_table, :public, :set])
+
       _ ->
         :ok
     end

@@ -182,6 +182,7 @@ defmodule Spacecast.Resources.CacheServer do
 
     # Check if we need to evict entries
     current_size = :ets.info(state.cache_table, :size)
+
     if current_size >= state.max_size do
       evict_entries(state)
     end
@@ -194,7 +195,7 @@ defmodule Spacecast.Resources.CacheServer do
     {:reply, :ok, state}
   end
 
-    @impl true
+  @impl true
   def handle_call({:invalidate, resource_type, resource_id}, _from, state) do
     handle_invalidate_request(state, resource_type, resource_id)
   end
@@ -236,7 +237,7 @@ defmodule Spacecast.Resources.CacheServer do
     {:reply, :ok, state}
   end
 
-    @impl true
+  @impl true
   def handle_call({:warm_up, resource_type, resource_id}, _from, state) do
     handle_warmup_request(state, resource_type, resource_id)
   end
@@ -321,7 +322,7 @@ defmodule Spacecast.Resources.CacheServer do
     end
   end
 
-    defp handle_warmup_request(state, resource_type, resource_id) do
+  defp handle_warmup_request(state, resource_type, resource_id) do
     case get_warmup_function(resource_type) do
       {:ok, warmup_fn} ->
         handle_warmup_execution(state, resource_type, resource_id, warmup_fn)
@@ -379,6 +380,7 @@ defmodule Spacecast.Resources.CacheServer do
   defp update_access_stats(state, resource_type, resource_id) do
     # Update access count
     access_key = {resource_type, resource_id}
+
     :ets.update_counter(
       state.access_table,
       access_key,
@@ -410,10 +412,12 @@ defmodule Spacecast.Resources.CacheServer do
   defp calculate_adaptive_ttl(state, resource_type, resource_id) do
     # Get access pattern
     access_key = {resource_type, resource_id}
-    access_count = case :ets.lookup(state.access_table, access_key) do
-      [{^access_key, count}] -> count
-      [] -> 0
-    end
+
+    access_count =
+      case :ets.lookup(state.access_table, access_key) do
+        [{^access_key, count}] -> count
+        [] -> 0
+      end
 
     # Adjust TTL based on access pattern
     base_ttl = state.default_ttl
@@ -437,35 +441,40 @@ defmodule Spacecast.Resources.CacheServer do
     cache_entries = :ets.tab2list(state.cache_table)
 
     # Get access times for sorting
-    entries_with_access = Enum.map(cache_entries, fn {cache_key, resource, expiry} ->
-      {resource_type, resource_id} = cache_key
-      last_access_key = {resource_type, resource_id, :last_access}
+    entries_with_access =
+      Enum.map(cache_entries, fn {cache_key, resource, expiry} ->
+        {resource_type, resource_id} = cache_key
+        last_access_key = {resource_type, resource_id, :last_access}
 
-      last_access = case :ets.lookup(state.access_table, last_access_key) do
-        [{^last_access_key, time}] -> time
-        [] -> DateTime.from_unix!(0)  # Very old if no access time
-      end
+        last_access =
+          case :ets.lookup(state.access_table, last_access_key) do
+            [{^last_access_key, time}] -> time
+            # Very old if no access time
+            [] -> DateTime.from_unix!(0)
+          end
 
-      {cache_key, resource, expiry, last_access}
-    end)
+        {cache_key, resource, expiry, last_access}
+      end)
 
     # Sort by last access time (oldest first)
-    sorted_entries = Enum.sort_by(entries_with_access, fn {_, _, _, last_access} ->
-      DateTime.to_unix(last_access)
-    end)
+    sorted_entries =
+      Enum.sort_by(entries_with_access, fn {_, _, _, last_access} ->
+        DateTime.to_unix(last_access)
+      end)
 
     # Remove 20% of least recently used entries
     entries_to_remove = Enum.take(sorted_entries, max(1, trunc(length(sorted_entries) * 0.2)))
 
-    evicted_count = Enum.reduce(entries_to_remove, 0, fn {cache_key, _, _, _}, acc ->
-      {resource_type, resource_id} = cache_key
+    evicted_count =
+      Enum.reduce(entries_to_remove, 0, fn {cache_key, _, _, _}, acc ->
+        {resource_type, resource_id} = cache_key
 
-      :ets.delete(state.cache_table, cache_key)
-      :ets.delete(state.access_table, cache_key)
-      :ets.delete(state.access_table, {resource_type, resource_id, :last_access})
+        :ets.delete(state.cache_table, cache_key)
+        :ets.delete(state.access_table, cache_key)
+        :ets.delete(state.access_table, {resource_type, resource_id, :last_access})
 
-      acc + 1
-    end)
+        acc + 1
+      end)
 
     # Update eviction stats
     :ets.update_counter(state.stats_table, :evictions, {2, evicted_count}, {:evictions, 0})
@@ -477,24 +486,26 @@ defmodule Spacecast.Resources.CacheServer do
     now = DateTime.utc_now()
 
     # Find expired entries
-    expired_entries = :ets.select(state.cache_table, [
-      {
-        {:"$1", :"$2", :"$3"},
-        [{:"=<", :"$3", {:const, now}}],
-        [:"$1"]
-      }
-    ])
+    expired_entries =
+      :ets.select(state.cache_table, [
+        {
+          {:"$1", :"$2", :"$3"},
+          [{:"=<", :"$3", {:const, now}}],
+          [:"$1"]
+        }
+      ])
 
     # Delete expired entries
-    expired_count = Enum.reduce(expired_entries, 0, fn cache_key, acc ->
-      {resource_type, resource_id} = cache_key
+    expired_count =
+      Enum.reduce(expired_entries, 0, fn cache_key, acc ->
+        {resource_type, resource_id} = cache_key
 
-      :ets.delete(state.cache_table, cache_key)
-      :ets.delete(state.access_table, cache_key)
-      :ets.delete(state.access_table, {resource_type, resource_id, :last_access})
+        :ets.delete(state.cache_table, cache_key)
+        :ets.delete(state.access_table, cache_key)
+        :ets.delete(state.access_table, {resource_type, resource_id, :last_access})
 
-      acc + 1
-    end)
+        acc + 1
+      end)
 
     if expired_count > 0 do
       Logger.debug("Cleaned up #{expired_count} expired cache entries")
@@ -503,26 +514,28 @@ defmodule Spacecast.Resources.CacheServer do
 
   defp warmup_frequent_resources(state) do
     # Get frequently accessed resources (access count > 50)
-    frequent_resources = :ets.select(state.access_table, [
-      {
-        {{:"$1", :"$2"}, :"$3"},
-        [{:>, :"$3", 50}],
-        [{{:"$1", :"$2"}}]
-      }
-    ])
+    frequent_resources =
+      :ets.select(state.access_table, [
+        {
+          {{:"$1", :"$2"}, :"$3"},
+          [{:>, :"$3", 50}],
+          [{{:"$1", :"$2"}}]
+        }
+      ])
 
     # Warm up each resource that's not already cached or is about to expire
-    warmed_count = Enum.reduce(frequent_resources, 0, fn {resource_type, resource_id}, acc ->
-      cache_key = {resource_type, resource_id}
+    warmed_count =
+      Enum.reduce(frequent_resources, 0, fn {resource_type, resource_id}, acc ->
+        cache_key = {resource_type, resource_id}
 
-      should_warmup = should_warmup_resource?(state, cache_key)
+        should_warmup = should_warmup_resource?(state, cache_key)
 
-      if should_warmup do
-        acc + warmup_single_resource(state, resource_type, resource_id, cache_key)
-      else
-        acc
-      end
-    end)
+        if should_warmup do
+          acc + warmup_single_resource(state, resource_type, resource_id, cache_key)
+        else
+          acc
+        end
+      end)
 
     if warmed_count > 0 do
       Logger.debug("Warmed up #{warmed_count} frequently accessed resources")
@@ -531,7 +544,10 @@ defmodule Spacecast.Resources.CacheServer do
 
   defp should_warmup_resource?(state, cache_key) do
     case :ets.lookup(state.cache_table, cache_key) do
-      [] -> true  # Not cached
+      # Not cached
+      [] ->
+        true
+
       [{^cache_key, _, expiry}] ->
         # Check if expires within next 5 minutes
         expires_soon = DateTime.add(DateTime.utc_now(), 300, :second)

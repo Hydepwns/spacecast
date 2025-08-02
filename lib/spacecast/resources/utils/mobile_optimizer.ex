@@ -514,8 +514,7 @@ defmodule Spacecast.Resources.MobileOptimizer do
       metadata:
         if(display_config.show_metadata,
           do: %{
-            published:
-              if(resource.published_at, do: format_date(resource.published_at), else: nil),
+            published: if(resource.published_at, do: format_date(resource.published_at), else: nil),
             likes: Map.get(resource, :likes_count, 0),
             comments: Map.get(resource, :comments_count, 0)
           }

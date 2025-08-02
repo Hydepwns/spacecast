@@ -84,9 +84,11 @@ defmodule Spacecast.Resources.ResourceSystem do
 
   defp generate_creation_event(resource) do
     _event_data = Map.from_struct(resource) |> Map.drop([:__meta__, :__struct__])
+
     case ResourceEventGenerator.resource_created(resource, %{action: "create"}) do
       {:ok, _event} -> :ok
-      {:error, _reason} -> :ok  # Continue even if event generation fails
+      # Continue even if event generation fails
+      {:error, _reason} -> :ok
     end
   end
 
@@ -103,6 +105,7 @@ defmodule Spacecast.Resources.ResourceSystem do
   This is optimized for performance when creating many resources at once.
   """
   def create_resources_batch(resources_attrs, opts \\ [])
+
   def create_resources_batch(resources_attrs, opts) when is_map(opts) do
     # Convert map to keyword list for compatibility
     opts_list = Map.to_list(opts)
@@ -132,6 +135,7 @@ defmodule Spacecast.Resources.ResourceSystem do
 
   defp create_single_resource(attrs) do
     changeset = %Resource{} |> Resource.changeset(attrs)
+
     case RepoHelper.insert(changeset) do
       {:ok, resource} -> {:ok, resource}
       {:error, changeset} -> RepoHelper.rollback(changeset)
@@ -396,18 +400,14 @@ defmodule Spacecast.Resources.ResourceSystem do
         {:error, :not_found}
 
       resource ->
-        IO.puts(
-          "🔍 ResourceSystem.update_resource: Found resource #{resource.id}, creating changeset"
-        )
+        IO.puts("🔍 ResourceSystem.update_resource: Found resource #{resource.id}, creating changeset")
 
         case update_resource_changeset(resource, attrs) do
           {:ok, updated_resource} ->
             handle_successful_update(updated_resource, resource, attrs)
 
           error ->
-            IO.puts(
-              "❌ ResourceSystem.update_resource: RepoHelper.update failed: #{inspect(error)}"
-            )
+            IO.puts("❌ ResourceSystem.update_resource: RepoHelper.update failed: #{inspect(error)}")
 
             error
         end
@@ -433,9 +433,7 @@ defmodule Spacecast.Resources.ResourceSystem do
         {:ok, transformed_resource}
 
       {:error, _resource, _context} ->
-        IO.puts(
-          "❌ ResourceSystem.update_resource: Transformations failed, returning updated resource"
-        )
+        IO.puts("❌ ResourceSystem.update_resource: Transformations failed, returning updated resource")
         {:ok, updated_resource}
     end
   end
@@ -445,14 +443,10 @@ defmodule Spacecast.Resources.ResourceSystem do
 
     case ResourceEventGenerator.resource_updated(updated_resource, attrs, %{action: "update"}) do
       {:ok, _event} ->
-        IO.puts(
-          "✅ ResourceSystem.update_resource: resource_updated event generated successfully"
-        )
+        IO.puts("✅ ResourceSystem.update_resource: resource_updated event generated successfully")
 
       {:error, reason} ->
-        IO.puts(
-          "❌ ResourceSystem.update_resource: resource_updated event generation failed: #{inspect(reason)}"
-        )
+        IO.puts("❌ ResourceSystem.update_resource: resource_updated event generation failed: #{inspect(reason)}")
     end
   end
 
@@ -488,14 +482,10 @@ defmodule Spacecast.Resources.ResourceSystem do
   defp generate_transformation_event(transformed_resource) do
     case ResourceEventGenerator.resource_event(transformed_resource, "transformed", %{}, %{action: "transform"}) do
       {:ok, _event} ->
-        IO.puts(
-          "✅ ResourceSystem.update_resource: transformed event generated successfully"
-        )
+        IO.puts("✅ ResourceSystem.update_resource: transformed event generated successfully")
 
       {:error, reason} ->
-        IO.puts(
-          "❌ ResourceSystem.update_resource: transformed event generation failed: #{inspect(reason)}"
-        )
+        IO.puts("❌ ResourceSystem.update_resource: transformed event generation failed: #{inspect(reason)}")
     end
   end
 
@@ -538,16 +528,13 @@ defmodule Spacecast.Resources.ResourceSystem do
 
   defp generate_deletion_event(deleted_resource) do
     _event_data = Map.from_struct(deleted_resource) |> Map.drop([:__meta__, :__struct__])
+
     case ResourceEventGenerator.resource_deleted(deleted_resource, %{action: "delete"}) do
       {:ok, _event} ->
-        IO.puts(
-          "✅ ResourceSystem.delete_resource: resource_deleted event generated successfully"
-        )
+        IO.puts("✅ ResourceSystem.delete_resource: resource_deleted event generated successfully")
 
       {:error, reason} ->
-        IO.puts(
-          "❌ ResourceSystem.delete_resource: resource_deleted event generation failed: #{inspect(reason)}"
-        )
+        IO.puts("❌ ResourceSystem.delete_resource: resource_deleted event generation failed: #{inspect(reason)}")
     end
   end
 

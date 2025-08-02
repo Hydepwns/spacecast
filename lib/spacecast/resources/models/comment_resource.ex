@@ -22,18 +22,14 @@ defmodule Spacecast.Resources.CommentResource do
   belongs_to(:author, Spacecast.Resources.UserResource, foreign_key: :author_id)
   belongs_to(:post, Spacecast.Resources.PostResource, foreign_key: :post_id)
 
-  belongs_to(:parent_comment, Spacecast.Resources.CommentResource,
-    foreign_key: :parent_comment_id
-  )
+  belongs_to(:parent_comment, Spacecast.Resources.CommentResource, foreign_key: :parent_comment_id)
 
   # Demonstrate has_many relationships
   has_many(:replies, Spacecast.Resources.CommentResource, foreign_key: :parent_comment_id)
   has_many(:reactions, Spacecast.Resources.ReactionResource, foreign_key: :comment_id)
 
   # Demonstrate has_one relationship
-  has_one(:moderation_note, Spacecast.Resources.ModerationNoteResource,
-    foreign_key: :comment_id
-  )
+  has_one(:moderation_note, Spacecast.Resources.ModerationNoteResource, foreign_key: :comment_id)
 
   # Demonstrate has_many_through relationship
   has_many_through(:author_comments, through: [:author, :comments])

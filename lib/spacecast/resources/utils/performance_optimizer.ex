@@ -19,6 +19,7 @@ defmodule Spacecast.Resources.PerformanceOptimizer do
     PerformanceMonitor,
     Benchmarker
   }
+
   alias Spacecast.Resources.CacheServer
 
   @spec init() :: :ok

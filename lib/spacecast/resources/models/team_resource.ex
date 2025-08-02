@@ -73,12 +73,11 @@ defmodule Spacecast.Resources.TeamResource do
   """
   def initial_state do
     %{
-      id: nil,
-      name: nil,
-      description: nil,
-      created_at: nil,
-      active: true,
-      __resource_module__: __MODULE__
+      id: "",
+      name: "",
+      description: "",
+      created_at: DateTime.utc_now(),
+      active: true
     }
   end
 
@@ -94,7 +93,7 @@ defmodule Spacecast.Resources.TeamResource do
         struct(state, Map.merge(Map.from_struct(state), event.data))
 
       "team.deleted" ->
-        %{state | active: false}
+        struct(state, %{active: false})
 
       _ ->
         struct(state, Map.merge(Map.from_struct(state), event.data || %{}))
@@ -147,10 +146,42 @@ defmodule Spacecast.Resources.TeamResource do
     end
   end
 
-  def changeset(_), do: Ecto.Changeset.change(%{})
+  @doc """
+  Creates events for a new team resource.
+  """
+  def create_events(params, metadata) do
+    event = %{
+      type: "team.created",
+      data: params,
+      metadata: metadata,
+      timestamp: DateTime.utc_now()
+    }
+    {:ok, [event]}
+  end
 
-  # TODO: Stubbed event creation functions for EventSourcedResource compliance
-  def create_events(_params, _metadata), do: {:ok, []}
-  def create_update_events(_params, _metadata), do: {:ok, []}
-  def create_delete_events(_params, _metadata), do: {:ok, []}
+  @doc """
+  Creates events for updating a team resource.
+  """
+  def create_update_events(params, metadata) do
+    event = %{
+      type: "team.updated",
+      data: params,
+      metadata: metadata,
+      timestamp: DateTime.utc_now()
+    }
+    {:ok, [event]}
+  end
+
+  @doc """
+  Creates events for deleting a team resource.
+  """
+  def create_delete_events(_params, metadata) do
+    event = %{
+      type: "team.deleted",
+      data: %{},
+      metadata: metadata,
+      timestamp: DateTime.utc_now()
+    }
+    {:ok, [event]}
+  end
 end

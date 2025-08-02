@@ -12,11 +12,11 @@ defmodule Spacecast.Resources.EventDocumentation do
   @type resource_module :: module()
   @type event_type :: atom()
   @type documentation :: %{
-    resource_type: String.t(),
-    event_types: list(map()),
-    module: resource_module(),
-    generated_at: DateTime.t()
-  }
+          resource_type: String.t(),
+          event_types: list(map()),
+          module: resource_module(),
+          generated_at: DateTime.t()
+        }
 
   @spec generate_documentation(resource_module()) :: {:ok, documentation()} | {:error, any()}
   @doc """
@@ -145,11 +145,12 @@ defmodule Spacecast.Resources.EventDocumentation do
       })
 
     # Infer schema from examples if not provided
-    inferred_schema = if Enum.empty?(schema) and !Enum.empty?(examples) do
-      infer_schema_from_examples(examples)
-    else
-      schema
-    end
+    inferred_schema =
+      if Enum.empty?(schema) and !Enum.empty?(examples) do
+        infer_schema_from_examples(examples)
+      else
+        schema
+      end
 
     json_schema = %{
       "$schema" => "http://json-schema.org/draft-07/schema#",
@@ -247,9 +248,7 @@ defmodule Spacecast.Resources.EventDocumentation do
 
     ## Event Types
 
-    #{Enum.map_join(documentation.event_types, "\n\n", fn event_doc ->
-      build_event_markdown(event_doc, include_examples, include_schemas)
-    end)}
+    #{Enum.map_join(documentation.event_types, "\n\n", fn event_doc -> build_event_markdown(event_doc, include_examples, include_schemas) end)}
 
     ## Summary
 
@@ -281,13 +280,11 @@ defmodule Spacecast.Resources.EventDocumentation do
       """
       #### Examples
 
-      #{Enum.map_join(event_doc.examples, "\n\n", fn example ->
-        """
+      #{Enum.map_join(event_doc.examples, "\n\n", fn example -> """
         ```json
         #{Jason.encode!(example, pretty: true)}
         ```
-        """
-      end)}
+        """ end)}
       """
     else
       ""

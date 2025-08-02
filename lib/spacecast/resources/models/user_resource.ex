@@ -59,16 +59,15 @@ defmodule Spacecast.Resources.UserResource do
   """
   def initial_state do
     %{
-      id: nil,
-      name: nil,
-      email: nil,
+      id: "",
+      name: "",
+      email: "",
       role: "viewer",
       settings: %{theme: "system", notifications: true, sidebar_collapsed: false},
       permissions: [],
       active: true,
-      last_login: nil,
-      team_id: nil,
-      __resource_module__: __MODULE__
+      last_login: DateTime.utc_now(),
+      team_id: ""
     }
   end
 
@@ -84,7 +83,7 @@ defmodule Spacecast.Resources.UserResource do
         struct(state, Map.merge(Map.from_struct(state), event.data))
 
       "user.deleted" ->
-        %{state | active: false}
+        struct(state, %{active: false})
 
       _ ->
         struct(state, Map.merge(Map.from_struct(state), event.data || %{}))
@@ -108,8 +107,7 @@ defmodule Spacecast.Resources.UserResource do
         notifications: true,
         sidebar_collapsed: false
       },
-      team_id: "team-1",
-      __resource_module__: __MODULE__
+      team_id: "team-1"
     }
 
     {:ok, user}
@@ -161,7 +159,9 @@ defmodule Spacecast.Resources.UserResource do
     end
   end
 
-  def changeset(_), do: Ecto.Changeset.change(%{})
+  def changeset(attrs) when not is_map(attrs) do
+    changeset(%{})
+  end
 
   @doc """
   Validates a user resource map or struct.

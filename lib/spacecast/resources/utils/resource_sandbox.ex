@@ -13,12 +13,12 @@ defmodule Spacecast.Resources.ResourceSandbox do
   @type resource_type :: String.t()
   @type instance_id :: String.t()
   @type sandbox :: %{
-    id: sandbox_id,
-    created_at: DateTime.t(),
-    resources: map(),
-    events: list(map()),
-    options: keyword()
-  }
+          id: sandbox_id,
+          created_at: DateTime.t(),
+          resources: map(),
+          events: list(map()),
+          options: keyword()
+        }
 
   @spec create_sandbox(list(resource_module()), keyword()) :: {:ok, sandbox_id()} | {:error, any()}
   @doc """

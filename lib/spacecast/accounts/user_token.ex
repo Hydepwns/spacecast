@@ -71,10 +71,11 @@ defmodule Spacecast.Accounts.UserToken do
   """
   def verify_email_token_query(token, context) when is_binary(token) and is_binary(context) do
     query =
-      from token in token_and_context_query(token, context),
+      from(token in token_and_context_query(token, context),
         join: user in assoc(token, :user),
         where: token.sent_to == user.email,
         where: token.inserted_at > ago(@confirm_validity_in_days, "day")
+      )
 
     {:ok, query}
   end
@@ -104,8 +105,9 @@ defmodule Spacecast.Accounts.UserToken do
   Returns the given token with the given context.
   """
   def token_and_context_query(token, context) when is_binary(token) and is_binary(context) do
-    from Spacecast.Accounts.UserToken,
+    from(Spacecast.Accounts.UserToken,
       where: [token: ^token, context: ^context]
+    )
   end
 
   def token_and_context_query(_invalid_token, _invalid_context), do: {:error, :invalid_parameters}
@@ -114,12 +116,13 @@ defmodule Spacecast.Accounts.UserToken do
   Gets all tokens for the given user for the given contexts.
   """
   def user_and_contexts_query(user, :all) do
-    from t in Spacecast.Accounts.UserToken, where: t.user_id == ^user.id
+    from(t in Spacecast.Accounts.UserToken, where: t.user_id == ^user.id)
   end
 
   def user_and_contexts_query(user, [_ | _] = contexts) do
-    from t in Spacecast.Accounts.UserToken,
+    from(t in Spacecast.Accounts.UserToken,
       where: t.user_id == ^user.id and t.context in ^contexts
+    )
   end
 
   def user_and_contexts_query(_invalid_user, _invalid_contexts), do: {:error, :invalid_parameters}

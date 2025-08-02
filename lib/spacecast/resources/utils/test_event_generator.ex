@@ -255,7 +255,7 @@ defmodule Spacecast.Resources.TestEventGenerator do
     random_fields = %{
       random_id: Ecto.UUID.generate(),
       random_value: :rand.uniform(1000),
-      random_string: "random_#{:rand.uniform(999999)}",
+      random_string: "random_#{:rand.uniform(999_999)}",
       random_boolean: :rand.uniform() > 0.5
     }
 
@@ -283,12 +283,13 @@ defmodule Spacecast.Resources.TestEventGenerator do
       :bulk_operations ->
         # Generate multiple update events
         Enum.map(1..5, fn i ->
-          {:updated, %{
-            name: "Bulk Update #{i}",
-            updated_at: DateTime.utc_now(),
-            bulk_operation: true,
-            sequence: i
-          }}
+          {:updated,
+           %{
+             name: "Bulk Update #{i}",
+             updated_at: DateTime.utc_now(),
+             bulk_operation: true,
+             sequence: i
+           }}
         end)
 
       _ ->

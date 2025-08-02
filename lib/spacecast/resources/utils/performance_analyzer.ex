@@ -90,12 +90,16 @@ defmodule Spacecast.Resources.PerformanceAnalyzer do
       cutoff = DateTime.add(DateTime.utc_now(), -time_window, :second)
 
       # Process metrics and return them
-      {:ok, %{
-        total_events: length(metrics),
-        read_count: 0,  # Placeholder - would be calculated from actual metrics
-        write_count: 0, # Placeholder - would be calculated from actual metrics
-        avg_event_size: 0 # Placeholder - would be calculated from actual metrics
-      }}
+      {:ok,
+       %{
+         total_events: length(metrics),
+         # Placeholder - would be calculated from actual metrics
+         read_count: 0,
+         # Placeholder - would be calculated from actual metrics
+         write_count: 0,
+         # Placeholder - would be calculated from actual metrics
+         avg_event_size: 0
+       }}
     rescue
       _ ->
         {:error, :metrics_unavailable}

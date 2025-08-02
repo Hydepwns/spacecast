@@ -24,12 +24,12 @@ defmodule Spacecast.Resources.FolderResource do
   """
   def initial_state do
     %__MODULE__{
-      id: nil,
-      name: nil,
+      id: "",
+      name: "",
       type: "folder",
       content: %{},
-      parent_id: nil,
-      description: nil,
+      parent_id: "",
+      description: "",
       status: "active"
     }
   end
@@ -46,7 +46,7 @@ defmodule Spacecast.Resources.FolderResource do
         struct(state, Map.merge(Map.from_struct(state), event.data))
 
       "folder.deleted" ->
-        %{state | content: %{}}
+        struct(state, %{content: %{}})
 
       _ ->
         struct(state, Map.merge(Map.from_struct(state), event.data || %{}))
@@ -60,7 +60,13 @@ defmodule Spacecast.Resources.FolderResource do
   `folder_struct` is the resource struct, typically `%FolderResource{}` for new,
   or an existing struct for updates.
   """
-  def changeset(folder_struct \\ initial_state(), attrs) do
+  def changeset(folder_struct \\ initial_state(), attrs)
+
+  def changeset(folder_struct, attrs) when not is_map(attrs) do
+    changeset(folder_struct, %{})
+  end
+
+  def changeset(folder_struct, attrs) do
     folder_struct
     |> cast(attrs, [:id, :name, :type, :content, :description, :parent_id, :status])
     |> validate_required([:name, :type])

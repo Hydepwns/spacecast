@@ -13,15 +13,15 @@ defmodule Spacecast.Resources.DebugSession do
   @type resource_module :: module()
   @type resource_id :: any()
   @type session :: %{
-    id: session_id,
-    resource_type: String.t(),
-    resource_id: resource_id,
-    started_at: DateTime.t(),
-    events: list(map()),
-    snapshots: list(map()),
-    breakpoints: list(map()),
-    options: keyword()
-  }
+          id: session_id,
+          resource_type: String.t(),
+          resource_id: resource_id,
+          started_at: DateTime.t(),
+          events: list(map()),
+          snapshots: list(map()),
+          breakpoints: list(map()),
+          options: keyword()
+        }
 
   @spec start_session(resource_module(), resource_id(), keyword()) :: {:ok, session_id()} | {:error, any()}
   @doc """
@@ -597,9 +597,7 @@ defmodule Spacecast.Resources.DebugSession do
   * `{:error, reason}` - The event handling failed
   """
   def handle_debug_event(event, session_id, pid) do
-    Logger.debug(
-      "Debug event received for session #{session_id} from process #{inspect(pid)}: #{inspect(event)}"
-    )
+    Logger.debug("Debug event received for session #{session_id} from process #{inspect(pid)}: #{inspect(event)}")
 
     case get_session(session_id) do
       {:ok, session} ->
@@ -612,8 +610,6 @@ defmodule Spacecast.Resources.DebugSession do
         {:error, reason}
     end
   end
-
-
 
   defp subscribe_to_resource_events(resource_type, resource_id, session_id) do
     # Subscribe to events for the resource

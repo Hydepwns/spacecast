@@ -12,29 +12,29 @@ defmodule Spacecast.Resources.LoadTester do
   @type operation_fn :: (resource_module(), any() -> any())
   @type test_id :: String.t()
   @type load_test_result :: %{
-    test_id: test_id(),
-    resource_type: String.t(),
-    total_operations: integer(),
-    successful_operations: integer(),
-    failed_operations: integer(),
-    total_time_ms: integer(),
-    operations_per_second: float(),
-    avg_operation_time_ms: float(),
-    min_operation_time_ms: integer(),
-    max_operation_time_ms: integer(),
-    concurrency: integer(),
-    worker_results: list(map())
-  }
+          test_id: test_id(),
+          resource_type: String.t(),
+          total_operations: integer(),
+          successful_operations: integer(),
+          failed_operations: integer(),
+          total_time_ms: integer(),
+          operations_per_second: float(),
+          avg_operation_time_ms: float(),
+          min_operation_time_ms: integer(),
+          max_operation_time_ms: integer(),
+          concurrency: integer(),
+          worker_results: list(map())
+        }
   @type stress_test_result :: %{
-    test_id: test_id(),
-    resource_type: String.t(),
-    max_concurrency: integer(),
-    concurrency_step: integer(),
-    operations_per_step: integer(),
-    results: list(load_test_result()),
-    breaking_point: integer(),
-    total_time_ms: integer()
-  }
+          test_id: test_id(),
+          resource_type: String.t(),
+          max_concurrency: integer(),
+          concurrency_step: integer(),
+          operations_per_step: integer(),
+          results: list(load_test_result()),
+          breaking_point: integer(),
+          total_time_ms: integer()
+        }
 
   @spec run_load_test(resource_module(), operation_fn(), keyword()) ::
           {:ok, load_test_result()} | {:error, any()}
@@ -109,9 +109,7 @@ defmodule Spacecast.Resources.LoadTester do
       worker_results: task_results
     }
 
-    Logger.info(
-      "Load test #{test_id} completed: #{successful}/#{length(all_operations)} operations successful"
-    )
+    Logger.info("Load test #{test_id} completed: #{successful}/#{length(all_operations)} operations successful")
 
     {:ok, results}
   end
@@ -152,10 +150,11 @@ defmodule Spacecast.Resources.LoadTester do
       for concurrency <- 1..max_concurrency//concurrency_step do
         Logger.info("Testing concurrency level: #{concurrency}")
 
-        {:ok, result} = run_load_test(resource_module, operation_fn, [
-          concurrency: concurrency,
-          operations: operations_per_step
-        ])
+        {:ok, result} =
+          run_load_test(resource_module, operation_fn,
+            concurrency: concurrency,
+            operations: operations_per_step
+          )
 
         # Add concurrency level to result
         Map.put(result, :concurrency_level, concurrency)
@@ -225,10 +224,11 @@ defmodule Spacecast.Resources.LoadTester do
           nil
         else
           # Run a batch
-          {:ok, batch_result} = run_load_test(resource_module, operation_fn, [
-            concurrency: concurrency,
-            operations: operations_per_batch
-          ])
+          {:ok, batch_result} =
+            run_load_test(resource_module, operation_fn,
+              concurrency: concurrency,
+              operations: operations_per_batch
+            )
 
           batch_result = Map.put(batch_result, :batch_number, batch)
           batch_result = Map.put(batch_result, :timestamp, DateTime.utc_now())
@@ -312,7 +312,8 @@ defmodule Spacecast.Resources.LoadTester do
 
   defp find_breaking_point(results) do
     # Find the first concurrency level where failure rate exceeds threshold
-    threshold = 0.05 # 5% failure rate
+    # 5% failure rate
+    threshold = 0.05
 
     breaking_point =
       Enum.find(results, fn result ->
@@ -352,11 +353,11 @@ defmodule Spacecast.Resources.LoadTester do
     if n < 2 do
       0.0
     else
-      indices = 0..(n-1)
+      indices = 0..(n - 1)
       sum_x = Enum.sum(indices)
       sum_y = Enum.sum(values)
       sum_xy = Enum.sum(Enum.zip(indices, values) |> Enum.map(fn {x, y} -> x * y end))
-      sum_x2 = Enum.sum(Enum.map(indices, & &1 * &1))
+      sum_x2 = Enum.sum(Enum.map(indices, &(&1 * &1)))
 
       slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x)
       slope

@@ -395,8 +395,7 @@ defmodule Spacecast.Resources.CrossResourceTracker do
   defp create_events_for_changes(changes, correlation_id) do
     Enum.map(changes, fn change ->
       %Event{
-        type:
-          "resource.#{change.resource_type}.#{if change.is_primary, do: "changed", else: "propagated_change"}",
+        type: "resource.#{change.resource_type}.#{if change.is_primary, do: "changed", else: "propagated_change"}",
         resource_type: change.resource_type,
         resource_id: change.resource_id,
         data: change.changes,

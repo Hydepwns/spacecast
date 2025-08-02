@@ -162,8 +162,7 @@ defmodule Spacecast.Resources.Resource do
     |> validate_inclusion(:status, ["draft", "published", "archived", "deleted", "active"])
     |> validate_number(:version, greater_than: 0)
     |> validate_format(:type, ~r/^[a-z][a-z0-9_]*$/,
-      message:
-        "must start with a lowercase letter and only contain lowercase letters, numbers, and underscores"
+      message: "must start with a lowercase letter and only contain lowercase letters, numbers, and underscores"
     )
     |> validate_circular_relationship()
     |> validate_relationship_type()

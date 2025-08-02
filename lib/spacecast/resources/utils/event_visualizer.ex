@@ -12,13 +12,13 @@ defmodule Spacecast.Resources.EventVisualizer do
   @type resource_module :: module()
   @type resource_id :: any()
   @type visualization :: %{
-    resource_type: String.t(),
-    resource_id: resource_id(),
-    event_count: integer(),
-    timeline: list(map()),
-    graph: map(),
-    correlation_chains: map()
-  }
+          resource_type: String.t(),
+          resource_id: resource_id(),
+          event_count: integer(),
+          timeline: list(map()),
+          graph: map(),
+          correlation_chains: map()
+        }
 
   @spec visualize_event_flow(resource_module(), resource_id(), keyword()) :: {:ok, visualization()} | {:error, any()}
   @doc """
@@ -427,13 +427,14 @@ defmodule Spacecast.Resources.EventVisualizer do
           correlation_id: correlation_id,
           event_count: length(correlated_events),
           event_types: Enum.map(correlated_events, & &1.type),
-          duration_ms: if length(correlated_events) > 1 do
-            first = List.first(correlated_events)
-            last = List.last(correlated_events)
-            DateTime.diff(last.timestamp, first.timestamp, :millisecond)
-          else
-            0
-          end
+          duration_ms:
+            if length(correlated_events) > 1 do
+              first = List.first(correlated_events)
+              last = List.last(correlated_events)
+              DateTime.diff(last.timestamp, first.timestamp, :millisecond)
+            else
+              0
+            end
         }
       end)
 
@@ -446,13 +447,15 @@ defmodule Spacecast.Resources.EventVisualizer do
 
   defp generate_dot_format(visualization) do
     # Generate DOT format for Graphviz
-    nodes = Enum.map(visualization.graph.nodes, fn node ->
-      "  \"#{node.id}\" [label=\"#{node.type}\", shape=box];"
-    end)
+    nodes =
+      Enum.map(visualization.graph.nodes, fn node ->
+        "  \"#{node.id}\" [label=\"#{node.type}\", shape=box];"
+      end)
 
-    edges = Enum.map(visualization.graph.edges, fn edge ->
-      "  \"#{edge.source}\" -> \"#{edge.target}\" [label=\"#{edge.type}\"];"
-    end)
+    edges =
+      Enum.map(visualization.graph.edges, fn edge ->
+        "  \"#{edge.source}\" -> \"#{edge.target}\" [label=\"#{edge.type}\"];"
+      end)
 
     """
     digraph EventFlow {
