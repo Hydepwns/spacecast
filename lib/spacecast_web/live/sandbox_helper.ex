@@ -18,10 +18,12 @@ defmodule SpacecastWeb.Live.SandboxHelper do
             :ok ->
               Logger.debug("✅ Successfully joined LiveView sandbox")
               :ok
+
             {:error, reason} ->
               Logger.debug("❌ Failed to join LiveView sandbox: #{inspect(reason)}")
               {:error, reason}
           end
+
         {:error, reason} ->
           Logger.debug("❌ Failed to parse sandbox PID: #{inspect(reason)}")
           {:error, reason}
@@ -68,6 +70,7 @@ defmodule SpacecastWeb.Live.SandboxHelper do
         rescue
           _ -> {:error, "Failed to parse PID: #{pid_str}"}
         end
+
       _ ->
         {:error, "Invalid PID format: #{pid_str}"}
     end
@@ -81,8 +84,9 @@ defmodule SpacecastWeb.Live.SandboxHelper do
     cookies = Map.get(connect_info, :cookies, %{})
 
     # Check for sandbox cookie in both session and cookies
-    sandbox_cookie = Map.get(session, "_phoenix_liveview_sandbox") ||
-                    Map.get(cookies, "_phoenix_liveview_sandbox")
+    sandbox_cookie =
+      Map.get(session, "_phoenix_liveview_sandbox") ||
+        Map.get(cookies, "_phoenix_liveview_sandbox")
 
     if sandbox_cookie do
       Logger.debug("🔍 Found sandbox cookie: #{inspect(sandbox_cookie)}")
@@ -103,6 +107,7 @@ defmodule SpacecastWeb.Live.SandboxHelper do
         :ok ->
           Logger.debug("✅ LiveView sandbox connection established")
           :ok
+
         {:error, reason} ->
           Logger.debug("⚠️  LiveView sandbox connection failed: #{inspect(reason)}")
           # Don't fail the mount, just log the warning

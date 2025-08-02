@@ -97,9 +97,7 @@ defmodule SpacecastWeb.Examples.TransformationMetricsLive do
            ] do
     require Logger
 
-    Logger.warning(
-      "Unhandled event in TransformationMetricsLive: #{inspect(event)} with params: #{inspect(params)}"
-    )
+    Logger.warning("Unhandled event in TransformationMetricsLive: #{inspect(event)} with params: #{inspect(params)}")
 
     {:noreply, put_flash(socket, :warning, "Unhandled event: #{event}")}
   end

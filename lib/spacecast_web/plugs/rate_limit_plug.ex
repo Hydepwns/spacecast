@@ -1,4 +1,8 @@
 defmodule SpacecastWeb.Plugs.RateLimitPlug do
+  @moduledoc """
+  Rate limiting plug for controlling request frequency and preventing abuse.
+  """
+
   import Plug.Conn
   import Phoenix.Controller
 

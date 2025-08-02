@@ -5,8 +5,8 @@ defmodule SpacecastWeb.ResourceDashboardLive do
 
   use SpacecastWeb, :live_view
 
-  alias Spacecast.Resources.ResourceSystem
   alias Spacecast.Resources.Resource
+  alias Spacecast.Resources.ResourceSystem
   alias SpacecastWeb.Live.SandboxHelper
 
   @impl true

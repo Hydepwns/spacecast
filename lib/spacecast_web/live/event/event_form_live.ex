@@ -1,7 +1,7 @@
 defmodule SpacecastWeb.Event.EventFormLive do
   use SpacecastWeb, :live_view
 
-  on_mount {SpacecastWeb.UserAuth, :mount_current_user}
+  on_mount({SpacecastWeb.UserAuth, :mount_current_user})
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do

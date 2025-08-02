@@ -101,7 +101,7 @@ defmodule SpacecastWeb.Router do
 
   scope "/api", SpacecastWeb do
     pipe_through :api
-    match :*, "/*path", Api.ErrorController, :not_found
+    match(:*, "/*path", Api.ErrorController, :not_found)
   end
 
   # Main application routes
@@ -127,50 +127,48 @@ defmodule SpacecastWeb.Router do
     get "/service-worker.js", ServiceWorkerController, :index
 
     # Add a test route for validation testing (temporarily removed)
-    live "/test", SpacecastWeb.TestErrorLive, :index, as: :test_error
+    live("/test", SpacecastWeb.TestErrorLive, :index, as: :test_error)
 
     # Admin routes
     scope "/admin", Admin, as: :admin do
-      live "/event-dashboard", EventDashboardLive, :index, as: :event_dashboard
-      live "/resources", ResourceDashboardLive, :index, as: :resources
-      live "/events", EventLive, :index, as: :events
-      live "/events/new", EventFormLive, :new, as: :event_new
-      live "/events/:id", EventShowLive, :show, as: :event_show
-      live "/events/:id/edit", EventFormLive, :edit, as: :event_edit
+      live("/event-dashboard", EventDashboardLive, :index, as: :event_dashboard)
+      live("/resources", ResourceDashboardLive, :index, as: :resources)
+      live("/events", EventLive, :index, as: :events)
+      live("/events/new", EventFormLive, :new, as: :event_new)
+      live("/events/:id", EventShowLive, :show, as: :event_show)
+      live("/events/:id/edit", EventFormLive, :edit, as: :event_edit)
     end
 
-    live "/account", AccountLive, :index, as: :account
-    live "/account/notifications", NotificationSettingsLive, :index, as: :notification_settings
+    live("/account", AccountLive, :index, as: :account)
+    live("/account/notifications", NotificationSettingsLive, :index, as: :notification_settings)
 
     # Test-only route for type validation tests
     if Mix.env() == :test do
       live_session :test_types, on_mount: [] do
-        live "/test-types", TestTypeLive, :index, as: :test_types
+        live("/test-types", TestTypeLive, :index, as: :test_types)
       end
     end
 
     # New event routes
-    live "/events", Event.EventIndexLive, :index, as: :event_index
-    live "/events/:id", Event.EventShowLive, :show, as: :event_show
-    live "/events/new", Event.EventFormLive, :new, as: :event_form
-    live "/events/:id/edit", Event.EventFormLive, :edit, as: :event_form
-    live "/events/:id/settings/new", Event.EventSettingsLive, :new, as: :event_settings
+    live("/events", Event.EventIndexLive, :index, as: :event_index)
+    live("/events/:id", Event.EventShowLive, :show, as: :event_show)
+    live("/events/new", Event.EventFormLive, :new, as: :event_form)
+    live("/events/:id/edit", Event.EventFormLive, :edit, as: :event_form)
+    live("/events/:id/settings/new", Event.EventSettingsLive, :new, as: :event_settings)
 
-    live "/events/:id/settings/:settings_id/edit", Event.EventSettingsLive, :edit,
-      as: :event_settings
+    live("/events/:id/settings/:settings_id/edit", Event.EventSettingsLive, :edit, as: :event_settings)
 
-    live "/events/:id/reminders/new", Event.EventReminderLive, :new, as: :event_reminder
+    live("/events/:id/reminders/new", Event.EventReminderLive, :new, as: :event_reminder)
 
-    live "/events/:id/reminders/:reminder_id/edit", Event.EventReminderLive, :edit,
-      as: :event_reminder
+    live("/events/:id/reminders/:reminder_id/edit", Event.EventReminderLive, :edit, as: :event_reminder)
 
-    live "/timeline", TimelineLive, :index, as: :timeline
+    live("/timeline", TimelineLive, :index, as: :timeline)
 
     # Telemetry dashboard
-    live "/telemetry", TelemetryDashboardLive, :index, as: :telemetry
+    live("/telemetry", TelemetryDashboardLive, :index, as: :telemetry)
 
     if Mix.env() == :test do
-      live "/test-resource-live", TestResourceLive, :index, as: :test_resource_live
+      live("/test-resource-live", TestResourceLive, :index, as: :test_resource_live)
     end
   end
 
@@ -182,7 +180,7 @@ defmodule SpacecastWeb.Router do
     scope "/dev" do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: SpacecastWeb.Telemetry
+      live_dashboard("/dashboard", metrics: SpacecastWeb.Telemetry)
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end

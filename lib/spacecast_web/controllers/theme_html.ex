@@ -8,7 +8,7 @@ defmodule SpacecastWeb.ThemeHTML do
   # in lib/spacecast_web/templates/theme/
   # No additional render functions needed here
 
-  embed_templates "theme_html/*"
+  embed_templates("theme_html/*")
 
   def index(assigns) do
     ~H"""

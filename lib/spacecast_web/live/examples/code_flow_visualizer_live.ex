@@ -5,16 +5,17 @@ defmodule SpacecastWeb.Examples.CodeFlowVisualizerLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket,
-      code: sample_code(),
-      execution_path: [],
-      current_line: 0,
-      variables: %{},
-      call_stack: [],
-      is_running: false,
-      execution_speed: 1000,
-      breakpoints: MapSet.new()
-    )}
+    {:ok,
+     assign(socket,
+       code: sample_code(),
+       execution_path: [],
+       current_line: 0,
+       variables: %{},
+       call_stack: [],
+       is_running: false,
+       execution_speed: 1000,
+       breakpoints: MapSet.new()
+     )}
   end
 
   @impl true
@@ -35,19 +36,21 @@ defmodule SpacecastWeb.Examples.CodeFlowVisualizerLive do
       if connected?(socket) do
         :timer.send_interval(socket.assigns.execution_speed, self(), :auto_step)
       end
+
       {:noreply, assign(socket, is_running: true)}
     end
   end
 
   @impl true
   def handle_event("reset", _params, socket) do
-    {:noreply, assign(socket,
-      execution_path: [],
-      current_line: 0,
-      variables: %{},
-      call_stack: [],
-      is_running: false
-    )}
+    {:noreply,
+     assign(socket,
+       execution_path: [],
+       current_line: 0,
+       variables: %{},
+       call_stack: [],
+       is_running: false
+     )}
   end
 
   @impl true
@@ -59,11 +62,14 @@ defmodule SpacecastWeb.Examples.CodeFlowVisualizerLive do
   @impl true
   def handle_event("toggle_breakpoint", %{"line" => line}, socket) do
     line = String.to_integer(line)
-    breakpoints = if MapSet.member?(socket.assigns.breakpoints, line) do
-      MapSet.delete(socket.assigns.breakpoints, line)
-    else
-      MapSet.put(socket.assigns.breakpoints, line)
-    end
+
+    breakpoints =
+      if MapSet.member?(socket.assigns.breakpoints, line) do
+        MapSet.delete(socket.assigns.breakpoints, line)
+      else
+        MapSet.put(socket.assigns.breakpoints, line)
+      end
+
     {:noreply, assign(socket, breakpoints: breakpoints)}
   end
 
@@ -191,7 +197,7 @@ defmodule SpacecastWeb.Examples.CodeFlowVisualizerLive do
   end
 
   # Helper functions
-  defp sample_code() do
+  defp sample_code do
     [
       "def fibonacci(n) do",
       "  if n <= 1 do",
@@ -261,11 +267,12 @@ defmodule SpacecastWeb.Examples.CodeFlowVisualizerLive do
         value = String.trim(value)
 
         # Simple variable assignment simulation
-        new_value = case value do
-          "5" -> 5
-          "fibonacci(5)" -> 5
-          _ -> value
-        end
+        new_value =
+          case value do
+            "5" -> 5
+            "fibonacci(5)" -> 5
+            _ -> value
+          end
 
         {Map.put(variables, var_name, new_value), "Variable assignment: #{var_name} = #{new_value}", call_stack}
 

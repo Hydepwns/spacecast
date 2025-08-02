@@ -10,7 +10,7 @@ defmodule SpacecastWeb.UserSettingsLive do
   import SpacecastWeb.Components.UI.FormComponents,
     only: [input: 1, label_tag: 1, error: 1]
 
-  on_mount {SpacecastWeb.UserAuth, :require_authenticated_user}
+  on_mount({SpacecastWeb.UserAuth, :require_authenticated_user})
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do

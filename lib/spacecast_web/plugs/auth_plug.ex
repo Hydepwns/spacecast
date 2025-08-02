@@ -1,4 +1,8 @@
 defmodule SpacecastWeb.Plugs.AuthPlug do
+  @moduledoc """
+  Authentication plug for verifying user sessions and admin access.
+  """
+
   import Plug.Conn
   import Phoenix.Controller
 

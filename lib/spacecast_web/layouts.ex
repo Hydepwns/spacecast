@@ -13,5 +13,5 @@ defmodule SpacecastWeb.Layouts do
     router: SpacecastWeb.Router,
     statics: SpacecastWeb.static_paths()
 
-  embed_templates "layouts/*"
+  embed_templates("layouts/*")
 end

@@ -1,8 +1,8 @@
 defmodule SpacecastWeb.Api.ResourceController do
   use SpacecastWeb, :controller
 
-  alias Spacecast.Resources.ResourceSystem
   alias Spacecast.Accounts
+  alias Spacecast.Resources.ResourceSystem
 
   # Plug to ensure authentication
   plug :ensure_authenticated when action in [:create, :update, :delete]
@@ -28,8 +28,7 @@ defmodule SpacecastWeb.Api.ResourceController do
 
     {resources, total_count} =
       if map_size(filters) > 0 do
-        {ResourceSystem.list_resources_with_filters(filters, opts),
-         ResourceSystem.count_resources(filters)}
+        {ResourceSystem.list_resources_with_filters(filters, opts), ResourceSystem.count_resources(filters)}
       else
         {ResourceSystem.list_resources(opts), ResourceSystem.count_resources()}
       end

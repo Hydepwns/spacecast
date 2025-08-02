@@ -238,9 +238,7 @@ defmodule SpacecastWeb.Components.Visualization.DiagramEditor do
   def mount(socket) do
     templates_list =
       Map.keys(@templates)
-      |> Enum.map(
-        &%{key: &1, name: diagram_name_formatted(&1), description: diagram_description(&1)}
-      )
+      |> Enum.map(&%{key: &1, name: diagram_name_formatted(&1), description: diagram_description(&1)})
 
     {:ok,
      assign(socket,
@@ -411,9 +409,7 @@ defmodule SpacecastWeb.Components.Visualization.DiagramEditor do
   # Get the default templates list
   defp default_templates_list do
     Map.keys(@templates)
-    |> Enum.map(
-      &%{key: &1, name: diagram_name_formatted(&1), description: diagram_description(&1)}
-    )
+    |> Enum.map(&%{key: &1, name: diagram_name_formatted(&1), description: diagram_description(&1)})
   end
 
   # Format diagram template names for display

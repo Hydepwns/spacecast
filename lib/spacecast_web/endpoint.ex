@@ -8,9 +8,10 @@ defmodule SpacecastWeb.Endpoint do
     same_site: "Lax"
   ]
 
-  socket "/live", SpacecastWeb.Socket,
+  socket("/live", SpacecastWeb.Socket,
     websocket: [connect_info: [session: @session_options, cookies: :all]],
     longpoll: [connect_info: [session: @session_options, cookies: :all]]
+  )
 
   plug Plug.Static,
     at: "/",
@@ -19,7 +20,7 @@ defmodule SpacecastWeb.Endpoint do
     only: SpacecastWeb.static_paths()
 
   if code_reloading? do
-    socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
+    socket("/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket)
     plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
     plug Phoenix.Ecto.CheckRepoStatus, otp_app: :spacecast

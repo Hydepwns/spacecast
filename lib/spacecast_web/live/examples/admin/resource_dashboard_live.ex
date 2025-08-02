@@ -24,11 +24,7 @@ defmodule SpacecastWeb.Admin.ResourceDashboardLive do
     # Get the list of available resource types from the application
     resource_modules = get_resource_modules()
     # Default to the first resource type if available
-    default_resource_type =
-      case resource_modules do
-        [first | _] -> first
-        _ -> nil
-      end
+    default_resource_type = List.first(resource_modules)
 
     default_theme = Spacecast.ThemeSystem.ensure_default_theme()
     theme_class = "#{default_theme.mode}-theme"
@@ -124,8 +120,7 @@ defmodule SpacecastWeb.Admin.ResourceDashboardLive do
     if is_nil(resource_id) or resource_id == "" do
       {:noreply, push_patch(socket, to: ~p"/admin/resources?view=list")}
     else
-      {:noreply,
-       push_patch(socket, to: ~p"/admin/resources?resource_id=#{resource_id}&view=detail")}
+      {:noreply, push_patch(socket, to: ~p"/admin/resources?resource_id=#{resource_id}&view=detail")}
     end
   end
 
@@ -134,8 +129,7 @@ defmodule SpacecastWeb.Admin.ResourceDashboardLive do
     if is_nil(resource_id) or resource_id == "" do
       {:noreply, push_patch(socket, to: ~p"/admin/resources?view=list")}
     else
-      {:noreply,
-       push_patch(socket, to: ~p"/admin/resources?resource_id=#{resource_id}&view=events")}
+      {:noreply, push_patch(socket, to: ~p"/admin/resources?resource_id=#{resource_id}&view=events")}
     end
   end
 
@@ -149,8 +143,7 @@ defmodule SpacecastWeb.Admin.ResourceDashboardLive do
     if is_nil(resource_type) or resource_type == "" do
       {:noreply, push_patch(socket, to: ~p"/admin/resources?view=list")}
     else
-      {:noreply,
-       push_patch(socket, to: ~p"/admin/resources?resource_type=#{resource_type}&view=list")}
+      {:noreply, push_patch(socket, to: ~p"/admin/resources?resource_type=#{resource_type}&view=list")}
     end
   end
 
@@ -234,51 +227,8 @@ defmodule SpacecastWeb.Admin.ResourceDashboardLive do
     resource_module = socket.assigns.selected_resource_type
 
     case socket.assigns.edit_mode do
-      :create ->
-        resource_id = "#{resource_module.resource_type()}-#{Ecto.UUID.generate()}"
-        result = create_resource(resource_module, resource_id, resource_params)
-
-        case result do
-          {:ok, _event} ->
-            {:noreply,
-             socket
-             |> put_flash(:info, "Resource created successfully")
-             |> push_patch(
-               to: ~p"/admin/resources?resource_type=#{resource_module.resource_type()}&view=list"
-             )}
-
-          {:error, %Ecto.Changeset{} = changeset} ->
-            {:noreply,
-             assign(socket, changeset: changeset)
-             |> assign_new(:errors, fn -> changeset.errors || %{} end)}
-
-          {:error, reason} ->
-            {:noreply,
-             socket
-             |> put_flash(:error, "Failed to create resource: #{inspect(reason)}")}
-        end
-
-      :update ->
-        resource_id = socket.assigns.current_resource.id
-        result = update_resource(resource_module, resource_id, resource_params)
-
-        case result do
-          {:ok, _event} ->
-            {:noreply,
-             socket
-             |> put_flash(:info, "Resource updated successfully")
-             |> push_patch(to: ~p"/admin/resources?resource_id=#{resource_id}&view=detail")}
-
-          {:error, %Ecto.Changeset{} = changeset} ->
-            {:noreply,
-             assign(socket, changeset: changeset)
-             |> assign_new(:errors, fn -> changeset.errors || %{} end)}
-
-          {:error, reason} ->
-            {:noreply,
-             socket
-             |> put_flash(:error, "Failed to update resource: #{inspect(reason)}")}
-        end
+      :create -> handle_create_resource(socket, resource_module, resource_params)
+      :update -> handle_update_resource(socket, resource_module, resource_params)
     end
   end
 
@@ -286,8 +236,7 @@ defmodule SpacecastWeb.Admin.ResourceDashboardLive do
   def handle_event("cancel-edit", _params, socket) do
     resource_type = socket.assigns.selected_resource_type.resource_type()
 
-    {:noreply,
-     push_patch(socket, to: ~p"/admin/resources?resource_type=#{resource_type}&view=list")}
+    {:noreply, push_patch(socket, to: ~p"/admin/resources?resource_type=#{resource_type}&view=list")}
   end
 
   @impl true
@@ -532,6 +481,52 @@ defmodule SpacecastWeb.Admin.ResourceDashboardLive do
 
   # Private helper functions
 
+  defp handle_create_resource(socket, resource_module, resource_params) do
+    resource_id = "#{resource_module.resource_type()}-#{Ecto.UUID.generate()}"
+    result = create_resource(resource_module, resource_id, resource_params)
+
+    case result do
+      {:ok, _event} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Resource created successfully")
+         |> push_patch(to: ~p"/admin/resources?resource_type=#{resource_module.resource_type()}&view=list")}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply,
+         assign(socket, changeset: changeset)
+         |> assign_new(:errors, fn -> changeset.errors || %{} end)}
+
+      {:error, reason} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Failed to create resource: #{inspect(reason)}")}
+    end
+  end
+
+  defp handle_update_resource(socket, resource_module, resource_params) do
+    resource_id = socket.assigns.current_resource.id
+    result = update_resource(resource_module, resource_id, resource_params)
+
+    case result do
+      {:ok, _event} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Resource updated successfully")
+         |> push_patch(to: ~p"/admin/resources?resource_id=#{resource_id}&view=detail")}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply,
+         assign(socket, changeset: changeset)
+         |> assign_new(:errors, fn -> changeset.errors || %{} end)}
+
+      {:error, reason} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Failed to update resource: #{inspect(reason)}")}
+    end
+  end
+
   defp get_resource_modules do
     # This would typically scan the application modules
     # For this example, we'll hardcode a few resource modules
@@ -613,18 +608,11 @@ defmodule SpacecastWeb.Admin.ResourceDashboardLive do
   end
 
   defp update_resource(resource_module, resource_id, params) do
-    # This would call the appropriate update functions based on the resource type and changed fields
-    # For example, for OrderResource it might call update_shipping_address
-
-    # For simplicity, we'll just handle a few common update patterns
-    # In a real implementation, this would be more sophisticated
-
-    _resource_type = resource_module.resource_type()
-
-    # Try to find an appropriate update function based on the params
-    # This is a simplified approach - real implementation would be more comprehensive
     param_keys = Map.keys(params)
+    find_and_execute_update_function(resource_module, resource_id, params, param_keys)
+  end
 
+  defp find_and_execute_update_function(resource_module, resource_id, params, param_keys) do
     cond do
       "name" in param_keys && function_exported?(resource_module, :update_name, 2) ->
         resource_module.update_name(resource_id, params["name"])
@@ -633,19 +621,16 @@ defmodule SpacecastWeb.Admin.ResourceDashboardLive do
         resource_module.update_status(resource_id, params["status"])
 
       "price" in param_keys && function_exported?(resource_module, :update_price, 2) ->
-        # Convert string to Decimal if needed
-        price =
-          case params["price"] do
-            price when is_binary(price) -> Decimal.new(price)
-            price -> price
-          end
-
+        price = parse_price_param(params["price"])
         resource_module.update_price(resource_id, price)
 
       true ->
         {:error, "No appropriate update function found for the provided parameters"}
     end
   end
+
+  defp parse_price_param(price) when is_binary(price), do: Decimal.new(price)
+  defp parse_price_param(price), do: price
 
   defp extract_creation_args(resource_type, resource_id, params) do
     # Extract the appropriate arguments based on resource type

@@ -9,15 +9,16 @@ defmodule SpacecastWeb.Examples.DataVisualizerLive do
       :timer.send_interval(500, self(), :update_data)
     end
 
-    {:ok, assign(socket,
-      datasets: initial_datasets(),
-      chart_types: [:line, :bar, :scatter, :area],
-      selected_chart: :line,
-      time_range: 60,
-      data_points: 60,
-      is_paused: false,
-      chart_height: 20
-    )}
+    {:ok,
+     assign(socket,
+       datasets: initial_datasets(),
+       chart_types: [:line, :bar, :scatter, :area],
+       selected_chart: :line,
+       time_range: 60,
+       data_points: 60,
+       is_paused: false,
+       chart_height: 20
+     )}
   end
 
   @impl true
@@ -33,9 +34,10 @@ defmodule SpacecastWeb.Examples.DataVisualizerLive do
 
     new_dataset = generate_dataset(new_dataset_name, socket.assigns.data_points)
 
-    {:noreply, assign(socket,
-      datasets: Map.put(socket.assigns.datasets, new_dataset_name, new_dataset)
-    )}
+    {:noreply,
+     assign(socket,
+       datasets: Map.put(socket.assigns.datasets, new_dataset_name, new_dataset)
+     )}
   end
 
   @impl true
@@ -64,27 +66,29 @@ defmodule SpacecastWeb.Examples.DataVisualizerLive do
 
     json_data = Jason.encode!(chart_data, pretty: true)
 
-    {:noreply, socket
-      |> push_event("download_file", %{
-        content: json_data,
-        filename: "chart_data.json",
-        mime_type: "application/json"
-      })}
+    {:noreply,
+     socket
+     |> push_event("download_file", %{
+       content: json_data,
+       filename: "chart_data.json",
+       mime_type: "application/json"
+     })}
   end
 
   @impl true
   def handle_info(:update_data, socket) do
-    if not socket.assigns.is_paused do
-      datasets = Enum.map(socket.assigns.datasets, fn {name, data} ->
-        new_value = :rand.uniform(100)
-        updated_data = update_dataset(data, new_value, socket.assigns.data_points)
-        {name, updated_data}
-      end)
-      |> Map.new()
+    if socket.assigns.is_paused do
+      {:noreply, socket}
+    else
+      datasets =
+        Enum.map(socket.assigns.datasets, fn {name, data} ->
+          new_value = :rand.uniform(100)
+          updated_data = update_dataset(data, new_value, socket.assigns.data_points)
+          {name, updated_data}
+        end)
+        |> Map.new()
 
       {:noreply, assign(socket, datasets: datasets)}
-    else
-      {:noreply, socket}
     end
   end
 
@@ -154,7 +158,7 @@ defmodule SpacecastWeb.Examples.DataVisualizerLive do
                     </div>
 
                     <div class="chart-area">
-                      <%= for {name, data} <- @datasets do %>
+                      <%= for {_name, data} <- @datasets do %>
                         <div class="dataset-line">
                           <%= for {value, idx} <- Enum.with_index(data) do %>
                             <div class="data-point" style={"left: #{idx * (100 / @data_points)}%; bottom: #{value}%"}>
@@ -215,7 +219,7 @@ defmodule SpacecastWeb.Examples.DataVisualizerLive do
 
                   <div class="chart-content">
                     <div class="chart-area">
-                      <%= for {name, data} <- @datasets do %>
+                      <%= for {_name, data} <- @datasets do %>
                         <div class="dataset-scatter">
                           <%= for {value, idx} <- Enum.with_index(data) do %>
                             <div class="scatter-point" style={"left: #{idx * (100 / @data_points)}%; bottom: #{value}%"}>
@@ -243,7 +247,7 @@ defmodule SpacecastWeb.Examples.DataVisualizerLive do
 
                   <div class="chart-content">
                     <div class="chart-area">
-                      <%= for {name, data} <- @datasets do %>
+                      <%= for {_name, data} <- @datasets do %>
                         <div class="dataset-area">
                           <%= for {value, idx} <- Enum.with_index(data) do %>
                             <div class="area-segment" style={"left: #{idx * (100 / @data_points)}%; height: #{value}%"}>
@@ -295,7 +299,7 @@ defmodule SpacecastWeb.Examples.DataVisualizerLive do
     """
   end
 
-  defp initial_datasets() do
+  defp initial_datasets do
     %{
       "CPU Usage" => generate_dataset("CPU Usage", 60),
       "Memory Usage" => generate_dataset("Memory Usage", 60),
@@ -320,12 +324,14 @@ defmodule SpacecastWeb.Examples.DataVisualizerLive do
       "Memory Usage" => "#4ecdc4",
       "Network I/O" => "#45b7d1"
     }
+
     Map.get(colors, name, "#95a5a6")
   end
 
   defp get_trend_indicator(data) do
     if length(data) >= 2 do
       [current | [previous | _]] = data
+
       cond do
         current > previous -> "↗️"
         current < previous -> "↘️"

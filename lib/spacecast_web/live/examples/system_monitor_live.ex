@@ -9,18 +9,19 @@ defmodule SpacecastWeb.Examples.SystemMonitorLive do
       :timer.send_interval(1000, self(), :update_metrics)
     end
 
-    {:ok, assign(socket,
-      cpu_usage: 0,
-      memory_usage: 0,
-      disk_usage: 0,
-      network_io: %{in: 0, out: 0},
-      processes: [],
-      cpu_history: [],
-      memory_history: [],
-      network_history: [],
-      uptime: 0,
-      load_average: %{one: 0, five: 0, fifteen: 0}
-    )}
+    {:ok,
+     assign(socket,
+       cpu_usage: 0,
+       memory_usage: 0,
+       disk_usage: 0,
+       network_io: %{in: 0, out: 0},
+       processes: [],
+       cpu_history: [],
+       memory_history: [],
+       network_history: [],
+       uptime: 0,
+       load_average: %{one: 0, five: 0, fifteen: 0}
+     )}
   end
 
   @impl true
@@ -43,18 +44,19 @@ defmodule SpacecastWeb.Examples.SystemMonitorLive do
       fifteen: :rand.uniform() * 3
     }
 
-    {:noreply, assign(socket,
-      cpu_usage: cpu_usage,
-      memory_usage: memory_usage,
-      disk_usage: disk_usage,
-      network_io: %{in: network_in, out: network_out},
-      processes: processes,
-      cpu_history: cpu_history,
-      memory_history: memory_history,
-      network_history: network_history,
-      uptime: socket.assigns.uptime + 1,
-      load_average: load_average
-    )}
+    {:noreply,
+     assign(socket,
+       cpu_usage: cpu_usage,
+       memory_usage: memory_usage,
+       disk_usage: disk_usage,
+       network_io: %{in: network_in, out: network_out},
+       processes: processes,
+       cpu_history: cpu_history,
+       memory_history: memory_history,
+       network_history: network_history,
+       uptime: socket.assigns.uptime + 1,
+       load_average: load_average
+     )}
   end
 
   @impl true
@@ -75,7 +77,7 @@ defmodule SpacecastWeb.Examples.SystemMonitorLive do
             <h3>CPU Usage: <%= @cpu_usage %>%</h3>
             <div class="chart-container">
               <div class="chart-bars">
-                <%= for {usage, idx} <- Enum.with_index(@cpu_history) do %>
+                <%= for {usage, _idx} <- Enum.with_index(@cpu_history) do %>
                   <div class="chart-bar" style={"height: #{usage}%"}>
                     <span class="bar-label"><%= usage %></span>
                   </div>
@@ -181,11 +183,23 @@ defmodule SpacecastWeb.Examples.SystemMonitorLive do
     if length(history) > 60, do: Enum.take(history, 60), else: history
   end
 
-  defp generate_process_list() do
+  defp generate_process_list do
     process_names = [
-      "systemd", "sshd", "nginx", "postgres", "redis-server",
-      "beam.smp", "node", "python3", "java", "docker",
-      "kubelet", "etcd", "prometheus", "grafana", "elasticsearch"
+      "systemd",
+      "sshd",
+      "nginx",
+      "postgres",
+      "redis-server",
+      "beam.smp",
+      "node",
+      "python3",
+      "java",
+      "docker",
+      "kubelet",
+      "etcd",
+      "prometheus",
+      "grafana",
+      "elasticsearch"
     ]
 
     for i <- 1..20 do
@@ -201,9 +215,9 @@ defmodule SpacecastWeb.Examples.SystemMonitorLive do
   end
 
   defp format_uptime(seconds) do
-    days = div(seconds, 86400)
-    hours = div(rem(seconds, 86400), 3600)
-    minutes = div(rem(seconds, 3600), 60)
+    days = div(seconds, 86_400)
+    hours = div(rem(seconds, 86_400), 3_600)
+    minutes = div(rem(seconds, 3_600), 60)
     secs = rem(seconds, 60)
 
     cond do

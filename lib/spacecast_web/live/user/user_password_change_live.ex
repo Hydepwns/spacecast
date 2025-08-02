@@ -6,8 +6,7 @@ defmodule SpacecastWeb.UserPasswordChangeLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok,
-     assign(socket, :changeset, User.password_change_changeset(socket.assigns.current_user, %{}))}
+    {:ok, assign(socket, :changeset, User.password_change_changeset(socket.assigns.current_user, %{}))}
   end
 
   @impl true

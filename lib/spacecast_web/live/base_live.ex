@@ -9,7 +9,7 @@ defmodule SpacecastWeb.BaseLive do
   def render(assigns) do
     ~H"""
     <div class={@theme_class}>
-      {@inner_content}
+      <%= render_slot(@inner_block) %>
     </div>
     """
   end
@@ -75,7 +75,7 @@ defmodule SpacecastWeb.BaseLive do
       {:ok, theme} ->
         {:cont, assign(socket, :current_theme, theme)}
 
-      _ ->
+      {:error, _} ->
         {:halt, redirect(socket, to: ~p"/themes/new")}
     end
   end
@@ -101,8 +101,7 @@ defmodule SpacecastWeb.BaseLive do
   end
 
   def on_mount(:require_theme_and_resource, _params, _session, socket) do
-    case {Spacecast.ThemeSystem.get_current_theme(),
-          Spacecast.ResourceSystem.get_current_resource()} do
+    case {Spacecast.ThemeSystem.get_current_theme(), Spacecast.ResourceSystem.get_current_resource()} do
       {{:ok, theme}, {:ok, resource}} ->
         {:cont, assign(socket, current_theme: theme, current_resource: resource)}
 
@@ -112,8 +111,7 @@ defmodule SpacecastWeb.BaseLive do
   end
 
   def on_mount(:require_theme_and_bridge, _params, _session, socket) do
-    case {Spacecast.ThemeSystem.get_current_theme(),
-          Spacecast.Bridge.get_current_bridge()} do
+    case {Spacecast.ThemeSystem.get_current_theme(), Spacecast.Bridge.get_current_bridge()} do
       {{:ok, theme}, {:ok, bridge}} ->
         {:cont, assign(socket, current_theme: theme, current_bridge: bridge)}
 
@@ -123,8 +121,7 @@ defmodule SpacecastWeb.BaseLive do
   end
 
   def on_mount(:require_resource_and_bridge, _params, _session, socket) do
-    case {Spacecast.ResourceSystem.get_current_resource(),
-          Spacecast.Bridge.get_current_bridge()} do
+    case {Spacecast.ResourceSystem.get_current_resource(), Spacecast.Bridge.get_current_bridge()} do
       {{:ok, resource}, {:ok, bridge}} ->
         {:cont, assign(socket, current_resource: resource, current_bridge: bridge)}
 
@@ -134,12 +131,10 @@ defmodule SpacecastWeb.BaseLive do
   end
 
   def on_mount(:require_all, _params, _session, socket) do
-    case {Spacecast.ThemeSystem.get_current_theme(),
-          Spacecast.ResourceSystem.get_current_resource(),
+    case {Spacecast.ThemeSystem.get_current_theme(), Spacecast.ResourceSystem.get_current_resource(),
           Spacecast.Bridge.get_current_bridge()} do
       {{:ok, theme}, {:ok, resource}, {:ok, bridge}} ->
-        {:cont,
-         assign(socket, current_theme: theme, current_resource: resource, current_bridge: bridge)}
+        {:cont, assign(socket, current_theme: theme, current_resource: resource, current_bridge: bridge)}
 
       _ ->
         {:halt, redirect(socket, to: ~p"/themes/new")}

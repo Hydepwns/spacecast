@@ -8,7 +8,7 @@ defmodule SpacecastWeb.Components.Common.DebugHelpers do
   """
 
   # Helper to determine if a value is simple enough to display directly
-  def is_simple_value(value) do
+  def simple_value?(value) do
     case value do
       v when is_binary(v) -> String.length(v) < 50
       v when is_number(v) -> true

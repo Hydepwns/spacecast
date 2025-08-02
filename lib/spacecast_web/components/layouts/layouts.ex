@@ -5,5 +5,5 @@ defmodule SpacecastWeb.Components.Layout.Layouts do
     root: "lib/spacecast_web",
     namespace: SpacecastWeb.Components.Layout
 
-  embed_templates "components/layout/layouts/*"
+  embed_templates("components/layout/layouts/*")
 end

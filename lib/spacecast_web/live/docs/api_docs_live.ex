@@ -124,8 +124,7 @@ defmodule SpacecastWeb.ApiDocsLive do
       "grid_components" => [
         %{
           name: "MonoGrid",
-          description:
-            "A grid system component that maintains proper character alignment for monospace text.",
+          description: "A grid system component that maintains proper character alignment for monospace text.",
           attributes: [
             %{
               name: "id",
@@ -145,8 +144,7 @@ defmodule SpacecastWeb.ApiDocsLive do
       "ascii_art_components" => [
         %{
           name: "AsciiArtGenerator",
-          description:
-            "A component for generating ASCII art with various templates and customization options.",
+          description: "A component for generating ASCII art with various templates and customization options.",
           attributes: [
             %{
               name: "id",
@@ -166,8 +164,7 @@ defmodule SpacecastWeb.ApiDocsLive do
       "theme_components" => [
         %{
           name: "ThemeToggle",
-          description:
-            "A theme toggle component for switching between light, dark, dim, and high-contrast themes.",
+          description: "A theme toggle component for switching between light, dark, dim, and high-contrast themes.",
           attributes: []
         }
       ],

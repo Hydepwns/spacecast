@@ -30,7 +30,9 @@ defmodule SpacecastWeb.ResourceEditLive do
   def handle_event("validate", %{"resource" => resource_params}, socket) do
     send_update(SpacecastWeb.ResourceFormComponent,
       id: socket.assigns.resource.id,
-      resource_params: resource_params)
+      resource_params: resource_params
+    )
+
     {:noreply, socket}
   end
 
@@ -56,5 +58,4 @@ defmodule SpacecastWeb.ResourceEditLive do
   def handle_info(_message, socket) do
     {:noreply, socket}
   end
-
 end

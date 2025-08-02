@@ -4,8 +4,9 @@ defmodule SpacecastWeb.ThemeLive do
   alias Spacecast.ThemeSystem
   alias Spacecast.ThemeSystem.Models.Theme
 
-  def do_mount(_params, _session, socket) do
-    assign(socket, themes: ThemeSystem.list_themes())
+  @impl true
+  def mount(_params, _session, socket) do
+    {:ok, assign(socket, themes: ThemeSystem.list_themes())}
   end
 
   def handle_params(params, _url, socket) do

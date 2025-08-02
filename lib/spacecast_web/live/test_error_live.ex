@@ -76,9 +76,7 @@ defmodule SpacecastWeb.TestErrorLive do
       when event not in ["update_count", "update_status", "update_settings"] do
     require Logger
 
-    Logger.warning(
-      "Unhandled event in TestErrorLive: #{inspect(event)} with params: #{inspect(params)}"
-    )
+    Logger.warning("Unhandled event in TestErrorLive: #{inspect(event)} with params: #{inspect(params)}")
 
     {:noreply, put_flash(socket, :warning, "Unhandled event: #{event}")}
   end

@@ -5,16 +5,17 @@ defmodule SpacecastWeb.Examples.AsciiArtEditorLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket,
-      canvas: create_canvas(80, 24),
-      selected_char: "@",
-      color: :white,
-      mode: :draw,
-      brush_size: 1,
-      history: [],
-      history_index: -1,
-      filename: "untitled.txt"
-    )}
+    {:ok,
+     assign(socket,
+       canvas: create_canvas(80, 24),
+       selected_char: "@",
+       color: :white,
+       mode: :draw,
+       brush_size: 1,
+       history: [],
+       history_index: -1,
+       filename: "untitled.txt"
+     )}
   end
 
   @impl true
@@ -27,11 +28,12 @@ defmodule SpacecastWeb.Examples.AsciiArtEditorLive do
     history = [socket.assigns.canvas | socket.assigns.history]
     history = if length(history) > 50, do: Enum.take(history, 50), else: history
 
-    {:noreply, assign(socket,
-      canvas: new_canvas,
-      history: history,
-      history_index: -1
-    )}
+    {:noreply,
+     assign(socket,
+       canvas: new_canvas,
+       history: history,
+       history_index: -1
+     )}
   end
 
   @impl true
@@ -45,23 +47,27 @@ defmodule SpacecastWeb.Examples.AsciiArtEditorLive do
     new_canvas = create_canvas(80, 24)
     history = [socket.assigns.canvas | socket.assigns.history]
 
-    {:noreply, assign(socket,
-      canvas: new_canvas,
-      history: history,
-      history_index: -1
-    )}
+    {:noreply,
+     assign(socket,
+       canvas: new_canvas,
+       history: history,
+       history_index: -1
+     )}
   end
 
   @impl true
   def handle_event("undo", _params, socket) do
     case socket.assigns.history do
-      [] -> {:noreply, socket}
+      [] ->
+        {:noreply, socket}
+
       [previous_canvas | rest_history] ->
-        {:noreply, assign(socket,
-          canvas: previous_canvas,
-          history: rest_history,
-          history_index: socket.assigns.history_index + 1
-        )}
+        {:noreply,
+         assign(socket,
+           canvas: previous_canvas,
+           history: rest_history,
+           history_index: socket.assigns.history_index + 1
+         )}
     end
   end
 
@@ -70,12 +76,13 @@ defmodule SpacecastWeb.Examples.AsciiArtEditorLive do
     content = canvas_to_string(socket.assigns.canvas)
     filename = socket.assigns.filename
 
-    {:noreply, socket
-      |> push_event("download_file", %{
-        content: content,
-        filename: filename,
-        mime_type: "text/plain"
-      })}
+    {:noreply,
+     socket
+     |> push_event("download_file", %{
+       content: content,
+       filename: filename,
+       mime_type: "text/plain"
+     })}
   end
 
   @impl true
@@ -83,11 +90,12 @@ defmodule SpacecastWeb.Examples.AsciiArtEditorLive do
     canvas = string_to_canvas(content, 80, 24)
     history = [socket.assigns.canvas | socket.assigns.history]
 
-    {:noreply, assign(socket,
-      canvas: canvas,
-      history: history,
-      history_index: -1
-    )}
+    {:noreply,
+     assign(socket,
+       canvas: canvas,
+       history: history,
+       history_index: -1
+     )}
   end
 
   @impl true
@@ -205,22 +213,25 @@ defmodule SpacecastWeb.Examples.AsciiArtEditorLive do
     canvas
     |> Enum.with_index()
     |> Enum.map(fn {canvas_row, row_idx} ->
-      canvas_row
-      |> Enum.with_index()
-      |> Enum.map(fn {cell_char, col_idx} ->
-        if abs(row_idx - row) < brush_size and abs(col_idx - col) < brush_size do
-          char
-        else
-          cell_char
-        end
-      end)
+      apply_brush_to_row(canvas_row, row_idx, row, col, char, brush_size)
+    end)
+  end
+
+  defp apply_brush_to_row(canvas_row, row_idx, row, col, char, brush_size) do
+    canvas_row
+    |> Enum.with_index()
+    |> Enum.map(fn {cell_char, col_idx} ->
+      if abs(row_idx - row) < brush_size and abs(col_idx - col) < brush_size do
+        char
+      else
+        cell_char
+      end
     end)
   end
 
   defp canvas_to_string(canvas) do
     canvas
-    |> Enum.map(&Enum.join(&1, ""))
-    |> Enum.join("\n")
+    |> Enum.map_join("\n", &Enum.join(&1, ""))
   end
 
   defp string_to_canvas(content, width, height) do

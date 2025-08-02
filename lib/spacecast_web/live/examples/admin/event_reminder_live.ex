@@ -23,8 +23,8 @@ defmodule SpacecastWeb.Admin.EventReminderLive do
     socket
     |> assign(:page_title, "Event Reminders")
     |> assign(:reminders, Events.list_event_reminders())
-    |> assign(:reminder, %{})
-    |> assign(:changeset, Events.change_event_reminder(%{}))
+    |> assign(:reminder, %Spacecast.Events.EventReminder{})
+    |> assign(:changeset, Events.change_event_reminder(%Spacecast.Events.EventReminder{}))
   end
 
   @impl Phoenix.LiveView
@@ -44,7 +44,7 @@ defmodule SpacecastWeb.Admin.EventReminderLive do
          socket
          |> put_flash(:info, "Reminder created successfully")
          |> assign(:reminder, reminder)
-         |> assign(:changeset, Events.change_event_reminder(%{}))
+         |> assign(:changeset, Events.change_event_reminder(%Spacecast.Events.EventReminder{}))
          |> assign(:reminders, Events.list_event_reminders())}
 
       {:error, %Ecto.Changeset{} = changeset} ->

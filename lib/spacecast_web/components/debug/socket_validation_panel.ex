@@ -525,8 +525,7 @@ defmodule SpacecastWeb.Components.Debug.SocketValidationPanel do
         socket.assigns.sort_direction
       )
 
-    {:noreply,
-     assign(socket, :error_filter, filter_text) |> assign(:filtered_errors, filtered_errors)}
+    {:noreply, assign(socket, :error_filter, filter_text) |> assign(:filtered_errors, filtered_errors)}
   end
 
   def handle_event("change-sort", %{"value" => sort_by}, socket) do
@@ -552,8 +551,7 @@ defmodule SpacecastWeb.Components.Debug.SocketValidationPanel do
         new_direction
       )
 
-    {:noreply,
-     assign(socket, :sort_direction, new_direction) |> assign(:filtered_errors, filtered_errors)}
+    {:noreply, assign(socket, :sort_direction, new_direction) |> assign(:filtered_errors, filtered_errors)}
   end
 
   def handle_event("filter-assigns", %{"value" => filter_text}, socket) do
@@ -805,8 +803,7 @@ defmodule SpacecastWeb.Components.Debug.SocketValidationPanel do
       end)
 
     if length(string_errors) >= 2 do
-      {"String Type Errors", length(string_errors),
-       "Convert values to strings using to_string/1 or String.to_string/1"}
+      {"String Type Errors", length(string_errors), "Convert values to strings using to_string/1 or String.to_string/1"}
     else
       nil
     end
@@ -820,8 +817,7 @@ defmodule SpacecastWeb.Components.Debug.SocketValidationPanel do
       end)
 
     if length(integer_errors) >= 2 do
-      {"Integer Type Errors", length(integer_errors),
-       "Convert string values to integers using String.to_integer/1"}
+      {"Integer Type Errors", length(integer_errors), "Convert string values to integers using String.to_integer/1"}
     else
       nil
     end

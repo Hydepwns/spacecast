@@ -1,4 +1,8 @@
 defmodule SpacecastWeb.User.UserFormComponent do
+  @moduledoc """
+  LiveComponent for user form interactions including creation and editing.
+  """
+
   use SpacecastWeb, :live_component
 
   import SpacecastWeb.Components.UI.FormComponents

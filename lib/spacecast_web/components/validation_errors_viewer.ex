@@ -57,9 +57,7 @@ defmodule SpacecastWeb.Components.ValidationErrorsViewer do
       )
       |> assign(
         :error_summary,
-        ValidationErrorReporter.summarize_errors(
-          get_error_report(assigns.resource, assigns.errors)
-        )
+        ValidationErrorReporter.summarize_errors(get_error_report(assigns.resource, assigns.errors))
       )
       |> assign(:style, get_style(assigns.view_mode))
       |> assign(:has_errors, has_errors?(assigns.resource, assigns.errors))

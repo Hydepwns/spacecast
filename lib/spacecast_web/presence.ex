@@ -1,4 +1,8 @@
 defmodule SpacecastWeb.Presence do
+  @moduledoc """
+  Phoenix Presence module for tracking user presence and broadcasting updates.
+  """
+
   use Phoenix.Presence,
     otp_app: :spacecast,
     pubsub_server: Spacecast.PubSub

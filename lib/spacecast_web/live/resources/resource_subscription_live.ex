@@ -12,8 +12,7 @@ defmodule SpacecastWeb.ResourceSubscriptionLive do
 
   @impl true
   def handle_event("save_subscriptions", %{"events" => events}, socket) do
-    {:noreply,
-     assign(socket, :selected_events, events) |> assign(:status, "Subscriptions updated!")}
+    {:noreply, assign(socket, :selected_events, events) |> assign(:status, "Subscriptions updated!")}
   end
 
   @impl true

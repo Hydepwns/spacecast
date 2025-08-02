@@ -42,8 +42,7 @@ defmodule SpacecastWeb.Components.UI.FormComponents do
     values: ~w(checkbox color date datetime-local email file month number password
                range search select tel text textarea time url week)
 
-  attr :field, Phoenix.HTML.FormField,
-    doc: "a form field struct retrieved from the form, for example: @form[:email]"
+  attr :field, Phoenix.HTML.FormField, doc: "a form field struct retrieved from the form, for example: @form[:email]"
 
   # Slots
   slot :actions, doc: "the slot for form actions, such as a submit button"

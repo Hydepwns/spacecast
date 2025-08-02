@@ -1,13 +1,10 @@
 defmodule SpacecastWeb.HomeLive do
   use SpacecastWeb, :live_view
 
-  alias Spacecast.ThemeSystem
-  alias Spacecast.Content
-
-  @impl true
   def id(_params), do: "home"
 
   @impl true
+  @spec mount(any(), any(), map()) :: {:ok, map()}
   def mount(_params, _session, socket) do
     # Temporarily simplify to test connection
     socket =

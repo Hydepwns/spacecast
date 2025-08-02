@@ -186,8 +186,6 @@ defmodule SpacecastWeb.Components.ChangeHistoryViewer do
     Map.get(resource, :__change_history__, [])
   end
 
-
-
   # This is the new, isolated audit row component function
   attr :entry, :map, required: true
   # Passed down for styling active version
@@ -254,9 +252,5 @@ defmodule SpacecastWeb.Components.ChangeHistoryViewer do
   defp format_timestamp(timestamp) do
     # Assuming it's already a DateTime
     Calendar.strftime(timestamp, "%Y-%m-%d %H:%M:%S %Z")
-  end
-
-  defp format_timestamp_short(timestamp) do
-    Calendar.strftime(timestamp, "%b %d, %H:%M")
   end
 end

@@ -49,11 +49,6 @@ defmodule SpacecastWeb.ImageHelper do
           # If WebP doesn't exist, just use the original image
           Tag.tag(:img, Keyword.merge([src: original_static_path], attrs))
         end
-
-      _ ->
-        # Fallback for invalid paths
-        original_static_path = static_image_path(image_path)
-        Tag.tag(:img, Keyword.merge([src: original_static_path], attrs))
     end
   end
 
@@ -75,7 +70,9 @@ defmodule SpacecastWeb.ImageHelper do
 
     # Handle case where filename_with_ext might be nil
     case filename_with_ext do
-      nil -> {"", "", ""}
+      nil ->
+        {"", "", ""}
+
       filename ->
         # Extract filename and extension
         case String.split(filename, ".") do

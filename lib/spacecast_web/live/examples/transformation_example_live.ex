@@ -19,8 +19,6 @@ defmodule SpacecastWeb.Examples.TransformationExampleLive do
   alias Spacecast.Transformations.TransformationContext
   alias Spacecast.Transformations.StandardTransformers
 
-  @adapter_info nil
-
   @example_resource %{
     username: "JOHN.DOE",
     email: "JOHN.DOE@EXAMPLE.COM",
@@ -139,13 +137,13 @@ defmodule SpacecastWeb.Examples.TransformationExampleLive do
 
         {:noreply, socket}
 
-      {:error, resource, context} ->
+      {:error, message, resource, context} ->
         socket =
           socket
           |> assign(:resource, resource)
           |> assign(:transformation_result, :error)
           |> assign(:transformation_context, context)
-          |> assign(:execution_error, nil)
+          |> assign(:execution_error, message)
 
         {:noreply, socket}
 
@@ -165,8 +163,8 @@ defmodule SpacecastWeb.Examples.TransformationExampleLive do
       socket
       |> assign(:resource, @example_resource)
       |> assign(:original_resource, @example_resource)
-      |> assign(:transformation_result, nil)
-      |> assign(:transformation_context, nil)
+      |> assign(:transformation_result, :success)
+      |> assign(:transformation_context, %TransformationContext{})
       |> assign(:execution_error, nil)
 
     {:noreply, socket}

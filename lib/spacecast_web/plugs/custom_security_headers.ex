@@ -1,4 +1,8 @@
 defmodule SpacecastWeb.Plugs.CustomSecurityHeaders do
+  @moduledoc """
+  Plug for adding security headers to HTTP responses.
+  """
+
   import Plug.Conn
 
   def init(opts), do: opts

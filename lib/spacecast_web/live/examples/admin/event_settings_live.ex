@@ -21,7 +21,7 @@ defmodule SpacecastWeb.Admin.EventSettingsLive do
   defp apply_action(socket, :index) do
     socket
     |> assign(:settings, Events.get_event_settings())
-    |> assign(:changeset, Events.change_event_settings(%{}))
+    |> assign(:changeset, Events.change_event_settings(%Spacecast.Events.EventSettings{}))
   end
 
   @impl Phoenix.LiveView

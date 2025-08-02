@@ -3,15 +3,15 @@ defmodule SpacecastWeb.TestTypeLive do
 
   def do_mount(_params, session, socket) do
     assign(socket,
-       page_title: "Test",
-       theme_class: "system-theme",
-       string_value: session["string_value"] || "default",
-       integer_value: session["integer_value"] || 42,
-       theme: session["theme"] || "dark",
-       tags: session["tags"] || [],
-       id_or_name: session["id_or_name"] || "default",
-       user: session["user"] || %{}
-     )
+      page_title: "Test",
+      theme_class: "system-theme",
+      string_value: session["string_value"] || "default",
+      integer_value: session["integer_value"] || 42,
+      theme: session["theme"] || "dark",
+      tags: session["tags"] || [],
+      id_or_name: session["id_or_name"] || "default",
+      user: session["user"] || %{}
+    )
   end
 
   def render(assigns) do

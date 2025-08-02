@@ -29,7 +29,8 @@ defmodule SpacecastWeb.Examples.EventSystemExampleLive do
       :event_data,
       :event_result,
       :selected_projection,
-      :projection_state
+      :projection_state,
+      :inner_block
     ]
 
   require Logger
@@ -46,11 +47,22 @@ defmodule SpacecastWeb.Examples.EventSystemExampleLive do
     socket
     |> assign(:page_title, "Event System Example")
     |> assign(:theme_class, theme_class)
+    |> assign(:show_toc, false)
+    |> assign(:toc_items, [])
+    |> assign(:images, [])
     |> assign(:events, events)
     |> assign(:projections, projections)
+    |> assign(:handlers, [])
     |> assign(:active_tab, "events")
+    |> assign(:user_count, 10)
+    |> assign(:event_type, "user.created")
+    |> assign(:resource_id, "user-123")
+    |> assign(:resource_type, "user")
+    |> assign(:event_data, "{}")
+    |> assign(:event_result, nil)
     |> assign(:selected_projection, nil)
     |> assign(:projection_state, nil)
+    |> assign(:inner_block, nil)
   end
 
   def do_handle_event("select_tab", %{"tab" => tab}, socket) do
@@ -147,9 +159,7 @@ defmodule SpacecastWeb.Examples.EventSystemExampleLive do
   def do_handle_event(event, params, socket) do
     require Logger
 
-    Logger.warning(
-      "Unhandled event in EventSystemExampleLive: #{inspect(event)} with params: #{inspect(params)}"
-    )
+    Logger.warning("Unhandled event in EventSystemExampleLive: #{inspect(event)} with params: #{inspect(params)}")
 
     assign(socket, :event_result, "Unhandled event: #{event}")
   end

@@ -405,7 +405,7 @@ defmodule SpacecastWeb.Components.Visualization.AsciiArtGenerator do
     generate_table("single", width, height, text)
   end
 
-  # Banner generator 
+  # Banner generator
   defp generate_banner(style, width, text) do
     trimmed_text = String.slice(text, 0, width - 4)
     padded_text = String.pad_trailing(trimmed_text, width - 4)

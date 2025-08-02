@@ -23,8 +23,8 @@ defmodule SpacecastWeb.Admin.EventNotificationLive do
     socket
     |> assign(:page_title, "Event Notifications")
     |> assign(:notifications, Events.list_event_notifications())
-    |> assign(:notification_template, %{})
-    |> assign(:changeset, Events.change_event_notification_template(%{}))
+    |> assign(:notification_template, %Spacecast.Events.EventNotification{})
+    |> assign(:changeset, Events.change_event_notification_template(%Spacecast.Events.EventNotification{}))
   end
 
   @impl Phoenix.LiveView
@@ -44,7 +44,7 @@ defmodule SpacecastWeb.Admin.EventNotificationLive do
          socket
          |> put_flash(:info, "Notification template created successfully")
          |> assign(:notification_template, template)
-         |> assign(:changeset, Events.change_event_notification_template(%{}))
+         |> assign(:changeset, Events.change_event_notification_template(%Spacecast.Events.EventNotification{}))
          |> assign(:notifications, Events.list_event_notifications())}
 
       {:error, %Ecto.Changeset{} = changeset} ->

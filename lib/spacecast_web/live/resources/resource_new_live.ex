@@ -2,16 +2,14 @@ defmodule SpacecastWeb.ResourceNewLive do
   use SpacecastWeb, :live_view
 
   import Phoenix.Controller, only: [get_csrf_token: 0]
-  alias Spacecast.Resources.ResourceSystem
   alias Spacecast.Resources.Resource
+  alias Spacecast.Resources.ResourceSystem
 
   @impl true
   def mount(_params, _session, socket) do
     IO.puts("[DEBUG] ResourceNewLive.mount - self(): #{inspect(self())}")
 
-    IO.puts(
-      "[DEBUG] ResourceNewLive.mount - socket assigns keys: #{inspect(Map.keys(socket.assigns))}"
-    )
+    IO.puts("[DEBUG] ResourceNewLive.mount - socket assigns keys: #{inspect(Map.keys(socket.assigns))}")
 
     resource = %Resource{
       name: "",
@@ -21,6 +19,7 @@ defmodule SpacecastWeb.ResourceNewLive do
       status: "draft",
       parent_id: nil
     }
+
     changeset = Resource.changeset(resource, %{})
 
     {:ok,
@@ -68,18 +67,14 @@ defmodule SpacecastWeb.ResourceNewLive do
 
   @impl true
   def handle_event(event, params, socket) do
-    IO.puts(
-      "[DEBUG] ResourceNewLive: Received unexpected event '#{event}' with params: #{inspect(params)}"
-    )
+    IO.puts("[DEBUG] ResourceNewLive: Received unexpected event '#{event}' with params: #{inspect(params)}")
 
     {:noreply, socket}
   end
 
   @impl true
   def handle_info({:resource_created, _resource}, socket) do
-    IO.puts(
-      "[DEBUG] ResourceNewLive.handle_info({:resource_created, _}) called. Redirecting to /resources."
-    )
+    IO.puts("[DEBUG] ResourceNewLive.handle_info({:resource_created, _}) called. Redirecting to /resources.")
 
     {:noreply,
      socket
@@ -89,9 +84,7 @@ defmodule SpacecastWeb.ResourceNewLive do
 
   @impl true
   def handle_info({:resource_updated, resource}, socket) do
-    IO.puts(
-      "[DEBUG] ResourceNewLive.handle_info(:resource_updated) called with resource: #{inspect(resource)}"
-    )
+    IO.puts("[DEBUG] ResourceNewLive.handle_info(:resource_updated) called with resource: #{inspect(resource)}")
 
     {:noreply,
      socket
@@ -101,9 +94,7 @@ defmodule SpacecastWeb.ResourceNewLive do
 
   @impl true
   def handle_info(message, socket) do
-    IO.puts(
-      "[DEBUG] ResourceNewLive: Received unexpected message: #{inspect(message)} (self: #{inspect(self())})"
-    )
+    IO.puts("[DEBUG] ResourceNewLive: Received unexpected message: #{inspect(message)} (self: #{inspect(self())})")
 
     {:noreply, socket}
   end

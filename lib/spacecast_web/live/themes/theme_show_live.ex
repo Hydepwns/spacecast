@@ -42,10 +42,11 @@ defmodule SpacecastWeb.Themes.ThemeShowLive do
         theme = ThemeSystem.get_theme!(id)
 
         # Check if this theme is currently applied
-        applied_theme = case ThemeSystem.get_current_theme() do
-          {:ok, current_theme} when current_theme.id == theme.id -> theme
-          _ -> nil
-        end
+        applied_theme =
+          case ThemeSystem.get_current_theme() do
+            {:ok, current_theme} when current_theme.id == theme.id -> theme
+            _ -> nil
+          end
 
         {:noreply,
          assign(socket, :theme, theme)
@@ -68,10 +69,11 @@ defmodule SpacecastWeb.Themes.ThemeShowLive do
         theme = ThemeSystem.get_theme!(id)
 
         # Check if this theme is currently applied
-        applied_theme = case ThemeSystem.get_current_theme() do
-          {:ok, current_theme} when current_theme.id == theme.id -> theme
-          _ -> nil
-        end
+        applied_theme =
+          case ThemeSystem.get_current_theme() do
+            {:ok, current_theme} when current_theme.id == theme.id -> theme
+            _ -> nil
+          end
 
         {:noreply,
          assign(socket, :theme, theme)

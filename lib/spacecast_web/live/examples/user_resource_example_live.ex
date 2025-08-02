@@ -53,12 +53,12 @@ defmodule SpacecastWeb.Examples.UserResourceExampleLive do
 
   defp apply_action(socket, :show, %{"id" => id}) do
     case Resources.get_resource(id) do
-      nil ->
+      {:error, :not_found} ->
         socket
         |> put_flash(:error, "Resource not found")
         |> redirect(to: ~p"/resources")
 
-      resource ->
+      {:ok, resource} ->
         socket
         |> assign(:page_title, "User Resource Details")
         |> assign(:resource, resource)
@@ -67,12 +67,12 @@ defmodule SpacecastWeb.Examples.UserResourceExampleLive do
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     case Resources.get_resource(id) do
-      nil ->
+      {:error, :not_found} ->
         socket
         |> put_flash(:error, "Resource not found")
         |> redirect(to: ~p"/resources")
 
-      resource ->
+      {:ok, resource} ->
         socket
         |> assign(:page_title, "Edit User Resource")
         |> assign(:resource, resource)
@@ -177,15 +177,9 @@ defmodule SpacecastWeb.Examples.UserResourceExampleLive do
   def handle_event("toggle_notifications", _, socket) do
     current_setting = get_resource(socket, :settings).notifications
 
-    case ResourceHelpers.update_resource(socket, :settings, %{notifications: !current_setting}) do
-      {:ok, socket} ->
-        message = if current_setting, do: "Notifications disabled", else: "Notifications enabled"
-        {:noreply, put_flash(socket, :info, message)}
-
-      {:error, reason} ->
-        {:noreply,
-         put_flash(socket, :error, "Failed to update notifications: #{inspect(reason)}")}
-    end
+    {:ok, socket} = ResourceHelpers.update_resource(socket, :settings, %{notifications: !current_setting})
+    message = if current_setting, do: "Notifications disabled", else: "Notifications enabled"
+    {:noreply, put_flash(socket, :info, message)}
   end
 
   @impl Phoenix.LiveView
@@ -193,9 +187,7 @@ defmodule SpacecastWeb.Examples.UserResourceExampleLive do
       when event not in ["update_role", "update_theme", "toggle_notifications"] do
     require Logger
 
-    Logger.warning(
-      "Unhandled event in UserResourceExampleLive: #{inspect(event)} with params: #{inspect(params)}"
-    )
+    Logger.warning("Unhandled event in UserResourceExampleLive: #{inspect(event)} with params: #{inspect(params)}")
 
     {:noreply, put_flash(socket, :warning, "Unhandled event: #{event}")}
   end

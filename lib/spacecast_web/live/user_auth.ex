@@ -1,4 +1,8 @@
 defmodule SpacecastWeb.UserAuth do
+  @moduledoc """
+  User authentication module for LiveView with mount hooks and session management.
+  """
+
   alias Spacecast.Accounts
   alias SpacecastWeb.Router.Helpers, as: Routes
 
@@ -130,7 +134,6 @@ defmodule SpacecastWeb.UserAuth do
     |> Phoenix.Component.assign(:user_token, nil)
     |> Phoenix.LiveView.redirect(to: Routes.home_path(socket.endpoint, :index))
   end
-
 
   def update_user_password(user, attrs) do
     user

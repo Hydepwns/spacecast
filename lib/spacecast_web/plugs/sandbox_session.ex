@@ -23,14 +23,17 @@ defmodule SpacecastWeb.Plugs.SandboxSession do
           cookies = Plug.Conn.Cookies.decode(cookie_header)
 
           case Map.get(cookies, "_phoenix_liveview_sandbox") do
-            nil -> conn
+            nil ->
+              conn
+
             sandbox_pid ->
               # Store the sandbox PID in the session
               conn
               |> put_session("_phoenix_liveview_sandbox", sandbox_pid)
           end
 
-        _ -> conn
+        _ ->
+          conn
       end
     else
       conn

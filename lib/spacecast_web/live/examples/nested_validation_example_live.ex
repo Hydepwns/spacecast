@@ -28,7 +28,7 @@ defmodule SpacecastWeb.Examples.NestedValidationExampleLive do
     user = socket.assigns.user
 
     case UserResource.validate_deep(user) do
-      :ok ->
+      {:ok, _} ->
         {:noreply, assign(socket, :validation_result, "Valid")}
 
       {:error, errors} ->
@@ -40,7 +40,7 @@ defmodule SpacecastWeb.Examples.NestedValidationExampleLive do
     user = socket.assigns.user
 
     case UserResource.validate_deep(user) do
-      :ok ->
+      {:ok, _} ->
         {:noreply, assign(socket, :validation_result, "Valid with context")}
 
       {:error, errors} ->
@@ -71,23 +71,7 @@ defmodule SpacecastWeb.Examples.NestedValidationExampleLive do
               |> assign(:validation_errors, errors)
 
             {:noreply, socket}
-
-          {:checkpoint, checkpoint} ->
-            socket =
-              socket
-              |> assign(:validation_status, "checkpoint")
-              |> assign(:validation_errors, checkpoint.errors)
-
-            {:noreply, socket}
         end
-
-      {:error, reason} ->
-        socket =
-          socket
-          |> assign(:validation_status, "error")
-          |> assign(:validation_errors, %{error: reason})
-
-        {:noreply, socket}
     end
   end
 
@@ -162,9 +146,7 @@ defmodule SpacecastWeb.Examples.NestedValidationExampleLive do
            ] do
     require Logger
 
-    Logger.warning(
-      "Unhandled event in NestedValidationExampleLive: #{inspect(event)} with params: #{inspect(params)}"
-    )
+    Logger.warning("Unhandled event in NestedValidationExampleLive: #{inspect(event)} with params: #{inspect(params)}")
 
     {:noreply, put_flash(socket, :warning, "Unhandled event: #{event}")}
   end

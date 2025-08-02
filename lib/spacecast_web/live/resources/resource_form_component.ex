@@ -5,86 +5,100 @@ defmodule SpacecastWeb.ResourceFormComponent do
   """
   use SpacecastWeb, :live_component
 
-  alias Spacecast.Resources.ResourceSystem
   alias Spacecast.Resources.Resource
+  alias Spacecast.Resources.ResourceSystem
 
   @impl true
   def update(%{resource: resource} = assigns, socket) do
-    resource =
-      if Map.get(resource, :parent_id) == nil,
-        do: Map.put(resource, :parent_id, ""),
-        else: resource
-
-    resource_with_text_content =
-      cond do
-        Map.has_key?(resource, :content) and is_map(resource.content) ->
-          %{resource | content: Map.get(resource.content, :text, "")}
-
-        true ->
-          resource
-      end
-
-    _resource_with_defaults =
-      if resource_with_text_content.id == nil do
-        %{
-          resource_with_text_content
-          | type: resource_with_text_content.type || "document",
-            status: resource_with_text_content.status || "draft"
-        }
-      else
-        resource_with_text_content
-      end
-
-    changeset = Resource.changeset(resource_with_text_content, %{})
-    content_text = resource_with_text_content.content || ""
-    changeset = %{changeset | data: %{changeset.data | content: content_text}}
-
-    changeset =
-      if changeset.params,
-        do: %{changeset | params: Map.put(changeset.params, "content", content_text)},
-        else: changeset
-
-    type_options = [
-      {"Document", "document"},
-      {"Folder", "folder"},
-      {"Task", "task"},
-      {"Note", "note"}
-    ]
-
-    status_options = [
-      {"Draft", "draft"},
-      {"Published", "published"},
-      {"Active", "active"},
-      {"Archived", "archived"}
-    ]
-
-    current_resource_id = resource_with_text_content.id
-
-    filtered_resources =
-      (assigns[:resources] || [])
-      |> Enum.filter(fn potential_parent ->
-        if current_resource_id && potential_parent.id == current_resource_id do
-          false
-        else
-          if current_resource_id && potential_parent.parent_id == current_resource_id do
-            false
-          else
-            true
-          end
-        end
-      end)
-
-    parent_options = [
-      {"None", ""} | Enum.map(filtered_resources, fn resource -> {resource.name, resource.id} end)
-    ]
+    processed_resource = process_resource_for_form(resource)
+    changeset = create_changeset(processed_resource)
+    options = create_form_options(processed_resource, assigns)
 
     {:ok,
      socket
      |> assign(assigns)
      |> assign(:changeset, changeset)
-     |> assign(:type_options, type_options)
-     |> assign(:status_options, status_options)
-     |> assign(:parent_options, parent_options)}
+     |> assign(:type_options, options.type_options)
+     |> assign(:status_options, options.status_options)
+     |> assign(:parent_options, options.parent_options)}
+  end
+
+  defp process_resource_for_form(resource) do
+    resource
+    |> normalize_parent_id()
+    |> extract_text_content()
+    |> apply_defaults()
+  end
+
+  defp normalize_parent_id(resource) do
+    if Map.get(resource, :parent_id) == nil do
+      Map.put(resource, :parent_id, "")
+    else
+      resource
+    end
+  end
+
+  defp extract_text_content(resource) do
+    if Map.has_key?(resource, :content) and is_map(resource.content) do
+      %{resource | content: Map.get(resource.content, :text, "")}
+    else
+      resource
+    end
+  end
+
+  defp apply_defaults(resource) do
+    if resource.id == nil do
+      %{
+        resource
+        | type: resource.type || "document",
+          status: resource.status || "draft"
+      }
+    else
+      resource
+    end
+  end
+
+  defp create_changeset(resource) do
+    changeset = Resource.changeset(resource, %{})
+    content_text = resource.content || ""
+    changeset = %{changeset | data: %{changeset.data | content: content_text}}
+
+    if changeset.params do
+      %{changeset | params: Map.put(changeset.params, "content", content_text)}
+    else
+      changeset
+    end
+  end
+
+  defp create_form_options(resource, assigns) do
+    %{
+      type_options: [
+        {"Document", "document"},
+        {"Folder", "folder"},
+        {"Task", "task"},
+        {"Note", "note"}
+      ],
+      status_options: [
+        {"Draft", "draft"},
+        {"Published", "published"},
+        {"Active", "active"},
+        {"Archived", "archived"}
+      ],
+      parent_options: create_parent_options(resource, assigns)
+    }
+  end
+
+  defp create_parent_options(resource, assigns) do
+    current_resource_id = resource.id
+
+    filtered_resources =
+      (assigns[:resources] || [])
+      |> Enum.filter(fn potential_parent ->
+        not (current_resource_id && potential_parent.id == current_resource_id) and
+          not (current_resource_id && potential_parent.parent_id == current_resource_id)
+      end)
+
+    [{"None", ""} | Enum.map(filtered_resources, fn resource -> {resource.name, resource.id} end)]
   end
 
   @impl true
@@ -92,8 +106,10 @@ defmodule SpacecastWeb.ResourceFormComponent do
     case event do
       "validate" ->
         handle_validate(params, socket)
+
       "save" ->
         handle_save(params, socket)
+
       _ ->
         {:noreply, socket}
     end
@@ -160,6 +176,7 @@ defmodule SpacecastWeb.ResourceFormComponent do
     case Map.get(params, "parent_id") do
       "" ->
         Map.put(params, "parent_id", nil)
+
       _value ->
         params
     end
@@ -177,6 +194,7 @@ defmodule SpacecastWeb.ResourceFormComponent do
       {:ok, resource} ->
         notify_parent(socket, {:resource_updated, resource})
         {:noreply, socket}
+
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
     end
