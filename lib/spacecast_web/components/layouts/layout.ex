@@ -16,6 +16,8 @@ defmodule SpacecastWeb.Components.Layouts.Layout do
   alias SpacecastWeb.Components.Layouts.MobileNav
   alias SpacecastWeb.Components.Debug.SocketValidationPanel
 
+
+
   # Only keep imports that are actually used in the embedded templates
   embed_templates "layouts/*"
 
